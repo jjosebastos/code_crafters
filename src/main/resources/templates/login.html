@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>Code Crafters</title>
+    <style>
+        :root {
+            --color-primary: #00B131;
+            --color-black: #000000;
+            --color-white: #ffffff;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[var(--color-black)] text-[var(--color-white)]">
+
+<!-- Conteúdo central -->
+<main class="flex-grow flex flex-col items-center justify-center p-4">
+    <h1 class="text-3xl font-bold mb-8 text-[var(--color-primary)] text-center">
+        Code Crafters - Mottu
+    </h1>
+
+    <div class="card w-11/12 max-w-md bg-[var(--color-white)] text-[var(--color-black)] shadow-xl p-6 rounded-2xl">
+        <h2 class="text-xl font-bold text-center mb-4">Login</h2>
+
+        <!-- Form -->
+        <form method="post" action="/login" class="flex flex-col gap-4">
+            <input type="text" name="username" placeholder="Username"
+                   class="input input-bordered w-full border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" required />
+
+            <input type="password" name="password" placeholder="Senha"
+                   class="input input-bordered w-full border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" required />
+
+            <button type="submit" class="btn w-full bg-[var(--color-primary)] hover:bg-green-600 text-[var(--color-white)]">
+                Entrar
+            </button>
+        </form>
+
+        <!-- Divider -->
+        <div class="divider text-[var(--color-black)]">OU</div>
+
+        <!-- Link Cadastre-se estilizado -->
+        <a href="/register"
+           class="text-center text-[var(--color-primary)] font-semibold hover:underline mb-4">
+            Cadastre-se
+        </a>
+
+        <!-- Botão Google -->
+        <a class="btn w-full bg-[var(--color-white)] text-[var(--color-black)] border border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-[var(--color-white)]"
+           href="/oauth2/authorization/google">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                 class="mr-2" viewBox="0 0 24 24">
+                <path d="M21.35 11.1H12v2.8h5.3c-.3 1.5-1.6 4.3-5.3 4.3-3.2 0-5.8-2.6-5.8-5.8s2.6-5.8
+                        5.8-5.8c1.8 0 3 .7 3.7 1.3l2.5-2.5C16.4 3.8 14.3 3 12 3 6.9 3 2.9 7 2.9
+                        12s4 9 9.1 9c5.3 0 8.9-3.7 8.9-9 0-.6-.1-1.2-.2-1.9z"/>
+            </svg>
+            Login com Google
+        </a>
+    </div>
+</main>
+
+<!-- Footer fixado no bottom -->
+<footer class="w-full bg-[var(--color-primary)] text-[var(--color-white)] text-center p-4">
+    <p class="text-sm">© 2025 Code Crafters - Mottu. Todos os direitos reservados.</p>
+</footer>
+
+</body>
+</html>
