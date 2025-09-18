@@ -1,0 +1,6 @@
+DROP TABLE IF EXISTS epicuser;
+CREATE TABLE t_mtu_user (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    name VARCHAR(255)
+);

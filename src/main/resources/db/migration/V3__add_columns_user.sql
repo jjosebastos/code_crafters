@@ -1,0 +1,13 @@
+ALTER TABLE t_mtu_user
+ADD COLUMN username VARCHAR(50);
+
+ALTER TABLE t_mtu_user
+ADD COLUMN password VARCHAR(72);
+
+ALTER TABLE t_mtu_user
+ADD COLUMN role VARCHAR(10) DEFAULT 'USER';
+
+ALTER TABLE t_mtu_user
+ADD COLUMN dateCreation TIMESTAMP DEFAULT NOW () ;
+
+

@@ -13,6 +13,10 @@ public class AuthController {
 
     @GetMapping("/logout")
     public String logoutPage(){
-        return "logout";
+        return "index";
     }
+
+    @GetMapping("/register")
+    public String registerPage() { return "register"; }
+
 }

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Mottu - Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css"/>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        :root {
+            --color-primary: #00B131;
+            --color-black: #000000;
+            --color-white: #ffffff;
+        }
+    </style>
+</head>
+<body class="flex min-h-screen bg-[var(--color-black)] text-[var(--color-white)]">
+
+<!-- Menu Lateral -->
+<aside class="w-64 bg-[var(--color-black)] border-r border-gray-800 flex flex-col p-4">
+    <h1 class="text-2xl font-bold mb-8 text-[var(--color-primary)]">Mottu SaaS</h1>
+    <nav class="flex flex-col gap-2">
+        <a th:href="@{/home}" class="btn btn-ghost justify-start text-left text-[var(--color-white)] hover:text-[var(--color-primary)]">🏠 Home</a>
+        <a th:href="@{/cadastros}" class="btn btn-ghost justify-start text-left text-[var(--color-white)] hover:text-[var(--color-primary)]">📑 Cadastros</a>
+        <a th:href="@{/monitoramento}" class="btn btn-ghost justify-start text-left text-[var(--color-white)] hover:text-[var(--color-primary)]">📊 Monitoramento</a>
+        <a th:href="@{/ajustes}" class="btn btn-ghost justify-start text-left text-[var(--color-white)] hover:text-[var(--color-primary)]">⚙️ Ajustes</a>
+    </nav>
+</aside>
+
+<!-- Conteúdo Principal -->
+<div class="flex-1 flex flex-col">
+    <!-- Barra Superior -->
+    <header class="w-full flex justify-between items-center px-6 py-4 border-b border-gray-800 bg-[var(--color-black)]">
+        <div class="text-sm breadcrumbs">
+            <ul class="flex gap-2 text-gray-400">
+                <li><a th:href="@{/home}" class="hover:text-[var(--color-primary)]">Home</a></li>
+                <li><a href="#" class="hover:text-[var(--color-primary)]">Assets</a></li>
+            </ul>
+        </div>
+        <div class="flex items-center gap-4">
+            <button class="btn bg-[var(--color-primary)] text-[var(--color-white)] hover:bg-green-600">Nova Ação</button>
+            <div class="avatar placeholder">
+                <div class="bg-[var(--color-primary)] text-white rounded-full w-10">
+                    <span>U</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow p-6">
+        <h2 class="text-2xl font-bold mb-4">Dashboard</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div class="card bg-[var(--color-black)] border border-[var(--color-primary)] shadow-lg rounded-2xl p-4">
+                <h3 class="font-semibold text-lg mb-2">Usuários</h3>
+                <p class="text-gray-400">Quantidade total de usuários cadastrados.</p>
+                <button class="btn mt-4 bg-[var(--color-primary)] text-white hover:bg-green-600">Ver detalhes</button>
+            </div>
+
+            <div class="card bg-[var(--color-black)] border border-[var(--color-primary)] shadow-lg rounded-2xl p-4">
+                <h3 class="font-semibold text-lg mb-2">Atividades</h3>
+                <p class="text-gray-400">Últimas movimentações registradas no sistema.</p>
+                <button class="btn mt-4 bg-[var(--color-primary)] text-white hover:bg-green-600">Monitorar</button>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="card bg-[var(--color-black)] border border-[var(--color-primary)] shadow-lg rounded-2xl p-4">
+                <h3 class="font-semibold text-lg mb-2">Configurações</h3>
+                <p class="text-gray-400">Gerencie ajustes da plataforma.</p>
+                <button class="btn mt-4 bg-[var(--color-primary)] text-white hover:bg-green-600">Abrir</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="w-full bg-[var(--color-primary)] text-[var(--color-white)] text-center p-4">
+        <p class="text-sm">© 2025 Mottu. Todos os direitos reservados.</p>
+    </footer>
+</div>
+</body>
+</html>

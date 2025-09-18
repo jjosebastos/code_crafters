@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="light" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
@@ -14,6 +14,7 @@
     </style>
 </head>
 <body class="min-h-screen flex flex-col bg-[var(--color-black)] text-[var(--color-white)]">
+
 
 <!-- Conteúdo central -->
 <main class="flex-grow flex flex-col items-center justify-center p-4">
@@ -35,18 +36,19 @@
             <button type="submit" class="btn w-full bg-[var(--color-primary)] hover:bg-green-600 text-[var(--color-white)]">
                 Entrar
             </button>
+
+            <div th:if="${param.error}" class="alert alert-error text-sm text-center mb-4">
+                Dados cadastrais incorretos. Verifique suas credenciais.
+            </div>
         </form>
 
-        <!-- Divider -->
         <div class="divider text-[var(--color-black)]">OU</div>
 
-        <!-- Link Cadastre-se estilizado -->
         <a href="/register"
            class="text-center text-[var(--color-primary)] font-semibold hover:underline mb-4">
             Cadastre-se
         </a>
 
-        <!-- Botão Google -->
         <a class="btn w-full bg-[var(--color-white)] text-[var(--color-black)] border border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-[var(--color-white)]"
            href="/oauth2/authorization/google">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
