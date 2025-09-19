@@ -1,0 +1,10 @@
+<div th:fragment="card(title, description, chartId, btnLabel, btnHref)">
+    <div class="card bg-[var(--color-black)] border border-[var(--color-primary)] shadow-lg rounded-2xl p-6">
+        <h3 class="font-semibold text-lg mb-2" th:text="${title}"></h3>
+        <p class="text-gray-400 mb-4" th:text="${description}"></p>
+        <canvas th:if="${chartId != null}" th:id="${chartId}" class="h-56"></canvas>
+        <a th:if="${btnLabel != null}" th:href="${btnHref}"
+           class="btn mt-4 bg-[var(--color-primary)] text-white hover:bg-green-600 w-full"
+           th:text="${btnLabel}"></a>
+    </div>
+</div>

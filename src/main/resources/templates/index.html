@@ -5,6 +5,8 @@
     <title>Mottu - Home</title>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css"/>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/heroicons@2.0.18/dist/heroicons.min.js"></script>
+
     <style>
         :root {
             --color-primary: #00B131;
@@ -15,66 +17,218 @@
 </head>
 <body class="flex min-h-screen bg-[var(--color-black)] text-[var(--color-white)]">
 
-<!-- Menu Lateral -->
-<aside class="w-64 bg-[var(--color-black)] border-r border-gray-800 flex flex-col p-4">
-    <h1 class="text-2xl font-bold mb-8 text-[var(--color-primary)]">Mottu SaaS</h1>
-    <nav class="flex flex-col gap-2">
-        <a th:href="@{/home}" class="btn btn-ghost justify-start text-left text-[var(--color-white)] hover:text-[var(--color-primary)]">🏠 Home</a>
-        <a th:href="@{/cadastros}" class="btn btn-ghost justify-start text-left text-[var(--color-white)] hover:text-[var(--color-primary)]">📑 Cadastros</a>
-        <a th:href="@{/monitoramento}" class="btn btn-ghost justify-start text-left text-[var(--color-white)] hover:text-[var(--color-primary)]">📊 Monitoramento</a>
-        <a th:href="@{/ajustes}" class="btn btn-ghost justify-start text-left text-[var(--color-white)] hover:text-[var(--color-primary)]">⚙️ Ajustes</a>
-    </nav>
+<aside class="w-72 h-screen bg-[var(--panel-bg)] border-r" style="border-color: rgba(255,255,255,0.04);">
+    <div class="flex flex-col h-full justify-between p-4">
+
+        <div>
+            <div class="flex items-center justify-between mb-6">
+                <a th:href="@{/index}" class="inline-flex items-center gap-3">
+                    <img src="https://i.ibb.co/W0Q2Q0D/logo.png" alt="Mottu" class="w-36 h-auto"/>
+                </a>
+
+                <button class="topbar-btn" aria-label="Colapsar sidebar" title="Colapsar">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                </button>
+            </div>
+
+            <nav class="flex flex-col gap-1">
+                <div th:replace="fragments/sidebar-item :: sidebarItem(#{layout.aside.home}, @{/index} ,
+          '<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; class=&quot;w-5 h-5&quot; fill=&quot;none&quot; viewBox=&quot;0 0 24 24&quot; stroke=&quot;currentColor&quot;><path stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot; stroke-width=&quot;2&quot; d=&quot;M3 12l9-9 9 9v9a3 3 0 01-3 3h-3v-6H9v6H6a3 3 0 01-3-3v-9z&quot;/></svg>')"></div>
+
+                <div th:replace="fragments/sidebar-item :: sidebarItem(#{layout.aside.register},@{/cadastros},
+          '<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; class=&quot;w-5 h-5&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;><path stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot; stroke-width=&quot;2&quot; d=&quot;M12 20H6a2 2 0 01-2-2V6a2 2 0 012-2h6m6 14h-6a2 2 0 01-2-2V6a2 2 0 012-2h6v16z&quot;/></svg>')"></div>
+
+                <div th:replace="fragments/sidebar-item :: sidebarItem(#{layout.aside.monitoring},@{/monitoramento},
+          '<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; class=&quot;w-5 h-5&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;><rect x=&quot;3&quot; y=&quot;7&quot; width=&quot;18&quot; height=&quot;12&quot; rx=&quot;2&quot; ry=&quot;2&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot; /><path d=&quot;M8 21h8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot; /></svg>')"></div>
+
+                <div th:replace="fragments/sidebar-item :: sidebarItem(#{layout.aside.settings}, @{/ajustes},
+          '<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; class=&quot;w-5 h-5&quot; fill=&quot;none&quot; viewBox=&quot;0 0 24 24&quot; stroke=&quot;currentColor&quot;><path stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot; stroke-width=&quot;2&quot; d=&quot;M11.049 2.927c.3-.921 1.603-.921 1.902 0a1.724 1.724 0 002.591 1.001c.83-.54 1.92.078 1.773 1.023a1.724 1.724 0 00.74 1.563c.812.547.674 1.77-.262 2.093a1.724 1.724 0 00-1.21 1.448c-.104.95.65 1.675 1.507 1.357.83-.305 1.77.367 1.653 1.232-.18 1.315-.234 2.67-.236 4.056 0 .709-.774 1.21-1.417.88-1.004-.53-2.22.067-2.427 1.128-.15.794-.99 1.263-1.743.937-1.03-.42-2.266.08-2.605 1.126-.2.67-.88 1.1-1.589 1.1-.71 0-1.39-.43-1.59-1.1-.338-1.046-1.575-1.546-2.605-1.126-.754.326-1.593-.143-1.743-.937-.207-1.06-1.423-1.658-2.427-1.128-.643.33-1.417-.171-1.417-.88-.002-1.386-.056-2.741-.235-4.056-.118-.865.823-1.537 1.653-1.232.857.318 1.611-.407 1.507-1.357a1.724 1.724 0 00-1.21-1.448c-.936-.323-1.074-1.546-.262-2.093a1.724 1.724 0 00.74-1.563c-.147-.945.943-1.563 1.773-1.023a1.724 1.724 0 002.591-1.001zM12 15a3 3 0 100-6 3 3 0 000 6z&quot;/></svg>')"></div>
+
+            </nav>
+        </div>
+
+        <div class="mt-4">
+            <div class="flex gap-2">
+                <a th:href="@{/logout}"
+                   class="flex items-center justify-center gap-2 w-1/2 px-3 py-2 rounded-md text-sm font-medium text-white bg-[#2b2b2b] hover:bg-red-600 transition"
+                   title="Sair">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7" />
+                    </svg>
+                    <span class="truncate" th:text="#{layout.aside.logout}"></span>
+                </a>
+
+                <a th:href="@{/contato}"
+                   class="flex items-center justify-center gap-2 w-1/2 px-3 py-2 rounded-md text-sm font-medium text-white bg-[var(--color-primary-dark)] hover:bg-[var(--color-primary)] transition"
+                   title="Fale Conosco">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.862 9.862 0 01-4-.83L3 20l1.17-3.83A8.972 8.972 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                    </svg>
+                    <span class="truncate" th:text="#{layout.aside.contact}"></span>
+                </a>
+            </div>
+
+        </div>
+    </div>
 </aside>
 
 <!-- Conteúdo Principal -->
 <div class="flex-1 flex flex-col">
     <!-- Barra Superior -->
     <header class="w-full flex justify-between items-center px-6 py-4 border-b border-gray-800 bg-[var(--color-black)]">
+        <!-- Breadcrumbs -->
         <div class="text-sm breadcrumbs">
             <ul class="flex gap-2 text-gray-400">
-                <li><a th:href="@{/home}" class="hover:text-[var(--color-primary)]">Home</a></li>
-                <li><a href="#" class="hover:text-[var(--color-primary)]">Assets</a></li>
+                <li><a th:href="@{/index}" class="hover:text-[var(--color-primary)]">Home</a></li>
+                <li><a href="#" class="hover:text-[var(--color-primary)]">Dashboards</a></li>
             </ul>
         </div>
+
+        <!-- Ações à direita -->
         <div class="flex items-center gap-4">
-            <button class="btn bg-[var(--color-primary)] text-[var(--color-white)] hover:bg-green-600">Nova Ação</button>
-            <div class="avatar placeholder">
-                <div class="bg-[var(--color-primary)] text-white rounded-full w-10">
-                    <span>U</span>
+            <!-- Notificação -->
+            <button class="relative flex items-center justify-center w-11 h-11 rounded-full bg-gray-800 hover:bg-gray-700 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24"
+                     stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M15 17h5l-1.405-1.405C18.21 15.21 18 14.7 18 14.172V11c0-3.314-2.686-6-6-6S6 7.686 6 11v3.172c0 .528-.21 1.038-.595 1.423L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                </svg>
+                <span class="absolute top-2 right-2 w-3 h-3 bg-red-600 rounded-full"></span>
+            </button>
+
+            <!-- Divider -->
+            <div class="w-px h-8 bg-gray-700"></div>
+
+            <!-- Avatar -->
+            <div class="relative">
+                <button id="userMenuBtn"
+                        class="flex items-center justify-center w-11 h-11 rounded-full overflow-hidden border-2 border-[var(--color-primary)]">
+                    <img src="https://i.pravatar.cc/100" alt="Usuário"/>
+                </button>
+
+                <!-- Mini menu fixo -->
+                <div id="userMenu"
+                     class="hidden absolute right-0 mt-2 w-48 bg-[var(--color-black)] border border-[var(--color-primary)] shadow-lg z-50">
+                    <ul class="flex flex-col text-sm">
+                        <li>
+                            <a th:href="@{/perfil}" class="block px-4 py-2 hover:bg-[var(--color-primary)] hover:text-white">👤 Meu Perfil</a>
+                        </li>
+                        <li>
+                            <a th:href="@{/ajustes}" class="block px-4 py-2 hover:bg-[var(--color-primary)] hover:text-white">⚙️ Configurações</a>
+                        </li>
+                        <li>
+                            <a th:href="@{/logout}" class="block px-4 py-2 hover:bg-red-600 hover:text-white">🚪 Sair</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Language Menu -->
+            <div class="relative">
+                <button id="langMenuBtn"
+                        class="flex items-center justify-center w-11 h-11 bg-gray-800 rounded-full hover:bg-gray-700 transition text-white font-bold">
+                    🌐
+                </button>
+
+                <div id="langMenu"
+                     class="hidden absolute right-0 mt-2 w-40 bg-[var(--color-black)] border border-[var(--color-primary)] shadow-lg z-50">
+                    <ul class="flex flex-col text-sm">
+                        <li><a href="?lang=en_US" class="block w-full text-left px-4 py-2 hover:bg-[var(--color-primary)] hover:text-white">us English</a></li>
+                        <li><a href="?lang=pt_BR" class="block w-full text-left px-4 py-2 hover:bg-[var(--color-primary)] hover:text-white">pt Português</a></li>
+                        <li><a href="?lang=es_ES" class="block w-full text-left px-4 py-2 hover:bg-[var(--color-primary)] hover:text-white">es Español</a></li>
+                    </ul>
                 </div>
             </div>
         </div>
     </header>
 
-    <main class="flex-grow p-6">
+    <main class="flex-grow p-6 bg-[#242529]" >
         <h2 class="text-2xl font-bold mb-4">Dashboard</h2>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            <div class="card bg-[var(--color-black)] border border-[var(--color-primary)] shadow-lg rounded-2xl p-4">
-                <h3 class="font-semibold text-lg mb-2">Usuários</h3>
-                <p class="text-gray-400">Quantidade total de usuários cadastrados.</p>
-                <button class="btn mt-4 bg-[var(--color-primary)] text-white hover:bg-green-600">Ver detalhes</button>
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6">
+            <div class="card bg-[var(--color-black)] border border-[var(--color-primary)] shadow-lg rounded-2xl p-6">
+                <h3 class="font-semibold text-lg mb-2" th:text="#{layout.dashboard.title}"></h3>
+                <p class="text-gray-400 mb-4" th:text="#{layout.dashboard.description}"></p>
+                <canvas id="usuariosChart" class="h-56"></canvas>
+                <button class="btn mt-4 bg-[var(--color-primary)] text-white hover:bg-green-600 w-full" th:text="#{layout.dashboard.button}"></button>
+            </div>
+            <div class="card bg-[var(--color-black)] border border-[var(--color-primary)] shadow-lg rounded-2xl p-6 cursor-pointer hover:shadow-[0_0_15px_rgba(0,177,49,0.5)] transition"
+                 th:onclick="|window.location.href='@{/monitoramento}'|">
+                <h3 class="font-semibold text-lg mb-2" th:text="#{layout.dashboard.topic.2}"></h3>
+                <p class="text-gray-400 mb-4" th:text="#{layout.dashboard.description.2}"></p>
+                <canvas id="monitoramentoChart" class="h-56"></canvas>
             </div>
 
-            <div class="card bg-[var(--color-black)] border border-[var(--color-primary)] shadow-lg rounded-2xl p-4">
-                <h3 class="font-semibold text-lg mb-2">Atividades</h3>
-                <p class="text-gray-400">Últimas movimentações registradas no sistema.</p>
-                <button class="btn mt-4 bg-[var(--color-primary)] text-white hover:bg-green-600">Monitorar</button>
-            </div>
-
-            <!-- Card 3 -->
-            <div class="card bg-[var(--color-black)] border border-[var(--color-primary)] shadow-lg rounded-2xl p-4">
-                <h3 class="font-semibold text-lg mb-2">Configurações</h3>
-                <p class="text-gray-400">Gerencie ajustes da plataforma.</p>
-                <button class="btn mt-4 bg-[var(--color-primary)] text-white hover:bg-green-600">Abrir</button>
-            </div>
         </div>
     </main>
 
     <!-- Rodapé -->
     <footer class="w-full bg-[var(--color-primary)] text-[var(--color-white)] text-center p-4">
-        <p class="text-sm">© 2025 Mottu. Todos os direitos reservados.</p>
+        <p class="text-sm" th:text="#{layout.copyright.text}"></p>
     </footer>
 </div>
+
+
+<script>
+    // Toggle User Menu
+    const userMenuBtn = document.getElementById('userMenuBtn');
+    const userMenu = document.getElementById('userMenu');
+    userMenuBtn.addEventListener('click', () => {
+        userMenu.classList.toggle('hidden');
+    });
+
+    // Toggle Language Menu
+    const langMenuBtn = document.getElementById('langMenuBtn');
+    const langMenu = document.getElementById('langMenu');
+    langMenuBtn.addEventListener('click', () => {
+        langMenu.classList.toggle('hidden');
+    });
+
+    // Fechar menus ao clicar fora
+    document.addEventListener('click', function(event) {
+        if (!userMenu.contains(event.target) && !userMenuBtn.contains(event.target)) {
+            userMenu.classList.add('hidden');
+        }
+        if (!langMenu.contains(event.target) && !langMenuBtn.contains(event.target)) {
+            langMenu.classList.add('hidden');
+        }
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Usuários (linha)
+    new Chart(document.getElementById('usuariosChart'), {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+            datasets: [{
+                label: 'Cadastros',
+                data: [10, 25, 40, 60, 80, 120],
+                borderColor: '#00B131',
+                backgroundColor: 'rgba(0,177,49,0.2)',
+                tension: 0.3,
+                fill: true
+            }]
+        },
+        options: { plugins: { legend: { labels: { color: '#fff' } } }, scales: { x: { ticks: { color: '#aaa'}}, y: { ticks: { color: '#aaa'}}}}
+    });
+
+    // Monitoramento (barras)
+    new Chart(document.getElementById('monitoramentoChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex'],
+            datasets: [
+                { label: '#{layout.dashboard.green}', data: [15, 20, 25, 18, 22], backgroundColor: '#00B131' },
+                { label: '#{layout.dashboard.red}', data: [10, 18, 20, 15, 19], backgroundColor: '#f87171' }
+            ]
+        },
+        options: { plugins: { legend: { labels: { color: '#fff' } } }, scales: { x: { ticks: { color: '#aaa'}}, y: { ticks: { color: '#aaa'}}}}
+    });
+
+</script>
+
 </body>
 </html>

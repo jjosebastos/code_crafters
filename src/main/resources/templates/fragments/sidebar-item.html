@@ -1,0 +1,17 @@
+<!-- fragments/sidebar-item.html -->
+<div th:fragment="sidebarItem(label, url, iconSvg)">
+    <a th:href="${url}"
+       class="group flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium
+            text-slate-200 transition-colors duration-150
+            hover:bg-[var(--color-primary-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+       role="menuitem">
+        <!-- ícone (herda cor via currentColor quando o grupo é hover) -->
+        <span th:utext="${iconSvg}"
+              class="w-5 h-5 shrink-0 text-slate-400 transition-colors duration-150 group-hover:text-[var(--color-primary)]"
+              aria-hidden="true"></span>
+
+        <!-- label: agora também fica verde no hover do link -->
+        <span class="truncate text-slate-200 transition-colors duration-150 group-hover:text-[var(--color-primary)]"
+              th:text="${label}"></span>
+    </a>
+</div>
