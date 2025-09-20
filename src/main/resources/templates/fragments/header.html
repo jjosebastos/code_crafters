@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+<header th:fragment="headerComponent" class="w-full flex justify-between items-center px-6 py-4 border-b border-gray-800 bg-[var(--color-black)]">
+    <div class="text-sm breadcrumbs">
+        <ul class="flex gap-2 text-gray-400">
+            <li><a th:href="@{/index}" class="hover:text-[var(--color-primary)]">Home</a></li>
+            <li><a href="#" class="hover:text-[var(--color-primary)]">Dashboards</a></li>
+        </ul>
+    </div>
+
+    <div class="flex items-center gap-4">
+        <button class="relative flex items-center justify-center w-11 h-11 rounded-full bg-gray-800 hover:bg-gray-700 transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24"
+                 stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M15 17h5l-1.405-1.405C18.21 15.21 18 14.7 18 14.172V11c0-3.314-2.686-6-6-6S6 7.686 6 11v3.172c0 .528-.21 1.038-.595 1.423L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+            </svg>
+            <span class="absolute top-2 right-2 w-3 h-3 bg-red-600 rounded-full"></span>
+        </button>
+
+        <div class="w-px h-8 bg-gray-700"></div>
+
+        <div class="relative">
+            <button id="userMenuBtn"
+                    class="flex items-center justify-center w-11 h-11 rounded-full overflow-hidden border-2 border-[var(--color-primary)]">
+                <img src="https://i.pravatar.cc/100" alt="Usuário"/>
+            </button>
+
+            <div id="userMenu"
+                 class="hidden absolute right-0 mt-2 w-48 bg-[var(--color-black)] border border-[var(--color-primary)] shadow-lg z-50">
+                <ul class="flex flex-col text-sm">
+                    <li>
+                        <a th:href="@{/perfil}" class="block px-4 py-2 hover:bg-[var(--color-primary)] hover:text-white">👤 Meu Perfil</a>
+                    </li>
+                    <li>
+                        <a th:href="@{/ajustes}" class="block px-4 py-2 hover:bg-[var(--color-primary)] hover:text-white">⚙️ Configurações</a>
+                    </li>
+                    <li>
+                        <a th:href="@{/logout}" class="block px-4 py-2 hover:bg-red-600 hover:text-white">🚪 Sair</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="relative">
+            <button id="langMenuBtn"
+                    class="flex items-center justify-center w-11 h-11 bg-gray-800 rounded-full hover:bg-gray-700 transition text-white font-bold">
+                🌐
+            </button>
+
+            <div id="langMenu"
+                 class="hidden absolute right-0 mt-2 w-40 bg-[var(--color-black)] border border-[var(--color-primary)] shadow-lg z-50">
+                <ul class="flex flex-col text-sm">
+                    <li><a href="?lang=en_US" class="block w-full text-left px-4 py-2 hover:bg-[var(--color-primary)] hover:text-white">us English</a></li>
+                    <li><a href="?lang=pt_BR" class="block w-full text-left px-4 py-2 hover:bg-[var(--color-primary)] hover:text-white">pt Português</a></li>
+                    <li><a href="?lang=es_ES" class="block w-full text-left px-4 py-2 hover:bg-[var(--color-primary)] hover:text-white">es Español</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+</body>
+</html>
