@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::main}, ~{::scripts})}">
+<head>
+    <title th:text="${pageTitleKey}">Mottu - Cadastro de Motos</title>
+</head>
+<body>
+<main class="flex-grow p-6 bg-[#242529] overflow-y-auto">
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold" th:text="#{moto.cadastro.titulo}">Cadastro de Moto</h2>
+        <div class="flex items-center space-x-4">
+            <button class="btn btn-outline border-white text-white hover:bg-white/10" th:text="#{moto.botao.voltar}" th:onclick="|window.location.href='@{/index}'|">Voltar</button>
+        </div>
+    </div>
+
+    <div class="bg-[var(--color-black)] rounded-lg p-6 shadow-xl border border-[var(--color-primary)]">
+        <form id="moto-cadastro-form" class="space-y-6">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text text-white" th:text="#{moto.campo.modelo}">Modelo <span class="text-red-500">*</span></span>
+                    </label>
+                    <select name="nm_modelo" class="select select-bordered w-full bg-[#2a2a2e] text-white border-gray-700 focus:border-[var(--color-primary)]" required>
+                        <option disabled selected th:text="#{moto.label.modelo.select}">Selecione um modelo</option>
+                        <option value="MOTTU-E" th:text="'MOTTU-E'">MOTTU-E</option>
+                        <option value="MOTTUPOP" th:text="'MOTTU POP'">MOTTU POP</option>
+                        <option value="MOTTUSPORT" th:text="'MOTTU SPORT'">MOTTU SPORT</option>
+                    </select>
+                </div>
+
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text text-white" th:text="#{moto.campo.placa}">Placa <span class="text-red-500">*</span></span>
+                    </label>
+                    <input type="text" name="nr_placa" th:placeholder="#{moto.placeholder.placa}" class="input input-bordered w-full bg-[#2a2a2e] text-white border-gray-700 focus:border-[var(--color-primary)]" required>
+                </div>
+
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text text-white" th:text="#{moto.campo.chassi}">Número do Chassi <span class="text-red-500">*</span></span>
+                    </label>
+                    <input type="text" name="nr_chassi" th:placeholder="#{moto.placeholder.chassi}" class="input input-bordered w-full bg-[#2a2a2e] text-white border-gray-700 focus:border-[var(--color-primary)]" required>
+                </div>
+
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text text-white" th:text="#{moto.campo.status}">Status <span class="text-red-500">*</span></span>
+                    </label>
+                    <select name="fl_status" class="select select-bordered w-full bg-[#2a2a2e] text-white border-gray-700 focus:border-[var(--color-primary)]" required>
+                        <option disabled selected th:text="#{moto.label.status.select}">Selecione um status</option>
+                        <option value="D" th:text="#{moto.status.disponivel}">Disponível</option>
+                        <option value="A" th:text="#{moto.status.alugada}">Alugada</option>
+                        <option value="M" th:text="#{moto.status.manutencao}">Em Manutenção</option>
+                        <option value="I" th:text="#{moto.status.inativa}">Inativa</option>
+                    </select>
+                </div>
+
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text text-white" th:text="#{moto.campo.operador}">Operador</span>
+                    </label>
+                    <select name="id_operador" class="select select-bordered w-full bg-[#2a2a2e] text-white border-gray-700 focus:border-[var(--color-primary)]">
+                        <option disabled selected th:text="#{moto.label.operador.select}">Selecione um operador</option>
+                        <option th:each="operador : ${operadores}" th:value="${operador.id}" th:text="${operador.nome}"></option>
+                    </select>
+                </div>
+
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text text-white" th:text="#{moto.campo.patio}">Pátio</span>
+                    </label>
+                    <select name="id_patio" class="select select-bordered w-full bg-[#2a2a2e] text-white border-gray-700 focus:border-[var(--color-primary)]">
+                        <option disabled selected th:text="#{moto.label.patio.select}">Selecione um pátio</option>
+                        <option th:each="patio : ${patios}" th:value="${patio.id}" th:text="${patio.nome}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <p class="text-xs text-gray-400 mt-6" th:text="#{moto.aviso.requerido}"></p>
+
+            <div class="mt-8 flex justify-end space-x-4">
+                <button type="button" class="btn btn-outline text-white border-white hover:bg-white/10" th:text="#{moto.botao.limpar}">Limpar</button>
+                <button type="submit" class="btn bg-[var(--color-primary)] text-white hover:bg-green-600" th:text="#{moto.botao.cadastrar}">Cadastrar Moto</button>
+            </div>
+        </form>
+    </div>
+</main>
+
+<script th:inline="javascript" th:fragment="scripts">
+    document.getElementById('moto-cadastro-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Formulário de cadastro de moto enviado!');
+        // Aqui você adicionaria a lógica para enviar os dados para o seu endpoint Spring
+    });
+</script>
+</body>
+</html>

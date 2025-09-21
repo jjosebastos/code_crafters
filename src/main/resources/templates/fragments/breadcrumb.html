@@ -1,0 +1,11 @@
+<div th:fragment="breadcrumb(path)" class="text-sm breadcrumbs">
+    <ul>
+        <li>
+            <a th:href="@{/index}" class="hover:text-[var(--color-primary)]">Home</a>
+        </li>
+        <li th:each="item, status : ${path}">
+            <span th:text="${item.name}" th:classappend="${status.last} ? 'text-white' : 'hover:text-[var(--color-primary)]'">
+                </span>
+        </li>
+    </ul>
+</div>

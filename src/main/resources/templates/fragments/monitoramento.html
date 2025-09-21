@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::main}, ~{::scripts})}">
+<head>
+    <title>Mottu - Monitoramento</title>
+</head>
+<body>
+<main class="flex-grow p-6 bg-[#242529] overflow-y-auto">
+    <h2 class="text-2xl font-bold mb-4">Monitoramento de Veículos</h2>
+    <p>Aqui você pode acompanhar a entrada e saída de veículos, seu status em tempo real, etc.</p>
+
+    <div class="mt-6 p-4 rounded-lg bg-[var(--color-black)] border border-[var(--color-primary)]">
+        <h3 class="text-lg font-semibold">Tabela de Eventos Recentes</h3>
+        <p>Tabela com dados de monitoramento...</p>
+    </div>
+</main>
+
+<script th:inline="javascript" th:fragment="scripts">
+</script>
+</body>
+</html>

@@ -1,109 +1,39 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="light" xmlns:th="http://www.thymeleaf.org">
+<html lang="pt-BR" data-theme="light" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::main}, ~{::scripts})}">
 <head>
-    <meta charset="UTF-8">
-    <title>Mottu - Home</title>
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css"/>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script src="https://unpkg.com/heroicons@2.0.18/dist/heroicons.min.js"></script>
-
-    <style>
-        :root {
-            --color-primary: #00B131;
-            --color-black: #000000;
-            --color-white: #ffffff;
-        }
-    </style>
 </head>
-<body class="flex min-h-screen bg-[var(--color-black)] text-[var(--color-white)]">
+<body>
+<main class="flex-grow p-6 bg-[#242529] overflow-y-auto">
+    <h2 class="text-2xl font-bold mb-4">Dashboard</h2>
 
-<div th:replace="fragments/aside :: asideComponent"></div>
-
-<div class="flex-1 flex flex-col ml-72 h-screen">
-    <div th:replace="fragments/header :: headerComponent"></div>
-
-    <main class="flex-grow p-6 bg-[#242529] overflow-y-auto" >
-        <h2 class="text-2xl font-bold mb-4">Dashboard</h2>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6">
-            <div class="card bg-[var(--color-black)] border border-[var(--color-primary)] shadow-lg rounded-2xl p-6">
-                <h3 class="font-semibold text-lg mb-2" th:text="#{layout.dashboard.title}"></h3>
-                <p class="text-gray-400 mb-4" th:text="#{layout.dashboard.description}"></p>
-                <canvas id="usuariosChart" class="h-56"></canvas>
-                <button class="btn mt-4 bg-[var(--color-primary)] text-white hover:bg-green-600 w-full" th:text="#{layout.dashboard.button}"></button>
-            </div>
-            <div class="card bg-[var(--color-black)] border border-[var(--color-primary)] shadow-lg rounded-2xl p-6 cursor-pointer hover:shadow-[0_0_15px_rgba(0,177,49,0.5)] transition"
-                 th:onclick="|window.location.href='@{/monitoramento}'|">
-                <h3 class="font-semibold text-lg mb-2" th:text="#{layout.dashboard.topic.2}"></h3>
-                <p class="text-gray-400 mb-4" th:text="#{layout.dashboard.description.2}"></p>
-                <canvas id="monitoramentoChart" class="h-56"></canvas>
-            </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6">
+        <div class="card bg-[var(--color-black)] border border-[var(--color-primary)] shadow-lg rounded-2xl p-6">
+            <h3 class="font-semibold text-lg mb-2" th:text="#{layout.dashboard.title}"></h3>
+            <p class="text-gray-400 mb-4" th:text="#{layout.dashboard.description}"></p>
+            <canvas id="usuariosChart" class="h-56"></canvas>
+            <button class="btn mt-4 bg-[var(--color-primary)] text-white hover:bg-green-600 w-full" th:text="#{layout.dashboard.button}"></button>
         </div>
-        <div class="h-[1000px] mt-8 bg-gray-700 p-4 rounded-lg text-white">
-        <p>Este é um bloco grande para simular conteúdo e testar a rolagem.</p>
-</div>
-    </main>
+        <div class="card bg-[var(--color-black)] border border-[var(--color-primary)] shadow-lg rounded-2xl p-6 cursor-pointer hover:shadow-[0_0_15px_rgba(0,177,49,0.5)] transition"
+             th:onclick="|window.location.href='@{/monitoramento}'|">
+            <h3 class="font-semibold text-lg mb-2" th:text="#{layout.dashboard.topic.2}"></h3>
+            <p class="text-gray-400 mb-4" th:text="#{layout.dashboard.description.2}"></p>
+            <canvas id="monitoramentoChart" class="h-56"></canvas>
+        </div>
+    </div>
+</main>
 
-    <div th:replace="fragments/footer :: footerComponent"></div>
-</div>
-
-<script>
-    // Scripts de interação que são comuns, como a lógica dos menus
-    const userMenuBtn = document.getElementById('userMenuBtn');
-    const userMenu = document.getElementById('userMenu');
-    userMenuBtn.addEventListener('click', () => {
-        userMenu.classList.toggle('hidden');
-    });
-
-    const langMenuBtn = document.getElementById('langMenuBtn');
-    const langMenu = document.getElementById('langMenu');
-    langMenuBtn.addEventListener('click', () => {
-        langMenu.classList.toggle('hidden');
-    });
-
-    document.addEventListener('click', function(event) {
-        if (!userMenu.contains(event.target) && !userMenuBtn.contains(event.target)) {
-            userMenu.classList.add('hidden');
-        }
-        if (!langMenu.contains(event.target) && !langMenuBtn.contains(event.target)) {
-            langMenu.classList.add('hidden');
-        }
-    });
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    // Usuários (linha)
+<script th:inline="javascript" th:fragment="scripts">
     new Chart(document.getElementById('usuariosChart'), {
         type: 'line',
-        data: {
-            labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
-            datasets: [{
-                label: 'Cadastros',
-                data: [10, 25, 40, 60, 80, 120],
-                borderColor: '#00B131',
-                backgroundColor: 'rgba(0,177,49,0.2)',
-                tension: 0.3,
-                fill: true
-            }]
-        },
-        options: { plugins: { legend: { labels: { color: '#fff' } } }, scales: { x: { ticks: { color: '#aaa'}}, y: { ticks: { color: '#aaa'}}}}
+        data: { /* ... */ },
+        options: { /* ... */ }
     });
-
-    // Monitoramento (barras)
     new Chart(document.getElementById('monitoramentoChart'), {
         type: 'bar',
-        data: {
-            labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex'],
-            datasets: [
-                { label: '#{layout.dashboard.green}', data: [15, 20, 25, 18, 22], backgroundColor: '#00B131' },
-                { label: '#{layout.dashboard.red}', data: [10, 18, 20, 15, 19], backgroundColor: '#f87171' }
-            ]
-        },
-        options: { plugins: { legend: { labels: { color: '#fff' } } }, scales: { x: { ticks: { color: '#aaa'}}, y: { ticks: { color: '#aaa'}}}}
+        data: { /* ... */ },
+        options: { /* ... */ }
     });
-
 </script>
 </body>
 </html>

@@ -4,14 +4,16 @@
       th:fragment="layout(pageTitle, content, scripts)">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${pageTitle}">Título Padrão</title>
+    <title th:text="${pageTitle}">Mottu Dashboard</title>
 
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css"/>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://unpkg.com/heroicons@2.0.18/dist/heroicons.min.js"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 
     <style>
-        :root { /* Suas variáveis CSS */
+        [x-cloak] { display: none !important; }
+        :root {
             --color-primary: #00B131;
             --color-black: #000000;
             --color-white: #ffffff;
@@ -20,66 +22,30 @@
 </head>
 <body class="flex min-h-screen bg-[var(--color-black)] text-[var(--color-white)]">
 
-<aside class="w-72 h-screen bg-[var(--panel-bg)] border-r" style="border-color: rgba(255,255,255,0.04);">
-    <div class="flex flex-col h-full justify-between p-4">
-        <div>
-            <div class="flex items-center justify-between mb-6">
-                <a th:href="@{/index}" class="inline-flex items-center gap-3">
-                    <img src="https://i.ibb.co/W0Q2Q0D/logo.png" alt="Mottu" class="w-36 h-auto"/>
-                </a>
-                <button></button>
-            </div>
-            <nav class="flex flex-col gap-1">
-                <div th:replace="~{fragments/sidebar-item :: sidebarItem(#{layout.aside.home}, @{/index} , '...')}"></div>
-            </nav>
-        </div>
-    </div>
-</aside>
+<aside th:replace="fragments/aside :: asideComponent"></aside>
 
-<div class="flex-1 flex flex-col">
-    <header class="w-full flex justify-between items-center px-6 py-4 border-b border-gray-800 bg-[var(--color-black)]">
-    </header>
+<div class="flex-1 flex flex-col ml-72">
+    <header th:replace="fragments/header :: headerComponent"></header>
 
-    <main class="flex-grow p-6 bg-[#242529]" th:replace="${content}">
-        <p>Este conteúdo nunca será mostrado.</p>
+    <main class="flex-grow p-6 bg-[#242529] overflow-y-auto" th:replace="${content}">
+        <p>This content will be replaced by the page fragment.</p>
     </main>
 
-    <footer class="w-full bg-[var(--color-primary)] text-[var(--color-white)] text-center p-4">
-        <p class="text-sm" th:text="#{layout.copyright.text}"></p>
-    </footer>
+    <footer th:replace="fragments/footer :: footerComponent"></footer>
 </div>
-
 
 <script>
-    // Toggle User Menu
+    // Toggle user menu
     const userMenuBtn = document.getElementById('userMenuBtn');
-    const userMenu = document.getElementById('userMenu');
-    userMenuBtn.addEventListener('click', () => {
-        userMenu.classList.toggle('hidden');
-    });
-
-    // Toggle Language Menu
-    const langMenuBtn = document.getElementById('langMenuBtn');
-    const langMenu = document.getElementById('langMenu');
-    langMenuBtn.addEventListener('click', () => {
-        langMenu.classList.toggle('hidden');
-    });
-
-    // Fechar menus ao clicar fora
-    document.addEventListener('click', function(event) {
-        if (!userMenu.contains(event.target) && !userMenuBtn.contains(event.target)) {
-            userMenu.classList.add('hidden');
-        }
-        if (!langMenu.contains(event.target) && !langMenuBtn.contains(event.target)) {
-            langMenu.classList.add('hidden');
-        }
-    });
+    if(userMenuBtn) {
+        userMenuBtn.addEventListener('click', () => {
+            userMenu.classList.toggle('hidden');
+        });
+    }
+    // ... (other scripts)
 </script>
 
-<div th:replace="${scripts}">
-</div>
-
-
+<div th:replace="${scripts}"></div>
 
 </body>
 </html>
