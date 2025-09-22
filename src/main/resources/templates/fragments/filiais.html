@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::main}, ~{::scripts})}">
+<head>
+    <title th:text="${pageTitleKey}">Mottu - Cadastro/Atualização de Filial</title>
+</head>
+<body>
+<main class="flex-grow p-6 bg-[#242529] overflow-y-auto">
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold" th:text="#{filial.titulo}">Gerenciar Filial</h2>
+        <div class="flex items-center space-x-4">
+            <button class="btn btn-outline border-white text-white hover:bg-white/10"
+                    th:text="#{filial.botao.voltar}"
+                    th:onclick="|window.location.href='@{/index}'|">
+                Voltar
+            </button>
+        </div>
+    </div>
+
+    <!-- Toggle Cadastro / Atualização -->
+    <div class="flex space-x-4 mb-6">
+        <button type="button" id="btn-cadastro" class="btn bg-[var(--color-primary)] text-white">
+            <span th:text="#{filial.acao.cadastrar}">Cadastrar</span>
+        </button>
+        <button type="button" id="btn-atualizar" class="btn btn-outline border-white text-white hover:bg-white/10">
+            <span th:text="#{filial.acao.atualizar}">Atualizar</span>
+        </button>
+    </div>
+
+    <!-- Formulário de Cadastro -->
+    <div id="form-cadastro" class="bg-[var(--color-black)] rounded-lg p-6 shadow-xl border border-[var(--color-primary)]">
+        <form id="filial-cadastro-form"
+              th:action="@{/filiais}"
+              th:object="${filialCreate}"
+              method="post"
+              class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Nome -->
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text text-white" th:text="#{filial.campo.nome}">Nome da Filial</span>
+                    </label>
+                    <input type="text" th:placeholder="#{filial.placeholder.nome}"
+                           class="input input-bordered w-full bg-[#2a2a2e] text-white border-gray-700 focus:border-[var(--color-primary)]"
+                           th:field="*{nome}"
+                           required>
+                </div>
+
+                <!-- CNPJ -->
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text text-white" th:text="#{filial.campo.cnpj}">CNPJ</span>
+                    </label>
+                    <input type="text" th:field="*{cnpj}" th:placeholder="#{filial.placeholder.cnpj}"
+                           class="input input-bordered w-full bg-[#2a2a2e] text-white border-gray-700 focus:border-[var(--color-primary)]">
+                </div>
+
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text text-white" th:text="#{filial.campo.pais}">País</span>
+                    </label>
+                    <select th:field="*{cdPais}" class="select select-bordered w-full bg-[#2a2a2e] text-white border-gray-700 focus:border-[var(--color-primary)]">
+                        <option value="" disabled selected th:text="#{filial.label.pais.select}">Selecione um país</option>
+                        <option value="BRA" th:text="'Brasil'"></option>
+                        <option value="MEX" th:text="'México'"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mt-8 flex justify-end space-x-4">
+                <button type="reset" class="btn btn-outline text-white border-white hover:bg-white/10"
+                        th:text="#{filial.botao.limpar}">Limpar</button>
+                <button type="submit" class="btn bg-[var(--color-primary)] text-white hover:bg-green-600"
+                        th:text="#{filial.botao.cadastrar}">Cadastrar</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Formulário de Atualização -->
+    <div id="form-atualizar" class="hidden bg-[var(--color-black)] rounded-lg p-6 shadow-xl border border-yellow-500">
+        <form id="filial-atualizar-form" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Busca por Nome ou CNPJ -->
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text text-white" th:text="#{filial.busca.label}">Buscar Filial</span>
+                    </label>
+                    <input type="text" name="busca" th:placeholder="#{filial.busca.placeholder}"
+                           class="input input-bordered w-full bg-[#2a2a2e] text-white border-yellow-500 focus:border-yellow-400">
+                </div>
+            </div>
+
+            <div class="mt-8 flex justify-end space-x-4">
+                <button type="button" class="btn btn-outline text-white border-white hover:bg-white/10"
+                        th:text="#{filial.botao.cancelar}">Cancelar</button>
+                <button type="submit" class="btn bg-yellow-500 text-white hover:bg-yellow-600"
+                        th:text="#{filial.botao.atualizar}">Atualizar</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="mt-12 bg-[var(--color-black)] rounded-lg p-6 shadow-xl border border-[var(--color-primary)]">
+        <h3 class="text-xl font-bold mb-4" th:text="#{filial.titulo.listagem}">Filiais Cadastradas</h3>
+
+        <div th:if="${successMessage}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <span class="block sm:inline" th:text="${successMessage}"></span>
+        </div>
+
+        <div th:if="${not #lists.isEmpty(filialPage.content)}">
+            <table class="table-auto w-full text-white border-collapse">
+                <thead>
+                <tr class="bg-gray-800">
+                    <th class="border border-gray-700 px-4 py-2 text-left">Nome da Filial</th>
+                    <th class="border border-gray-700 px-4 py-2 text-left">CNPJ</th>
+                    <th class="border border-gray-700 px-4 py-2 text-left">País</th>
+                    <th class="border border-gray-700 px-4 py-2 text-left">Data de Abertura</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="filial, stat : ${countFiliais}" class="hover:bg-gray-700">
+                    <td class="border border-gray-700 px-4 py-2" th:text="${stat.count}">1</td>
+                    <td class="border border-gray-700 px-4 py-2" th:text="${filial.nome}">NOME</td>
+                    <td class="border border-gray-700 px-4 py-2" th:text="${filial.cnpj}">CNPJ</td>
+                    <td class="border border-gray-700 px-4 py-2" th:text="${filial.cdPais}">CDPAIS</td>
+                    <td class="border border-gray-700 px-4 py-2" th:text="${#temporals.format(filial.abertura, 'dd/MM/yyyy HH:mm')}"></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="flex justify-center items-center space-x-2 mt-6">
+                <a th:href="@{/filiais/form(page=${filialPage.number - 1})}"
+                   th:if="${filialPage.hasPrevious()}"
+                   class="btn btn-sm btn-outline text-white border-white hover:bg-white/10"
+                   th:text="#{paginacao.anterior}">Anterior</a>
+
+                <span th:text="${'Página ' + (filialPage.number + 1) + ' de ' + filialPage.totalPages}"
+                      class="text-white"></span>
+
+                <a th:href="@{/filiais/form(page=${filialPage.number + 1})}"
+                   th:if="${filialPage.hasNext()}"
+                   class="btn btn-sm btn-outline text-white border-white hover:bg-white/10"
+                   th:text="#{paginacao.proximo}">Próximo</a>
+            </div>
+        </div>
+        <div th:if="${#lists.isEmpty(filialPage.content)}" class="text-white text-center p-4">
+            <p th:text="#{filial.vazio}">Nenhuma filial encontrada.</p>
+        </div>
+    </div>
+</main>
+
+<script th:inline="javascript" th:fragment="scripts">
+    document.getElementById('btn-cadastro').addEventListener('click', () => {
+        document.getElementById('form-cadastro').classList.remove('hidden');
+        document.getElementById('form-atualizar').classList.add('hidden');
+    });
+
+    document.getElementById('btn-atualizar').addEventListener('click', () => {
+        document.getElementById('form-atualizar').classList.remove('hidden');
+        document.getElementById('form-cadastro').classList.add('hidden');
+    });
+</script>
+</body>
+</html>

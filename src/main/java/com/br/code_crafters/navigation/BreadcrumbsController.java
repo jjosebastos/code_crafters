@@ -43,15 +43,7 @@ public class BreadcrumbsController {
         return "fragments/cadastros";
     }
 
-    @GetMapping("/filiais")
-    public String filial(Model model){
-        List<BreadcrumbItem> breadcrumbPath = List.of(
-                new BreadcrumbItem("Cadastros", null),
-                new BreadcrumbItem("Filial", null)
-        );
-        model.addAttribute("breadcrumb", breadcrumbPath);
-        return "fragments/filiais";
-    }
+
 
     @GetMapping("/sensores")
     public String sensores(Model model){
