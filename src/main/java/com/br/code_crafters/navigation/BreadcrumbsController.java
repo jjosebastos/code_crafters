@@ -1,14 +1,35 @@
 package com.br.code_crafters.navigation;
 
+import com.br.code_crafters.filial.Filial;
+import com.br.code_crafters.filial.FilialService;
+import com.br.code_crafters.patio.Patio;
+import com.br.code_crafters.patio.PatioService;
+import jakarta.validation.Valid;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Arrays;
 import java.util.List;
 
 @Controller
 public class BreadcrumbsController {
+
+
+    private final FilialService filialService;
+    private final PatioService patioService;
+    private final MessageSource messageSource;
+
+    public BreadcrumbsController(FilialService filialService, PatioService patioService, MessageSource messageSource) {
+        this.filialService = filialService;
+        this.patioService = patioService;
+        this.messageSource = messageSource;
+    }
 
     public static class BreadcrumbItem {
         private String name;
@@ -28,8 +49,32 @@ public class BreadcrumbsController {
         }
     }
 
-    @GetMapping("/index")
-    public String index(Model model) {
+    @GetMapping("/contato")
+    public String showContact(Model model) {
+        List<BreadcrumbItem> breadcrumbPath = List.of(
+                new BreadcrumbItem("Contato", null)
+        );
+        model.addAttribute("breadcrumbPath", breadcrumbPath);
+        model.addAttribute("pageTitleKey", "pageTitle.contact"); // Para internacionalização
+        return "fragments/contato";
+    }
+    @GetMapping({"/", "/index", "/dashboard"})
+    public String showHomePage(Model model) {
+        model.addAttribute("totalUsers", 1234); // Exemplo
+        model.addAttribute("usuariosLabels", Arrays.asList("Abr", "Mai", "Jun", "Jul", "Ago", "Set"));
+        model.addAttribute("usuariosData", Arrays.asList(12, 25, 18, 30, 28, 35));
+
+        model.addAttribute("totalFiliais", 56); // Exemplo
+        model.addAttribute("filiaisLabels", Arrays.asList("SP", "RJ", "MG", "BA", "PR"));
+        model.addAttribute("filiaisData", Arrays.asList(20, 12, 8, 6, 10));
+
+        model.addAttribute("motosAtivasLabels", Arrays.asList("MottuPop", "MottuE", "MottuSport", "Outros"));
+        model.addAttribute("motosAtivasData", Arrays.asList(450, 280, 120, 50)); // Exemplo de quantidades
+
+        // NOVOS DADOS para o Card: Motos: No Pátio vs. Em Uso
+        model.addAttribute("patiosLabels", Arrays.asList("No Pátio", "Fora do Pátio"));
+        model.addAttribute("patiosData", Arrays.asList(300, 550)); // Exemplo de quantidades
+
         model.addAttribute("breadcrumb", List.of());
         return "index"; // Retorna o template 'index.html'
     }
@@ -56,15 +101,6 @@ public class BreadcrumbsController {
         return "fragments/sensores";
     }
 
-    @GetMapping("/patios")
-    public String patios(Model model){
-        List<BreadcrumbItem> breadcrumbPath = List.of(
-                new BreadcrumbItem("Cadastros", null),
-                new BreadcrumbItem("Patios", null)
-        );
-        model.addAttribute("breadcrumb", breadcrumbPath);
-        return "fragments/patios";
-    }
 
     @GetMapping("/motos")
     public String motos(Model model) {
@@ -80,7 +116,7 @@ public class BreadcrumbsController {
     @GetMapping("/monitoramento")
     public String monitoramento(Model model) {
         List<BreadcrumbItem> breadcrumbPath = List.of(
-                new BreadcrumbItem("Cadastros", null),
+                new BreadcrumbItem("Home", null),
                 new BreadcrumbItem("Monitoramento", null)
         );
         model.addAttribute("breadcrumb", breadcrumbPath);
@@ -90,10 +126,38 @@ public class BreadcrumbsController {
     @GetMapping("/ajustes")
     public String ajustes(Model model) {
         List<BreadcrumbItem> breadcrumbPath = List.of(
-                new BreadcrumbItem("Cadastros", null),
+                new BreadcrumbItem("Home", null),
                 new BreadcrumbItem("Ajustes", null)
         );
         model.addAttribute("breadcrumb", breadcrumbPath);
         return "fragments/ajustes";
+    }
+
+
+    @GetMapping("/patios")
+    public String novoPatio(Model model) {
+        List<BreadcrumbItem> breadcrumbPath = List.of(
+                new BreadcrumbItem("Cadastro", "/cadastros"),
+                new BreadcrumbItem("Patio", "/patios")
+        );
+
+        Patio patio = new Patio();
+        patio.setFiliais(new Filial());
+        model.addAttribute("patio", patio);
+
+        List<Filial> filiais = filialService.findAll();
+        model.addAttribute("filiais", filiais);
+        model.addAttribute("breadcrumb", breadcrumbPath);
+
+        return "fragments/patios";
+    }
+
+    @PostMapping("/patios")
+    public String createPatios(@Valid Patio patio, BindingResult result, RedirectAttributes redirect){
+        if(result.hasErrors()) return "patios";
+        patioService.create(patio);
+        var message = messageSource.getMessage("patio.create.success", null, LocaleContextHolder.getLocale());
+        redirect.addFlashAttribute("message", message);
+        return "redirect:/index";
     }
 }

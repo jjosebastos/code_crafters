@@ -41,6 +41,11 @@ public class FilialService {
         filiais.sort(Comparator.comparing(Filial::getAbertura, Comparator.nullsLast(Comparator.naturalOrder())));
         return filiais;
     }
+
+    public List<Filial> findAll(){
+        return filialRepository.findAll();
+    }
+
     @Transactional
     public void create(Filial filial){
         filialRepository.save(filial);

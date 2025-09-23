@@ -1,39 +1,286 @@
 <!DOCTYPE html>
 <html lang="pt-BR" data-theme="light" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout/base :: layout(~{::title}, ~{::main}, ~{::scripts})}">
+      th:replace="~{layout/base :: layout(~{::title}, ~{::main}, ~{::pageScripts})}">
 <head>
+    <title>Dashboard</title>
 </head>
 <body>
 <main class="flex-grow p-6 bg-[#242529] overflow-y-auto">
-    <h2 class="text-2xl font-bold mb-4">Dashboard</h2>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6">
-        <div class="card bg-[var(--color-black)] border border-[var(--color-primary)] shadow-lg rounded-2xl p-6">
-            <h3 class="font-semibold text-lg mb-2" th:text="#{layout.dashboard.title}"></h3>
-            <p class="text-gray-400 mb-4" th:text="#{layout.dashboard.description}"></p>
-            <canvas id="usuariosChart" class="h-56"></canvas>
-            <button class="btn mt-4 bg-[var(--color-primary)] text-white hover:bg-green-600 w-full" th:text="#{layout.dashboard.button}"></button>
-        </div>
-        <div class="card bg-[var(--color-black)] border border-[var(--color-primary)] shadow-lg rounded-2xl p-6 cursor-pointer hover:shadow-[0_0_15px_rgba(0,177,49,0.5)] transition"
-             th:onclick="|window.location.href='@{/monitoramento}'|">
-            <h3 class="font-semibold text-lg mb-2" th:text="#{layout.dashboard.topic.2}"></h3>
-            <p class="text-gray-400 mb-4" th:text="#{layout.dashboard.description.2}"></p>
-            <canvas id="monitoramentoChart" class="h-56"></canvas>
+    <div th:if="${message}" class="alert alert-success shadow-lg max-w-xl mx-auto rounded-xl" role="alert" id="success-alert">
+        <div class="flex items-center space-x-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span th:text="${message}">Ação realizada com sucesso!</span>
         </div>
     </div>
-</main>
 
-<script th:inline="javascript" th:fragment="scripts">
-    new Chart(document.getElementById('usuariosChart'), {
-        type: 'line',
-        data: { /* ... */ },
-        options: { /* ... */ }
-    });
-    new Chart(document.getElementById('monitoramentoChart'), {
-        type: 'bar',
-        data: { /* ... */ },
-        options: { /* ... */ }
-    });
-</script>
+    <h2 class="text-2xl font-bold mb-6 text-white" th:text="#{dashboard.heading}">
+        Dashboard da Aplicação
+    </h2>
+
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- Usuários -->
+        <section class="bg-gray-800 border border-gray-700 shadow-lg rounded-xl p-6" aria-labelledby="card-usuarios">
+            <h3 id="card-usuarios" class="font-semibold text-lg mb-2 text-white" th:text="#{dashboard.users.title}">
+                Novos Cadastros nos Últimos 6 Meses
+            </h3>
+            <p class="text-gray-400 mb-4" th:text="#{dashboard.users.subtitle}">
+                Acompanhe o crescimento da base de usuários.
+            </p>
+
+            <div class="flex items-center mb-4">
+                <span class="text-3xl font-bold text-[var(--color-primary)] mr-2" aria-hidden="true">
+                    <i class="fa-solid fa-users"></i>
+                </span>
+                <div>
+                    <div class="text-3xl font-bold text-white">
+                        <span th:text="${totalUsers}">1,234</span>
+                    </div>
+                    <div class="text-gray-400" th:text="#{dashboard.users.total}">Total de Usuários</div>
+                </div>
+            </div>
+
+            <div class="w-full">
+                <canvas id="usuariosChart" class="w-full h-56"
+                        role="img" th:attr="aria-label=#{dashboard.users.chart.label}">
+                </canvas>
+            </div>
+
+            <a href="/usuarios"
+               class="btn mt-4 bg-[var(--color-primary)] text-white hover:bg-green-600 w-full rounded-lg text-center p-2 block"
+               th:text="#{dashboard.users.button}">
+                Ver Relatório de Usuários
+            </a>
+        </section>
+
+        <!-- Filiais -->
+        <article class="bg-gray-800 border border-gray-700 shadow-lg rounded-xl p-6 cursor-pointer hover:shadow-[0_0_15px_rgba(0,177,49,0.5)] transition"
+                 th:onclick="|window.location.href='@{/monitoramento}'|" aria-labelledby="card-filiais">
+            <h3 id="card-filiais" class="font-semibold text-lg mb-2 text-white" th:text="#{dashboard.branches.title}">
+                Status das Filiais Cadastradas
+            </h3>
+            <p class="text-gray-400 mb-4" th:text="#{dashboard.branches.subtitle}">
+                Visão geral do estado operacional de cada filial.
+            </p>
+
+            <div class="flex items-center mb-4">
+                <span class="text-3xl font-bold text-[var(--color-primary)] mr-2" aria-hidden="true">
+                    <i class="fa-solid fa-location-dot"></i>
+                </span>
+                <div>
+                    <div class="text-3xl font-bold text-white">
+                        <span th:text="${totalFiliais}">56</span>
+                    </div>
+                    <div class="text-gray-400" th:text="#{dashboard.branches.total}">Total de Filiais</div>
+                </div>
+            </div>
+
+            <div class="w-full">
+                <canvas id="filiaisChart" class="w-full h-56"
+                        role="img" th:attr="aria-label=#{dashboard.branches.chart.label}">
+                </canvas>
+            </div>
+        </article>
+
+        <!-- Motos Ativas -->
+        <section class="bg-gray-800 border border-gray-700 shadow-lg rounded-xl p-6" aria-labelledby="card-motos-ativas">
+            <h3 id="card-motos-ativas" class="font-semibold text-lg mb-2 text-white" th:text="#{dashboard.bikes.active.title}">
+                Motos Ativas por Modelo
+            </h3>
+            <p class="text-gray-400 mb-4" th:text="#{dashboard.bikes.active.subtitle}">
+                Distribuição de motos Mottu por modelo.
+            </p>
+            <div class="w-full">
+                <canvas id="motosAtivasChart" class="w-full h-56"
+                        role="img" th:attr="aria-label=#{dashboard.bikes.active.chart.label}">
+                </canvas>
+            </div>
+        </section>
+
+        <!-- Motos no Pátio -->
+        <section class="bg-gray-800 border border-gray-700 shadow-lg rounded-xl p-6 md:col-span-2 lg:col-span-1"
+                 aria-labelledby="card-motos-patio">
+            <h3 id="card-motos-patio" class="font-semibold text-lg mb-2 text-white" th:text="#{dashboard.bikes.yard.title}">
+                Motos: No Pátio vs. Em Uso
+            </h3>
+            <p class="text-gray-400 mb-4" th:text="#{dashboard.bikes.yard.subtitle}">
+                Proporção de motos disponíveis vs. em serviço.
+            </p>
+            <div class="w-full flex justify-center">
+                <canvas id="motosPatioChart" class="w-full h-56 max-w-xs"
+                        role="img" th:attr="aria-label=#{dashboard.bikes.yard.chart.label}">
+                </canvas>
+            </div>
+        </section>
+
+    </div>
+</main>
+<th:block th:fragment="pageScripts">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        // Dados esperados do servidor (model attributes):
+        const usuariosLabels = /*[[${usuariosLabels}]]*/ [];
+        const usuariosData = /*[[${usuariosData}]]*/ [];
+        const filiaisLabels = /*[[${filiaisLabels}]]*/ [];
+        const filiaisData = /*[[${filiaisData}]]*/ [];
+        const motosAtivasLabels = /*[[${motosAtivasLabels}]]*/ [];
+        const motosAtivasData = /*[[${motosAtivasData}]]*/ [];
+        const patiosLabels = /*[[${patiosLabels}]]*/ [];
+        const patiosData = /*[[${patiosData}]]*/ [];
+
+        function createChart(ctxId, labels, data, label, type = 'line', options = {}){
+          const ctx = document.getElementById(ctxId);
+          if(!ctx) return null;
+
+          const defaultOptions = {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false } // Default: sem legenda
+              },
+              scales: {
+                x: { grid: { display: false }, ticks: { color: '#cbd5e1' } },
+                y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#cbd5e1', beginAtZero: true } }
+              }
+          };
+
+          // Merge com as opções personalizadas
+          const mergedOptions = { ...defaultOptions, ...options };
+          if (options.plugins && options.plugins.legend) { // Mescla a legenda se fornecida
+              mergedOptions.plugins.legend = { ...defaultOptions.plugins.legend, ...options.plugins.legend };
+          }
+          if (options.scales) { // Mescla as escalas se fornecidas
+              mergedOptions.scales = { ...defaultOptions.scales, ...options.scales };
+              if (options.scales.x) mergedOptions.scales.x = { ...defaultOptions.scales.x, ...options.scales.x };
+              if (options.scales.y) mergedOptions.scales.y = { ...defaultOptions.scales.y, ...options.scales.y };
+          }
+
+
+          const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim() || '#00b131';
+          const dangerColor = '#ff6666'; // Cor para "Fora do Pátio"
+
+          const datasetConfig = {
+            label: label,
+            data: data,
+            fill: (type === 'line'),
+            tension: (type === 'line') ? 0.3 : 0,
+            borderWidth: (type === 'bar' || type === 'line') ? 2 : 0,
+            pointRadius: (type === 'line') ? 3 : 0,
+          };
+
+          if (type === 'pie') {
+              datasetConfig.backgroundColor = [
+                  primaryColor, // Para "No Pátio"
+                  dangerColor   // Para "Fora do Pátio"
+              ];
+              datasetConfig.borderColor = 'transparent'; // Sem borda para pizza, ou white
+          } else if (type === 'bar') {
+              datasetConfig.backgroundColor = 'rgba(0,177,49,0.7)'; // Cor sólida para barras
+              datasetConfig.borderColor = primaryColor;
+          } else { // line chart
+              datasetConfig.borderColor = primaryColor;
+              datasetConfig.backgroundColor = 'rgba(0,177,49,0.12)';
+          }
+
+
+          return new Chart(ctx, {
+            type: type,
+            data: {
+              labels: labels,
+              datasets: [datasetConfig]
+            },
+            options: mergedOptions
+          });
+        }
+
+        // --- GRÁFICO DE USUÁRIOS (LINHA) ---
+        if(usuariosLabels.length && usuariosData.length){
+          createChart('usuariosChart', usuariosLabels, usuariosData, 'Cadastros');
+        } else {
+          createChart('usuariosChart', ['Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set'], [12, 25, 18, 30, 28, 35], 'Cadastros');
+        }
+
+        // --- GRÁFICO DE FILIAIS (BARRA) ---
+        if(filiaisLabels.length && filiaisData.length){
+          createChart('filiaisChart', filiaisLabels, filiaisData, 'Filiais', 'bar');
+        } else {
+          createChart('filiaisChart', ['SP', 'RJ', 'MG', 'BA', 'PR'], [20, 12, 8, 6, 10], 'Filiais', 'bar');
+        }
+
+        // --- NOVO GRÁFICO: MOTOS ATIVAS POR MODELO (BARRA) ---
+        const motosAtivasChartOptions = {
+            plugins: {
+                legend: { display: true, position: 'top', labels: { color: '#cbd5e1' } }
+            },
+            scales: { // Redefine escalas para barras se necessário
+                x: { grid: { display: false }, ticks: { color: '#cbd5e1' } },
+                y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#cbd5e1', beginAtZero: true } }
+            }
+        };
+        if(motosAtivasLabels.length && motosAtivasData.length){
+            createChart('motosAtivasChart', motosAtivasLabels, motosAtivasData, 'Motos Ativas', 'bar', motosAtivasChartOptions);
+        } else {
+            createChart('motosAtivasChart', ['MottuPop', 'MottuE', 'MottuSport'], [450, 280, 120], 'Motos Ativas', 'bar', motosAtivasChartOptions);
+        }
+
+        // --- NOVO GRÁFICO: MOTOS NO PÁTIO VS. FORA DO PÁTIO (PIZZA) ---
+        const motosPatioChartOptions = {
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'right',
+                    labels: {
+                        color: '#cbd5e1',
+                        usePointStyle: true
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed !== null) {
+                                label += context.parsed + ' motos';
+                            }
+                            return label;
+                        }
+                    }
+                }
+            },
+            scales: { x: { display: false }, y: { display: false } }
+        };
+        if(patiosLabels.length && patiosData.length){
+            createChart('motosPatioChart', patiosLabels, patiosData, 'Status Pátio', 'pie', motosPatioChartOptions);
+        } else {
+            createChart('motosPatioChart', ['No Pátio', 'Fora do Pátio'], [300, 550], 'Status Pátio', 'pie', motosPatioChartOptions);
+        }
+
+        /*]]>*/
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const alertElement = document.getElementById('success-alert');
+            if (alertElement) {
+                // Adiciona a classe de opacidade para a transição
+                alertElement.style.transition = 'opacity 0.5s ease-out';
+
+                // Define um timer para 5 segundos (5000 milissegundos)
+                setTimeout(() => {
+                    alertElement.style.opacity = '0';
+                    // Remove o elemento do DOM após a transição
+                    setTimeout(() => {
+                        alertElement.remove();
+                    }, 500); // 500ms é o tempo da transição
+                }, 5000);
+            }
+        });
+    </script>
+</th:block>
 </body>
 </html>

@@ -2,88 +2,71 @@
 <html lang="pt-BR" data-theme="light" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout/base :: layout(~{::title}, ~{::main}, ~{::scripts})}">
 <head>
-    <title th:text="${pageTitleKey}">Mottu - Cadastro de Filial</title>
+    <title th:text="#{patio.cadastro.titulo}">Cadastro de Pátio</title>
 </head>
 <body>
 <main class="flex-grow p-6 bg-[#242529] overflow-y-auto">
     <div class="flex items-center justify-between mb-6">
         <div>
-            <h2 class="text-2xl font-bold text-white" th:text="#{{filial.cadastro.titulo}}">Cadastro de Filial</h2>
-            <p class="text-sm text-gray-400 mt-1" th:text="#{{filial.cadastro.subtitulo}}">Preencha os dados da filial</p>
+            <h2 class="text-2xl font-bold text-white" th:text="#{patio.cadastro.titulo}">Cadastro de Pátio</h2>
+            <p class="text-sm text-gray-400 mt-1" th:text="#{patio.cadastro.subtitulo}">Preencha os dados do pátio</p>
         </div>
         <div class="flex items-center space-x-4">
-            <a th:href="@{/filiais}" class="btn btn-outline border-white text-white hover:bg-white/10">
-                <span th:text="#{{filial.botao.voltar}}">Voltar</span>
+            <a th:href="@{/index}" class="btn btn-outline border-white text-white hover:bg-white/10">
+                <span th:text="#{patio.botao.voltar}">Voltar</span>
             </a>
         </div>
     </div>
 
-    <div class="bg-[var(--color-black)] rounded-2xl p-6 shadow-2xl border border-[var(--color-primary)] max-w-4xl mx-auto">
-        <!-- Binding: th:object should refer to a Spring Model attribute named 'filial' -->
-        <form th:action="@{/filiais}" th:object="${filial}" method="post" id="filial-form" class="space-y-6">
-            <!-- CSRF -->
+    <div class="bg-[var(--color-black)] rounded-2xl p-6 shadow-2xl border border-[var(--color-primary)] max-w-5xl mx-auto">
+        <form th:action="@{/patios}" th:object="${patio}" method="post" id="patio-form" class="space-y-6">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-
-            <!-- Hidden ID (used when editing) -->
-            <input type="hidden" th:field="*{idFilial}" />
+            <input type="hidden" th:field="*{idPatio}" />
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Nome da Filial (nm_filial) -->
                 <div class="form-control w-full">
                     <label class="label">
-                        <span class="label-text text-white">Nome da Filial <span class="text-red-500">*</span></span>
+                        <span class="label-text text-white" th:text="#{patio.nome.label}">Nome do Pátio <span class="text-red-500">*</span></span>
                     </label>
-                    <input type="text" th:field="*{nmFilial}" maxlength="50" class="input input-bordered w-full bg-[#2a2a2e] text-white border-gray-700 focus:border-[var(--color-primary)]" placeholder="Ex: Filial Centro" required />
-                    <div th:if="${#fields.hasErrors('nmFilial')}" th:errors="*{nmFilial}" class="text-sm text-red-400 mt-1"></div>
+                    <input type="text" th:field="*{nmPatio}" maxlength="50"
+                           class="input input-bordered w-full bg-[#2a2a2e] text-white border-gray-700 focus:border-[var(--color-primary)]"
+                           th:placeholder="#{patio.nome.placeholder}" required />
+                    <div th:if="${#fields.hasErrors('nmPatio')}" th:errors="*{nmPatio}" class="text-sm text-red-400 mt-1"></div>
                 </div>
 
-                <!-- CNPJ (nr_cnpj) -->
                 <div class="form-control w-full">
                     <label class="label">
-                        <span class="label-text text-white">CNPJ</span>
+                        <span class="label-text text-white" th:text="#{patio.descricao.label}">Descrição</span>
                     </label>
-                    <input type="text" th:field="*{nrCnpj}" inputmode="numeric" maxlength="18" placeholder="00.000.000/0000-00" class="input input-bordered w-full bg-[#2a2a2e] text-white border-gray-700 focus:border-[var(--color-primary)]" />
-                    <div th:if="${#fields.hasErrors('nrCnpj')}" th:errors="*{nrCnpj}" class="text-sm text-red-400 mt-1"></div>
+                    <input type="text" th:field="*{dsPatio}" maxlength="100"
+                           class="input input-bordered w-full bg-[#2a2a2e] text-white border-gray-700 focus:border-[var(--color-primary)]"
+                           th:placeholder="#{patio.descricao.placeholder}" />
                 </div>
 
-                <!-- Data de Abertura (ts_abertura) -->
                 <div class="form-control w-full">
                     <label class="label">
-                        <span class="label-text text-white">Data de Abertura</span>
+                        <span class="label-text text-white" th:text="#{patio.filiais.label}">Filial <span class="text-red-500">*</span></span>
                     </label>
-                    <!-- Note: conversion between java.time.OffsetDateTime/ZonedDateTime and datetime-local is needed in controller when editing -->
-                    <input type="datetime-local" th:field="*{tsAbertura}" class="input input-bordered w-full bg-[#2a2a2e] text-white border-gray-700 focus:border-[var(--color-primary)]" />
-                    <div th:if="${#fields.hasErrors('tsAbertura')}" th:errors="*{tsAbertura}" class="text-sm text-red-400 mt-1"></div>
-                </div>
-
-                <!-- Código do País (cd_pais) -->
-                <div class="form-control w-full">
-                    <label class="label">
-                        <span class="label-text text-white">País</span>
-                    </label>
-
-                    <!-- Preferência: forneça lista de países em model attribute 'paises' (List<Country> com codigo/nome). If not provided, a small default list is rendered. -->
-                    <select th:if="${paises != null}" th:field="*{cdPais}" class="select select-bordered w-full bg-[#2a2a2e] text-white border-gray-700 focus:border-[var(--color-primary)]">
-                        <option th:each="p : ${paises}" th:value="${p.code}" th:text="${p.name}" th:selected="${p.code == filial?.cdPais}">País</option>
+                    <select th:field="*{filiais.id}" class="select select-bordered w-full bg-[#2a2a2e] text-white border-gray-700 focus:border-[var(--color-primary)]" required>
+                        <option value="" disabled selected th:text="#{patio.selecioneFilial}">Selecione uma filial</option>
+                        <option th:each="f : ${filiais}" th:value="${f.id}" th:text="${f.nome}"></option>
                     </select>
 
-                    <select th:if="${paises == null}" th:field="*{cdPais}" class="select select-bordered w-full bg-[#2a2a2e] text-white border-gray-700 focus:border-[var(--color-primary)]">
-                        <option value="" disabled selected>Selecione um país</option>
-                        <option value="BR">Brasil (BR)</option>
-                        <option value="US">Estados Unidos (US)</option>
-                        <option value="PT">Portugal (PT)</option>
-                        <option value="AR">Argentina (AR)</option>
-                    </select>
 
-                    <div th:if="${#fields.hasErrors('cdPais')}" th:errors="*{cdPais}" class="text-sm text-red-400 mt-1"></div>
+                    <div class="form-control w-full mt-5" >
+                        <label class="label cursor-pointer">
+                            <span class="label-text text-white" th:text="#{patio.aberto.label}">Aberto</span>
+                            <input type="checkbox" th:field="*{flAberto}" value="S" class="checkbox checkbox-primary ml-2"/>
+                        </label>
+                    </div>
                 </div>
             </div>
 
-            <p class="text-xs text-gray-400 mt-2">Campos com <span class="text-red-500">*</span> são obrigatórios.</p>
+            <p class="text-xs text-gray-400 mt-2" th:text="#{patio.campos.obrigatorios}">Campos com <span class="text-red-500">*</span> são obrigatórios.</p>
 
             <div class="mt-6 flex justify-end space-x-4">
-                <button type="reset" class="btn btn-outline text-white border-white hover:bg-white/10">Limpar</button>
-                <button type="submit" class="btn bg-[var(--color-primary)] text-white hover:bg-green-600">Salvar Filial</button>
+                <button type="reset" class="btn btn-outline text-white border-white hover:bg-white/10" th:text="#{patio.limpar.botao}">Limpar</button>
+                <button type="submit" class="btn bg-[var(--color-primary)] text-white hover:bg-green-600" th:text="#{patio.salvar.botao}">Salvar Pátio</button>
             </div>
         </form>
     </div>
@@ -91,17 +74,9 @@
 
 <script th:inline="javascript" th:fragment="scripts">
     (function(){
-        const form = document.getElementById('filial-form');
+        const form = document.getElementById('patio-form');
         if(!form) return;
         form.addEventListener('submit', function(e){
-            // small client-side validation example for CNPJ length (optional)
-            const cnpjInput = form.querySelector('[name="nrCnpj"]');
-            if(cnpjInput && cnpjInput.value && cnpjInput.value.replace(/\D/g,'').length !== 14){
-                e.preventDefault();
-                alert('CNPJ deve conter 14 dígitos numéricos.');
-                cnpjInput.focus();
-                return;
-            }
             // disable submit to prevent double-posting
             const submitBtn = form.querySelector('button[type=submit]');
             if(submitBtn){ submitBtn.disabled = true; submitBtn.classList.add('opacity-50'); }

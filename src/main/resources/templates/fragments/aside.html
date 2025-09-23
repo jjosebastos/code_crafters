@@ -1,5 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Sua Título da Página</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
 <body>
 <aside th:fragment="asideComponent"
        class="w-72 fixed h-screen bg-[var(--panel-bg)] border-r"
@@ -25,7 +30,9 @@
 
             <nav class="flex flex-col gap-1">
                 <div th:replace="fragments/sidebar-item :: sidebarItem(#{layout.aside.home}, @{/index} ,
-          '<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; class=&quot;w-5 h-5&quot; fill=&quot;none&quot; viewBox=&quot;0 0 24 24&quot; stroke=&quot;currentColor&quot;><path stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot; stroke-width=&quot;2&quot; d=&quot;M3 12l9-9 9 9v9a3 3 0 01-3 3h-3v-6H9v6H6a3 3 0 01-3-3v-9z&quot;/></svg>')"></div>
+                    '<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; class=&quot;w-5 h-5&quot; fill=&quot;none&quot; viewBox=&quot;0 0 24 24&quot; stroke=&quot;currentColor&quot;><path stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot; stroke-width=&quot;2&quot; d=&quot;M3 12l9-9 9 9v9a3 3 0 01-3 3h-3v-6H9v6H6a3 3 0 01-3-3v-9z&quot;/></svg>')">
+
+                </div>
 
                 <button @click="openCadastros = !openCadastros"
                         class="w-full flex items-center justify-between gap-3 px-3 py-2 rounded-md hover:bg-white/5 transition text-left">

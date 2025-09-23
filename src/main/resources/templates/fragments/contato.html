@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::main}, ~{::scripts})}">
+<head>
+    <title th:text="${pageTitleKey}">Mottu - Contato</title>
+</head>
+<body>
+<main class="flex-grow p-6 bg-[#242529] overflow-y-auto">
+
+    <!-- Cabeçalho do formulário -->
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold" th:text="#{contact.titulo}">Fale Conosco</h2>
+        <div class="flex items-center space-x-4">
+            <button class="btn btn-outline border-white text-white hover:bg-white/10"
+                    th:text="#{contact.botao.voltar}"
+                    th:onclick="|window.location.href='@{/index}'|">
+                Voltar
+            </button>
+        </div>
+    </div>
+
+    <!-- Formulário de Contato -->
+    <div class="bg-[var(--color-black)] rounded-lg p-6 shadow-xl border border-[var(--color-primary)]">
+        <form id="contact-form" class="space-y-6">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Nome -->
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text text-white" th:text="#{contact.campo.nome}">Nome <span class="text-red-500">*</span></span>
+                    </label>
+                    <input type="text" name="nome" th:placeholder="#{contact.placeholder.nome}"
+                           class="input input-bordered w-full bg-[#2a2a2e] text-white border-gray-700 focus:border-[var(--color-primary)]"
+                           required>
+                </div>
+
+                <!-- E-mail -->
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text text-white" th:text="#{contact.campo.email}">E-mail <span class="text-red-500">*</span></span>
+                    </label>
+                    <input type="email" name="email" th:placeholder="#{contact.placeholder.email}"
+                           class="input input-bordered w-full bg-[#2a2a2e] text-white border-gray-700 focus:border-[var(--color-primary)]"
+                           required>
+                </div>
+
+                <!-- Assunto -->
+                <div class="form-control w-full md:col-span-2">
+                    <label class="label">
+                        <span class="label-text text-white" th:text="#{contact.campo.assunto}">Assunto <span class="text-red-500">*</span></span>
+                    </label>
+                    <input type="text" name="assunto" th:placeholder="#{contact.placeholder.assunto}"
+                           class="input input-bordered w-full bg-[#2a2a2e] text-white border-gray-700 focus:border-[var(--color-primary)]"
+                           required>
+                </div>
+
+                <!-- Mensagem -->
+                <div class="form-control w-full md:col-span-2">
+                    <label class="label">
+                        <span class="label-text text-white" th:text="#{contact.campo.mensagem}">Mensagem <span class="text-red-500">*</span></span>
+                    </label>
+                    <textarea name="mensagem" rows="6" th:placeholder="#{contact.placeholder.mensagem}"
+                              class="textarea textarea-bordered w-full bg-[#2a2a2e] text-white border-gray-700 focus:border-[var(--color-primary)]"
+                              required></textarea>
+                </div>
+            </div>
+
+            <!-- Aviso de campos obrigatórios -->
+            <p class="text-xs text-gray-400 mt-6" th:text="#{contact.aviso.requerido}">* Campos obrigatórios</p>
+
+            <!-- Botões -->
+            <div class="mt-8 flex justify-end space-x-4">
+                <button type="reset" class="btn btn-outline text-white border-white hover:bg-white/10" th:text="#{contact.botao.limpar}">Limpar</button>
+                <button type="submit" class="btn bg-[var(--color-primary)] text-white hover:bg-green-600" th:text="#{contact.botao.enviar}">Enviar</button>
+            </div>
+        </form>
+    </div>
+
+</main>
+
+<!-- Script do formulário -->
+<script th:inline="javascript" th:fragment="scripts">
+    document.getElementById('contact-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Formulário de contato enviado!');
+        // Aqui você pode adicionar a lógica para enviar os dados para o seu endpoint Spring
+    });
+</script>
+</body>
+</html>
