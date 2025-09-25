@@ -1,4 +1,4 @@
-package com.br.code_crafters.filial;
+package com.br.code_crafters.forms.filial;
 
 
 import jakarta.persistence.*;

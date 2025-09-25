@@ -1,4 +1,4 @@
-package com.br.code_crafters.contact;
+package com.br.code_crafters.forms.contact;
 
 
 import jakarta.persistence.Entity;

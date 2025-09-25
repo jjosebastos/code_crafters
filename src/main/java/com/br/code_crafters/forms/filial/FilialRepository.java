@@ -1,4 +1,4 @@
-package com.br.code_crafters.filial;
+package com.br.code_crafters.forms.filial;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

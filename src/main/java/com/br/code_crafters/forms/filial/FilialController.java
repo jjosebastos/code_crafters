@@ -1,6 +1,5 @@
-package com.br.code_crafters.filial;
+package com.br.code_crafters.forms.filial;
 
-import com.br.code_crafters.dto.FilialSearchResult;
 import com.br.code_crafters.navigation.BreadcrumbsController;
 import jakarta.validation.Valid;
 import org.springframework.context.MessageSource;
@@ -8,8 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;

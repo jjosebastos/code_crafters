@@ -1,6 +1,6 @@
-package com.br.code_crafters.patio;
+package com.br.code_crafters.forms.patio;
 
-import com.br.code_crafters.filial.Filial;
+import com.br.code_crafters.forms.filial.Filial;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.util.UUID;

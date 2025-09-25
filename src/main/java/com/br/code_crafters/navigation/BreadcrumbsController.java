@@ -1,9 +1,9 @@
 package com.br.code_crafters.navigation;
 
-import com.br.code_crafters.filial.Filial;
-import com.br.code_crafters.filial.FilialService;
-import com.br.code_crafters.patio.Patio;
-import com.br.code_crafters.patio.PatioService;
+import com.br.code_crafters.forms.filial.Filial;
+import com.br.code_crafters.forms.filial.FilialService;
+import com.br.code_crafters.forms.patio.Patio;
+import com.br.code_crafters.forms.patio.PatioService;
 import jakarta.validation.Valid;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -90,28 +90,6 @@ public class BreadcrumbsController {
 
 
 
-    @GetMapping("/sensores")
-    public String sensores(Model model){
-        List<BreadcrumbItem> breadcrumbPath = List.of(
-                new BreadcrumbItem("Cadastros", null),
-                new BreadcrumbItem("Sensores", null)
-        );
-
-        model.addAttribute("breadcrumb", breadcrumbPath);
-        return "fragments/sensores";
-    }
-
-
-    @GetMapping("/motos")
-    public String motos(Model model) {
-        List<BreadcrumbItem> breadcrumbPath = List.of(
-                new BreadcrumbItem("Cadastros", null),
-                new BreadcrumbItem("Motos", null)
-        );
-        model.addAttribute("breadcrumb", breadcrumbPath);
-        model.addAttribute("pageTitleKey", "moto.cadastro.titulo");
-        return "fragments/motos";
-    }
 
     @GetMapping("/monitoramento")
     public String monitoramento(Model model) {
