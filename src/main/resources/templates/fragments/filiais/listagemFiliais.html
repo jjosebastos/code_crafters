@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::main}, ~{::pageScripts})}">
+<head>
+    <title th:text="#{filial.list.title}"></title>
+</head>
+<body>
+<main class="flex-grow p-6 bg-[#1b1c1f] overflow-y-auto">
+    <div th:if="${message}" class="alert alert-success shadow-lg rounded-xl absolute top-5 left-1/2 -translate-x-1/2 z-50 w-3/4 md:max-w-xl" role="alert" id="success-alert">
+        <div class="flex items-center space-x-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span th:text="${message}">Ação realizada com sucesso!</span>
+        </div>
+    </div>
+
+    <form th:action="@{/filiais}" method="get" class="my-4">
+        <div class="flex items-center space-x-2">
+            <input type="text" name="search" th:value="${search}" placeholder="Buscar por nome ou CNPJ..."
+                   class="input w-full bg-[#2a2a2e] text-white border-gray-700"/>
+            <button type="submit" class="btn bg-green-500 text-white hover:bg-green-600">Buscar</button>
+            <a th:href="@{/filiais/form}" class="btn bg-[var(--color-primary)] text-white hover:bg-green-600">
+                <i class="fas fa-plus"></i> Nova Filial
+            </a>
+        </div>
+    </form>
+
+    <div class="bg-[#232428] mt-5 rounded-xl shadow-lg border border-gray-700">
+        <div class="border-b border-gray-700 px-6 py-4">
+            <h3 class="text-lg font-semibold text-white" th:text="#{filial.list.title}">Lista de Filiais</h3>
+        </div>
+        <div class="p-6 overflow-x-auto">
+            <table class="w-full text-left text-white table-auto">
+                <thead class="text-gray-400">
+                <tr>
+                    <th class="p-3">
+                        <span th:text="#{filial.campo.nome}">Nome</span>
+                    </th>
+                    <th class="p-3">
+                        <span th:text="#{filial.campo.cnpj}">CNPJ</span>
+                    </th>
+                    <th class="p-3">
+                        <span th:text="#{filial.campo.cdpais}">Código do País</span>
+                    </th>
+                    <th class="p-3 text-center">
+                        <span th:text="#{filial.campo.acoes}">Ações</span>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${filiaisPage.empty}">
+                    <td colspan="4" class="p-3 text-center text-gray-400" th:text="#{filial.list.empty}">Nenhuma filial encontrada.</td>
+                </tr>
+                <tr th:each="filial : ${filiaisPage.content}" class="border-t border-gray-700">
+                    <td class="p-3" th:text="${filial.nmFilial}">Nome da Filial</td>
+                    <td class="p-3" th:text="${filial.nrCnpj}">12.345.678/0001-90</td>
+                    <td class="p-3" th:text="${filial.cdPais}">BR</td>
+                    <td class="p-3 text-center flex justify-center space-x-2">
+                        <a th:href="@{/filiais/form(uuid=${filial.idFilial})}"
+                           class="btn btn-sm btn-outline text-blue-500 hover:bg-blue-500 hover:text-white">
+                            <i class="fas fa-edit"></i>
+                            <span th:text="#{filial.botao.editar}">Editar</span>
+                        </a>
+                        <form th:action="@{/filiais/{uuid}(uuid=${filial.idFilial})}"
+                              method="post" onsubmit="return confirm('Tem certeza?');">
+                            <input type="hidden" name="_method" value="delete"/>
+                            <button type="submit" class="btn btn-sm btn-outline text-red-500 hover:bg-red-500 hover:text-white">
+                                <i class="fas fa-trash"></i>
+                                <span th:text="#{filial.botao.excluir}">Excluir</span>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div th:if="${filiaisPage.totalPages > 1}" class="flex justify-center items-center space-x-2 mt-4">
+                <a th:if="${filiaisPage.hasPrevious()}"
+                   th:href="@{/filiais(page=${filiaisPage.number - 1}, size=${filiaisPage.size}, search=${search})}"
+                   class="btn btn-sm">
+                    <span th:text="#{pagination.previous}">Anterior</span>
+                </a>
+                <span th:each="i : ${#numbers.sequence(0, filiaisPage.totalPages - 1)}">
+                <a th:href="@{/filiais(page=${i}, size=${filiaisPage.size}, search=${search})}"
+                   th:text="${i + 1}"
+                   th:classappend="${filiaisPage.number == i ? 'bg-green-500 text-white' : 'bg-gray-700 text-gray-400'}"></a>
+            </span>
+                <a th:if="${filiaisPage.hasNext()}"
+                   th:href="@{/filiais(page=${filiaisPage.number + 1}, size=${filiaisPage.size}, search=${search})}"
+                   class="btn btn-sm">
+                    <span th:text="#{pagination.next}">Próxima</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<th:block th:fragment="pageScripts">
+    <script th:if="${message}">
+        const successAlert = document.getElementById('success-alert');
+        setTimeout(() => {
+            if (successAlert) {
+                successAlert.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+                successAlert.addEventListener('transitionend', () => successAlert.remove());
+            }
+        }, 5000);
+    </script>
+</th:block>
+</body>
+</html>

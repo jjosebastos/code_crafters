@@ -123,8 +123,6 @@ public class BreadcrumbsController {
         patio.setFiliais(new Filial());
         model.addAttribute("patio", patio);
 
-        List<Filial> filiais = filialService.findAll();
-        model.addAttribute("filiais", filiais);
         model.addAttribute("breadcrumb", breadcrumbPath);
 
         return "fragments/patios";

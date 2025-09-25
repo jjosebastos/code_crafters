@@ -4,6 +4,7 @@ package com.br.code_crafters.forms.filial;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @Data
 @Table(name = "t_mtu_filial")
 @Entity
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Filial {
@@ -23,23 +25,21 @@ public class Filial {
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     @UuidGenerator
     @Column(name = "id_filial")
-    private UUID id;
+    private UUID idFilial;
 
 
     @Column(name = "nm_filial")
     @NotBlank(message = "O nome da filial não pode ser vazio.")
-    private String nome;
+    private String nmFilial;
 
     @Column(name = "nr_cnpj")
     @NotBlank(message = "O nome da filial não pode ser vazio.")
-    private String cnpj;
+    private String nrCnpj;
 
     @Column(name = "cd_pais")
     @NotBlank(message = "O nome da filial não pode ser vazio.")
     private String cdPais;
 
-    @Column(name = "ts_abertura", updatable = false, insertable = false)
-    private LocalDateTime abertura;
 
 
 }
