@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::main}, ~{::pageScripts})}">
+<head>
+    <title th:text="${pageTitleKey}">Gerenciar Pátios</title>
+</head>
+<body>
+<main class="flex-grow p-6 bg-[#1b1c1f] overflow-y-auto">
+
+    <div th:if="${message}" class="alert alert-success shadow-lg rounded-xl absolute top-5 left-1/2 -translate-x-1/2 z-50 w-3/4 md:max-w-xl" role="alert" id="success-alert">
+        <div class="flex items-center space-x-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span th:text="${message}">Ação realizada com sucesso!</span>
+        </div>
+    </div>
+
+    <div class="bg-[#232428] rounded-xl shadow-lg border border-[var(--color-primary)]">
+        <div class="border-b border-gray-700 px-6 py-4">
+            <h3 class="text-lg font-semibold text-white">
+                <span th:text="#{patio.form.title.edit}">Gerenciar Pátios</span>
+            </h3>
+        </div>
+
+        <div class="p-6 space-y-6">
+            <form th:action="${patioDto.idPatio} ? @{/patios/{id}(id=${patioDto.idPatio})} : @{/patios}"
+                  th:object="${patioDto}"
+                  method="post"
+                  class="space-y-4">
+
+                <input th:if="${patioDto.idPatio}" type="hidden" name="_method" value="put"/>
+                <input type="hidden" th:field="*{idPatio}"/>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="form-control">
+                        <label for="nmPatio" class="label text-white">
+                            <span th:text="#{patio.campo.nome}">Nome do Pátio</span>
+                            <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text"
+                               id="nmPatio"
+                               th:field="*{nmPatio}"
+                               class="input input-bordered w-full bg-[#2a2a2e] text-white border-gray-700"
+                               th:placeholder="#{patio.campo.nome.placeholder}"/>
+                        <span th:if="${#fields.hasErrors('nmPatio')}" th:errors="*{nmPatio}" class="text-error mt-1 text-sm"></span>
+                    </div>
+
+                    <div class="form-control">
+                        <label for="dsPatio" class="label text-white">
+                            <span th:text="#{patio.campo.descricao}">Descrição</span>
+                            <span class="text-red-500">*</span>
+                        </label>
+                        <textarea id="dsPatio"
+                                  th:field="*{dsPatio}"
+                                  class="textarea textarea-bordered w-full bg-[#2a2a2e] text-white border-gray-700"
+                                  th:placeholder="#{patio.campo.descricao.placeholder}"></textarea>
+                        <span th:if="${#fields.hasErrors('dsPatio')}" th:errors="*{dsPatio}" class="text-error mt-1 text-sm"></span>
+                    </div>
+                </div>
+
+                <div class="form-control">
+                    <label for="idFilial" class="label text-white">
+                        <span th:text="#{patio.campo.filial}">Filial</span>
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <select id="idFilial"
+                            th:field="*{idFilial}"
+                            class="select select-bordered w-full bg-[#2a2a2e] text-white border-gray-700">
+                        <option value="" disabled th:text="#{patio.selecione}">-- selecione --</option>
+                        <option th:each="filial : ${filiais}"
+                                th:value="${filial.idFilial}"
+                                th:text="${filial.nmFilial}">
+                            Filial
+                        </option>
+                    </select>
+                    <span th:if="${#fields.hasErrors('idFilial')}" th:errors="*{idFilial}" class="text-error mt-1 text-sm"></span>
+                </div>
+
+                <div class="flex justify-end gap-2 mt-6">
+                    <a th:href="@{/patios}" class="btn btn-ghost text-white">Cancelar</a>
+                    <button type="submit" class="btn btn-primary">
+                        <span th:text="${patioDto.idPatio} ? 'Salvar Alterações' : 'Criar Pátio'"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<th:block th:fragment="pageScripts">
+    <script th:if="${message}">
+        const successAlert = document.getElementById('success-alert');
+        setTimeout(() => {
+            if (successAlert) {
+                successAlert.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+                successAlert.addEventListener('transitionend', () => successAlert.remove());
+            }
+        }, 5000);
+    </script>
+</th:block>
+
+</body>
+</html>

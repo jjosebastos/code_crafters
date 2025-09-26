@@ -56,8 +56,6 @@ public class OperadorController {
         return "fragments/operadores/listagem";
     }
 
-    // This route shows the form for creating a new operator or editing an existing one.
-    // It's separate from the listing page.
     @GetMapping("/form")
     public String showForm(@RequestParam(required = false) UUID uuid, Model model) {
         if (uuid != null) {
@@ -70,8 +68,7 @@ public class OperadorController {
             model.addAttribute("pageTitleKey", "operador.form.title.create");
         }
         model.addAttribute("breadcrumb", createBreadcrumb());
-        // Return the dedicated form page view.
-        return "fragments/operadores/formOperadores";
+        return "fragments/patios/formOperadores";
     }
 
     @PostMapping
@@ -96,14 +93,12 @@ public class OperadorController {
         }
     }
 
-    // This route handles the update of an existing operator (PUT request).
     @PutMapping("/{uuid}")
     public String update(@PathVariable UUID uuid,
                          @Valid @ModelAttribute("operadorDto") OperadorDto operadorDto,
                          BindingResult result,
                          RedirectAttributes redirect) {
         if (result.hasErrors()) {
-            // If validation fails, return to the form page to show errors.
             return "fragments/operadores/formOperadores";
         }
         operadorService.update(uuid, operadorDto);

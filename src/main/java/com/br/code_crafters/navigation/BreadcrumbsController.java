@@ -89,8 +89,6 @@ public class BreadcrumbsController {
     }
 
 
-
-
     @GetMapping("/monitoramento")
     public String monitoramento(Model model) {
         List<BreadcrumbItem> breadcrumbPath = List.of(
@@ -112,28 +110,4 @@ public class BreadcrumbsController {
     }
 
 
-    @GetMapping("/patios")
-    public String novoPatio(Model model) {
-        List<BreadcrumbItem> breadcrumbPath = List.of(
-                new BreadcrumbItem("Cadastro", "/cadastros"),
-                new BreadcrumbItem("Patio", "/patios")
-        );
-
-        Patio patio = new Patio();
-        patio.setFiliais(new Filial());
-        model.addAttribute("patio", patio);
-
-        model.addAttribute("breadcrumb", breadcrumbPath);
-
-        return "fragments/patios";
-    }
-
-    @PostMapping("/patios")
-    public String createPatios(@Valid Patio patio, BindingResult result, RedirectAttributes redirect){
-        if(result.hasErrors()) return "patios";
-        patioService.create(patio);
-        var message = messageSource.getMessage("patio.create.success", null, LocaleContextHolder.getLocale());
-        redirect.addFlashAttribute("message", message);
-        return "redirect:/index";
-    }
 }

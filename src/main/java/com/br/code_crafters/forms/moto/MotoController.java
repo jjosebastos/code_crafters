@@ -31,19 +31,6 @@ public class MotoController {
 
 
 
-    @GetMapping("/motos")
-    public String motos(Model model) {
-        List<BreadcrumbsController.BreadcrumbItem> breadcrumbPath = List.of(
-                new BreadcrumbsController.BreadcrumbItem("Cadastros", null),
-                new BreadcrumbsController.BreadcrumbItem("Motos", null)
-        );
-        model.addAttribute("motoDto", new MotoDto());
-        model.addAttribute("patios", patioService.findAll());
-        model.addAttribute("motos", motoService.findAll());
-        model.addAttribute("breadcrumb", breadcrumbPath);
-        model.addAttribute("pageTitleKey", "moto.cadastro.titulo");
-        return "fragments/motos";
-    }
 
     @PostMapping("/motos")
     public String save(@Valid MotoDto motoDto, BindingResult result, RedirectAttributes redirect){

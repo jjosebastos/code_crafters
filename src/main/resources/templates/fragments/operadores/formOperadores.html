@@ -2,11 +2,12 @@
 <html lang="pt-BR" data-theme="light" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout/base :: layout(~{::title}, ~{::main}, ~{::pageScripts})}">
 <head>
-    <title th:text="${pageTitleKey}"></title>
+    <title th:text="${pageTitleKey}">Pátios</title>
 </head>
 <body>
 <main class="flex-grow p-6 bg-[#1b1c1f] overflow-y-auto">
 
+    <!-- Mensagem de feedback -->
     <div th:if="${message}" class="alert alert-success shadow-lg rounded-xl absolute top-5 left-1/2 -translate-x-1/2 z-50 w-3/4 md:max-w-xl" role="alert" id="success-alert">
         <div class="flex items-center space-x-3">
             <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
@@ -18,63 +19,75 @@
 
     <div class="bg-[#232428] rounded-xl shadow-lg border border-[var(--color-primary)]">
         <div class="border-b border-gray-700 px-6 py-4">
-            <h3 class="text-lg font-semibold text-white"
-                th:text="${operadorDto.idOperador} == null ? #{operador.form.title.create} : #{operador.form.title.edit}">
-                Formulário de Operador
+            <h3 class="text-lg font-semibold text-white">
+                <span th:text="#{patio.form.title}">Gerenciar Pátios</span>
             </h3>
         </div>
-        <div class="p-6">
-            <form th:action="${operadorDto.idOperador} == null ? @{/operadores} : @{/operadores/{id}(id=${operadorDto.idOperador})}"
-                  method="post" th:object="${operadorDto}" class="space-y-6">
 
-                <input type="hidden" name="_method" value="put" th:if="${operadorDto.idOperador != null}"/>
+        <div class="p-6 space-y-6">
+            <!-- Somente select de filiais (nenhuma criação pelo formulário de pátio) -->
+            <section class="bg-[#1f2226] p-4 rounded-lg border border-gray-700">
+                <h4 class="text-white font-medium mb-3">Selecionar Filial</h4>
+
+                <!-- Select standalone — pode ser embutido em outro form ou usado via JS -->
+                <div class="form-control md:w-1/2">
+                    <label class="label text-white">
+                        <span th:text="#{patio.campo.filial}">Filial</span>
+                        <span class="text-red-500">*</span>
+                    </label>
+
+                    <select id="filialSelect" name="filialId" class="select w-full bg-[#2a2a2e] text-white border-gray-700" th:attr="aria-label=${'Selecionar filial'}">
+                        <option value="" disabled selected th:text="#{patio.selecione}">-- selecione --</option>
+                        <option th:each="filial : ${filiais}"
+                                th:value="${filial.idFilial}"
+                                th:text="${filial.nmFilial}">
+                            Filial
+                        </option>
+                    </select>
+
+                    <p class="text-sm text-gray-400 mt-2">Escolha a filial para contextualizar o pátio. O select não realiza criação de novas filiais.</p>
+                </div>
+            </section>
+
+            <!-- Lista de filiais para visualização (contexto) -->
+            <section>
+                <h4 class="text-white font-medium mb-4">Filiais (contexto)</h4>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="form-control">
-                        <label class="label text-white">
-                            <span th:text="#{operador.campo.nome}">Nome</span>
-                            <span class="text-red-500">*</span>
-                        </label>
-                        <input type="text" th:field="*{nome}" required
-                               class="input w-full bg-[#2a2a2e] text-white border-gray-700"/>
-                        <p class="text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}">Erro no nome</p>
+                    <div th:each="filial : ${filiais}" class="bg-[#1b1c1f] rounded-lg border border-gray-700 p-4">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h5 class="text-white font-semibold" th:text="${filial.nmFilial}">Nome da Filial</h5>
+                                <p class="text-sm text-gray-400" th:text="${filial.idFilial}">UUID</p>
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                <a th:href="@{/filiais/{id}/edit(id=${filial.idFilial})}" class="btn btn-sm btn-ghost">Editar</a>
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            <label class="label text-white text-sm">CNPJ</label>
+                            <p class="text-gray-300 text-sm" th:text="${filial.cnpj ?: '-'}">00.000.000/0000-00</p>
+                        </div>
+
+                        <div class="flex justify-end gap-2 mt-3">
+                            <form th:action="@{/filiais/{id}(id=${filial.idFilial})}" method="post" class="inline">
+                                <input type="hidden" name="_method" value="delete"/>
+                                <button type="submit" class="btn btn-sm btn-error" onclick="return confirm('Confirma exclusão?')">Excluir</button>
+                            </form>
+                        </div>
                     </div>
 
-                    <div class="form-control">
-                        <label class="label text-white">
-                            <span th:text="#{operador.campo.cpf}">CPF</span>
-                            <span class="text-red-500">*</span>
-                        </label>
-                        <input type="text" th:field="*{cpf}" required
-                               class="input w-full bg-[#2a2a2e] text-white border-gray-700"/>
-                        <p class="text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('cpf')}" th:errors="*{cpf}">Erro no CPF</p>
-                    </div>
-
-                    <div class="form-control">
-                        <label class="label text-white">
-                            <span th:text="#{operador.campo.rg}">RG</span>
-                            <span class="text-red-500">*</span>
-                        </label>
-                        <input type="text" th:field="*{rg}" required
-                               class="input w-full bg-[#2a2a2e] text-white border-gray-700"/>
-                        <p class="text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('rg')}" th:errors="*{rg}">Erro no RG</p>
+                    <div th:if="${#lists.isEmpty(filiais)}" class="col-span-full text-center text-gray-400">
+                        Nenhuma filial encontrada.
                     </div>
                 </div>
+            </section>
 
-                <div class="flex justify-end gap-3 pt-4 border-t border-gray-700">
-                    <a th:if="${operadorDto.idOperador != null}" th:href="@{/operadores}"
-                       class="btn btn-outline text-white border-white hover:bg-white/10"
-                       th:text="#{operador.botao.cancelar}">Cancelar</a>
-                    <button type="reset"
-                            class="btn btn-outline text-white border-white hover:bg-white/10"
-                            th:text="#{operador.botao.limpar}">Limpar</button>
-                    <button type="submit"
-                            class="btn bg-[var(--color-primary)] text-white hover:bg-green-600"
-                            th:text="${operadorDto.idOperador} == null ? #{operador.botao.cadastrar} : #{operador.botao.atualizar}">
-                        Salvar
-                    </button>
-                </div>
-            </form>
+            <div th:if="${breadcrumb}" class="text-sm text-gray-400 mt-4">
+                <nav th:utext="${breadcrumb}"></nav>
+            </div>
         </div>
     </div>
 </main>
@@ -90,5 +103,6 @@
         }, 5000);
     </script>
 </th:block>
+
 </body>
 </html>
