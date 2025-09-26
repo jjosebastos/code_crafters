@@ -1,12 +1,15 @@
 package com.br.code_crafters.forms.moto;
 
 
+import com.br.code_crafters.forms.operador.Operador;
+import com.br.code_crafters.forms.patio.Patio;
 import com.br.code_crafters.forms.sensor.Sensor;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.util.ArrayList;
@@ -36,15 +39,13 @@ public class Moto {
     @Column(name = "nr_chassi", length = 25)
     private String nrChassi;
 
-    @Column(name = "fl_status", length = 1, nullable = false, columnDefinition = "char(1) default 'S'")
-    private String flStatus;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_operador")
+    public Operador operador;
 
-    @Column(name = "id_operador")
-    private UUID idOperador;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_patio")
+    public Patio patio;
 
-    @Column(name = "id_patio")
-    private UUID idPatio;
 
-    @OneToMany(mappedBy = "moto", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Sensor> sensores = new ArrayList<>();
 }

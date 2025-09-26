@@ -92,7 +92,6 @@ public class BreadcrumbsController {
     @GetMapping("/monitoramento")
     public String monitoramento(Model model) {
         List<BreadcrumbItem> breadcrumbPath = List.of(
-                new BreadcrumbItem("Home", null),
                 new BreadcrumbItem("Monitoramento", null)
         );
         model.addAttribute("breadcrumb", breadcrumbPath);
@@ -102,7 +101,6 @@ public class BreadcrumbsController {
     @GetMapping("/ajustes")
     public String ajustes(Model model) {
         List<BreadcrumbItem> breadcrumbPath = List.of(
-                new BreadcrumbItem("Home", null),
                 new BreadcrumbItem("Ajustes", null)
         );
         model.addAttribute("breadcrumb", breadcrumbPath);

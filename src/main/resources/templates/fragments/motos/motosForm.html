@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::main}, ~{::pageScripts})}">
+<head>
+    <title th:text="${motoDto.id} == null ? #{moto.form.title.create} : #{moto.form.title.edit}">Formulário de Motos</title>
+</head>
+<body>
+<main class="flex-grow p-6 bg-[#1b1c1f] overflow-y-auto">
+    <div th:if="${message}" class="alert alert-success shadow-lg rounded-xl absolute top-5 left-1/2 -translate-x-1/2 z-50 w-3/4 md:max-w-xl" role="alert" id="success-alert">
+        <div class="flex items-center space-x-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span th:text="${message}">Ação realizada com sucesso!</span>
+        </div>
+    </div>
+
+    <div class="bg-[#232428] rounded-xl shadow-lg border border-[var(--color-primary)]">
+        <div class="border-b border-gray-700 px-6 py-4">
+            <h3 class="text-lg font-semibold text-white"
+                th:text="${motoDto.id} == null ? #{moto.form.title.create} : #{moto.form.title.edit}">
+                Formulário de Moto
+            </h3>
+        </div>
+        <div class="p-6">
+            <form th:action="${motoDto.id} == null ? @{/motos} : @{/motos/{id}(id=${motoDto.id})}"
+                  method="post" th:object="${motoDto}" class="space-y-6">
+
+                <input type="hidden" name="_method" value="put" th:if="${motoDto.id != null}"/>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="form-control">
+                        <label class="label text-white">
+                            <span th:text="#{moto.field.model}">Modelo</span>
+                            <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" th:field="*{modelo}" required
+                               class="input w-full bg-[#2a2a2e] text-white border-gray-700"/>
+                        <p class="text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('modelo')}" th:errors="*{modelo}"></p>
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label text-white">
+                            <span th:text="#{moto.field.license_plate}">Placa</span>
+                            <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" th:field="*{placa}" required
+                               class="input w-full bg-[#2a2a2e] text-white border-gray-700"
+                               th:placeholder="#{moto.placeholder.license_plate}"/>
+                        <p class="text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('placa')}" th:errors="*{placa}"></p>
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label text-white">
+                            <span th:text="#{moto.field.chassis}">Chassi</span>
+                        </label>
+                        <input type="text" th:field="*{chassi}"
+                               class="input w-full bg-[#2a2a2e] text-white border-gray-700"
+                               th:placeholder="#{moto.placeholder.chassi}"/>
+                        <p class="text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('chassi')}" th:errors="*{chassi}"></p>
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label text-white">
+                            <span th:text="#{moto.field.status}">Status</span>
+                            <span class="text-red-500">*</span>
+                        </label>
+                        <select th:field="*{status}" required
+                                class="select w-full bg-[#2a2a2e] text-white border-gray-700">
+                            <option value="">[[#{moto.select.status}]]</option>
+                            <option th:value="disponivel" th:text="#{moto.status.available}" th:selected="${motoDto.status == 'disponivel'}"></option>
+                            <option th:value="alugada" th:text="#{moto.status.rented}" th:selected="${motoDto.status == 'alugada'}"></option>
+                            <option th:value="manutencao" th:text="#{moto.status.maintenance}" th:selected="${motoDto.status == 'manutencao'}"></option>
+                            <option th:value="inativa" th:text="#{moto.status.inactive}" th:selected="${motoDto.status == 'inativa'}"></option>
+                        </select>
+                        <p class="text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></p>
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label text-white">
+                            <span th:text="#{moto.field.operator}">Operador</span>
+                        </label>
+                        <select th:field="*{idOperador}"
+                                class="select w-full bg-[#2a2a2e] text-white border-gray-700">
+                            <option value="">[[#{moto.select.operator}]]</option>
+                            <option th:each="operador : ${operadores}"
+                                    th:value="${operador.idOperador}"
+                                    th:text="${operador.nmNome}"
+                                    th:selected="${motoDto.idOperador != null and motoDto.idOperador.equals(operador.idOperador)}"></option>
+                        </select>
+                        <p class="text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('idOperador')}" th:errors="*{idOperador}"></p>
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label text-white">
+                            <span th:text="#{moto.field.yard}">Pátio</span>
+                        </label>
+                        <select th:field="*{idPatio}"
+                                class="select w-full bg-[#2a2a2e] text-white border-gray-700">
+                            <option value="">[[#{moto.select.yard}]]</option>
+                            <option th:each="patio : ${patios}"
+                                    th:value="${patio.idPatio}"
+                                    th:text="${patio.nmPatio}"
+                                    th:selected="${motoDto.idPatio != null and motoDto.idPatio.equals(patio.idPatio)}"></option>
+                        </select>
+                        <p class="text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('idPatio')}" th:errors="*{idPatio}"></p>
+                    </div>
+
+                </div>
+
+                <div class="flex justify-end gap-3 pt-4 border-t border-gray-700">
+                    <a th:href="@{/motos}"
+                       class="btn btn-outline text-white border-white hover:bg-white/10"
+                       th:text="#{common.button.back}">Voltar</a>
+
+                    <button type="reset"
+                            class="btn btn-outline text-white border-white hover:bg-white/10"
+                            th:text="#{common.button.clear}">Limpar</button>
+
+                    <button type="submit"
+                            class="btn bg-[var(--color-primary)] text-white hover:bg-green-600"
+                            th:text="${motoDto.id} == null ? #{common.button.register} : #{common.button.update}">
+                        Salvar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<th:block th:fragment="pageScripts">
+    <script th:if="${message}">
+        const successAlert = document.getElementById('success-alert');
+        setTimeout(() => {
+            if (successAlert) {
+                successAlert.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+                successAlert.addEventListener('transitionend', () => successAlert.remove());
+            }
+        }, 5000);
+    </script>
+</th:block>
+</body>
+</html>

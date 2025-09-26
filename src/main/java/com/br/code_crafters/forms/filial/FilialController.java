@@ -97,7 +97,7 @@ public class FilialController {
     private List<BreadcrumbsController.BreadcrumbItem> createBreadcrumb() {
         return List.of(
                 new BreadcrumbsController.BreadcrumbItem("Cadastros", null),
-                new BreadcrumbsController.BreadcrumbItem("Filias", null)
+                new BreadcrumbsController.BreadcrumbItem("Filiais", null)
         );
     }
 }

@@ -38,13 +38,10 @@ public class Sensor {
     @Column(name = "vs_firmware", length = 30)
     private String vsFirmware;
 
-    @Column(name = "dt_instalacao")
-    private OffsetDateTime dtInstalacao;
-
     @Column(name = "dt_calibracao")
     private OffsetDateTime dtCalibracao;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_moto")
+    @OneToOne
+    @JoinColumn(name = "id_moto") // ou o nome real da FK em sensor
     private Moto moto;
 }
