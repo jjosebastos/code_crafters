@@ -1,7 +1,6 @@
 package com.br.code_crafters.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Optional;
 

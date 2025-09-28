@@ -14,6 +14,8 @@ import java.util.Collection;
 import java.util.List;
 
 @Data
+@Builder
+@AllArgsConstructor
 @Table(name = "t_mtu_user")
 @Entity
 public class User implements UserDetails {
@@ -21,18 +23,19 @@ public class User implements UserDetails {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "username")
     private String username;
 
+    @Column(name = "password")
     private String password;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "role")
+    @Enumerated(EnumType.STRING)
     private UserRole userRole;
-
-    @Column(name = "datecreation")
-    private LocalDateTime dateCreation;
 
     @Email
     @Column(unique = true)

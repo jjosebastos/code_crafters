@@ -14,15 +14,16 @@
     </style>
 </head>
 <body class="min-h-screen flex flex-col bg-[var(--color-black)] text-[var(--color-white)]">
-
-
-<main class="flex-grow flex flex-col items-center justify-center p-4">
-    <div th:if="${message}" class="alert alert-success shadow-lg" role="alert">
-        <div>
-            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            <span th:text="${message}">Ação realizada com sucesso!</span>
-        </div>
+<div th:if="${message}" class="alert alert-success shadow-lg rounded-xl absolute top-5 left-1/2 -translate-x-1/2 z-50 w-3/4 md:max-w-xl" role="alert" id="success-alert">
+    <div class="flex items-center space-x-3">
+        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span th:text="${message}">Action successful!</span>
     </div>
+</div>
+<main class="flex-grow flex flex-col items-center justify-center p-4">
+
     <div class="mb-10">
 
         <svg width="183" height="60" viewBox="0 0 183 60" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -81,5 +82,16 @@
     <p class="text-sm">© 2025 Code Crafters - Mottu. Todos os direitos reservados.</p>
 </footer>
 
+<th:block th:fragment="pageScripts">
+    <script th:if="${message}">
+        const successAlert = document.getElementById('success-alert');
+        setTimeout(() => {
+            if (successAlert) {
+                successAlert.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+                successAlert.addEventListener('transitionend', () => successAlert.remove());
+            }
+        }, 5000);
+    </script>
+</th:block>
 </body>
 </html>
