@@ -4,7 +4,7 @@
       th:fragment="layout(pageTitle, content, scripts)">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${pageTitle}">Mottu Dashboard</title>
+    <title th:text="${pageTitle} != null ? ${pageTitle} : #{app.title}">Mottu Dashboard</title>
 
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css"/>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>

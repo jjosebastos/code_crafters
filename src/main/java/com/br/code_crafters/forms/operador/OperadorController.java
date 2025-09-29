@@ -61,7 +61,6 @@ public class OperadorController {
             Operador operador = operadorService.findById(uuid)
                     .orElseThrow(() -> new IllegalArgumentException("Operador não encontrado com o ID: " + uuid));
             model.addAttribute("operadorDto", operador);
-            model.addAttribute("pageTitleKey", "operador.form.title.edit");
         } else {
             model.addAttribute("operadorDto", new OperadorDto());
             model.addAttribute("pageTitleKey", "operador.form.title.create");

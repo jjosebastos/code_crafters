@@ -1,7 +1,6 @@
-<!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
-<body>
-<header th:fragment="headerComponent" class="w-full flex justify-between items-center px-6 py-4 border-b border-gray-800 bg-[var(--color-black)]">
+<header th:fragment="headerComponent"
+        class="w-full flex justify-between items-center px-6 py-4 border-b border-gray-800 bg-[var(--color-black)]">
+
     <div th:replace="fragments/breadcrumb :: breadcrumb(${breadcrumb})"></div>
 
     <div class="flex items-center gap-4">
@@ -15,7 +14,6 @@
         </button>
 
         <div class="w-px h-8 bg-gray-700"></div>
-
         <div class="relative" x-data="{ open: false }" @click.away="open = false">
             <button @click="open = !open"
                     class="flex items-center justify-center w-11 h-11 rounded-full overflow-hidden border-2 border-[var(--color-primary)]">
@@ -24,9 +22,16 @@
             <div x-show="open" x-cloak
                  class="absolute right-0 mt-2 w-48 bg-[var(--color-black)] border border-[var(--color-primary)] shadow-lg z-50">
                 <ul class="flex flex-col text-sm">
-                    <li><a th:href="@{/perfil}" class="block px-4 py-2 hover:bg-[var(--color-primary)] hover:text-white">👤 Meu Perfil</a></li>
-                    <li><a th:href="@{/ajustes}" class="block px-4 py-2 hover:bg-[var(--color-primary)] hover:text-white">⚙️ Configurações</a></li>
-                    <li><a th:href="@{/logout}" class="block px-4 py-2 hover:bg-red-600 hover:text-white">🚪 Sair</a></li>
+                    <li>
+                        <a th:href="@{/ajustes}"
+                           class="block px-4 py-2 hover:bg-[var(--color-primary)] hover:text-white"
+                           th:text="#{header.settings}">⚙️ Configurações</a>
+                    </li>
+                    <li>
+                        <a th:href="@{/logout}"
+                           class="block px-4 py-2 hover:bg-red-600 hover:text-white"
+                           th:text="#{header.logout}">🚪 Sair</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -39,13 +44,18 @@
             <div x-show="open" x-cloak
                  class="absolute right-0 mt-2 w-40 bg-[var(--color-black)] border border-[var(--color-primary)] shadow-lg z-50">
                 <ul class="flex flex-col text-sm">
-                    <li><a href="?lang=en_US" class="block w-full text-left px-4 py-2 hover:bg-[var(--color-primary)] hover:text-white">us English</a></li>
-                    <li><a href="?lang=pt_BR" class="block w-full text-left px-4 py-2 hover:bg-[var(--color-primary)] hover:text-white">pt Português</a></li>
-                    <li><a href="?lang=es_ES" class="block w-full text-left px-4 py-2 hover:bg-[var(--color-primary)] hover:text-white">es Español</a></li>
+                    <li>
+                        <a href="?lang=en_US"
+                           class="block w-full text-left px-4 py-2 hover:bg-[var(--color-primary)] hover:text-white"
+                           th:text="#{header.lang.en}">us English</a>
+                    </li>
+                    <li>
+                        <a href="?lang=pt_BR"
+                           class="block w-full text-left px-4 py-2 hover:bg-[var(--color-primary)] hover:text-white"
+                           th:text="#{header.lang.pt}">pt Português</a>
+                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </header>
-</body>
-</html>

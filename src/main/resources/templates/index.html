@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-BR" data-theme="light" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout/base :: layout(~{::title}, ~{::main}, ~{::pageScripts})}">
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css"
+      integrity="sha384-jLKHWMZt7qdqQb+K0g3u9q3v7Dq4r6c8xvH6q2wCk1cG5b5c2a/4z9q9b4q7qz7Z"
+      crossorigin="anonymous">
 <head>
-    <title>Dashboard</title>
 </head>
 <body>
 <main class="flex-grow p-6 bg-[#242529] overflow-y-auto">
@@ -56,7 +59,6 @@
             </a>
         </section>
 
-        <!-- Filiais -->
         <article class="bg-gray-800 border border-gray-700 shadow-lg rounded-xl p-6 cursor-pointer hover:shadow-[0_0_15px_rgba(0,177,49,0.5)] transition"
                  th:onclick="|window.location.href='@{/monitoramento}'|" aria-labelledby="card-filiais">
             <h3 id="card-filiais" class="font-semibold text-lg mb-2 text-white" th:text="#{dashboard.branches.title}">

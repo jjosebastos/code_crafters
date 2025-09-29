@@ -2,7 +2,7 @@
 <html lang="pt-BR" data-theme="light" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout/base :: layout(~{::title}, ~{::main}, ~{::pageScripts})}">
 <head>
-    <title th:text="#{operador.listagem.titulo}">Lista de Operadores</title>
+    <title th:text="${pageTitleKey} ?: #{app.title}">Gerenciar Pátios</title>
 </head>
 <body>
 <main class="flex-grow p-6 bg-[#1b1c1f] overflow-y-auto overflow-x-hidden">

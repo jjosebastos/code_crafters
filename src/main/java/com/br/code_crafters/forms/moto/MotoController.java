@@ -4,7 +4,6 @@ import com.br.code_crafters.forms.operador.OperadorService;
 import com.br.code_crafters.forms.patio.PatioService;
 import com.br.code_crafters.navigation.BreadcrumbsController;
 import jakarta.validation.Valid;
-import org.springframework.cglib.core.Local;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;

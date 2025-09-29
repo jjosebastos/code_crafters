@@ -7,6 +7,8 @@ import com.br.code_crafters.forms.patio.PatioService;
 import jakarta.validation.Valid;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -89,14 +91,6 @@ public class BreadcrumbsController {
     }
 
 
-    @GetMapping("/monitoramento")
-    public String monitoramento(Model model) {
-        List<BreadcrumbItem> breadcrumbPath = List.of(
-                new BreadcrumbItem("Monitoramento", null)
-        );
-        model.addAttribute("breadcrumb", breadcrumbPath);
-        return "fragments/monitoramento";
-    }
 
     @GetMapping("/ajustes")
     public String ajustes(Model model) {

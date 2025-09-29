@@ -2,7 +2,7 @@
 <html lang="pt-BR" data-theme="light" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout/base :: layout(~{::title}, ~{::main}, ~{::pageScripts})}">
 <head>
-    <title th:text="${pageTitleKey}"></title>
+    <title th:text="${pageTitle} ?: #{app.title}">Mottu Dashboard</title>
 </head>
 <body>
 <main class="flex-grow p-6 bg-[#1b1c1f] overflow-y-auto">
