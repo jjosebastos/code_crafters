@@ -18,25 +18,33 @@
     <div class="bg-[#232428] rounded-xl shadow-lg border border-[var(--color-primary)]">
         <div class="border-b border-gray-700 px-6 py-4">
             <h3 class="text-lg font-semibold text-white"
-                th:text="${motoDto.id} == null ? #{moto.form.title.create} : #{moto.form.title.edit}">
+                th:text="${motoDto.idMoto} == null ? #{moto.form.title.create} : #{moto.form.title.edit}">
                 Formulário de Moto
             </h3>
         </div>
         <div class="p-6">
-            <form th:action="${motoDto.id} == null ? @{/motos} : @{/motos/{id}(id=${motoDto.id})}"
+            <form th:action="${motoDto.idMoto} == null ? @{/motos} : @{/motos/{id}(id=${motoDto.idMoto})}"
                   method="post" th:object="${motoDto}" class="space-y-6">
 
-                <input type="hidden" name="_method" value="put" th:if="${motoDto.id != null}"/>
+                <input type="hidden" name="_method" value="put" th:if="${motoDto.idMoto != null}"/>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="form-control">
                         <label class="label text-white">
-                            <span th:text="#{moto.field.model}">Modelo</span>
+                            <span th:text="#{moto.campo.modelo}">Modelo</span>
                             <span class="text-red-500">*</span>
                         </label>
-                        <input type="text" th:field="*{modelo}" required
-                               class="input w-full bg-[#2a2a2e] text-white border-gray-700"/>
-                        <p class="text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('modelo')}" th:errors="*{modelo}"></p>
+
+                        <select th:field="*{nmModelo}" required
+                                class="select w-full bg-[#2a2a2e] text-white border-gray-700">
+                            <option value="">[[#{moto.select.modelo}]]</option>
+                            <option th:value="'MOTTU-E'" th:text="'MOTTU-E'"></option>
+                            <option th:value="'MOTTU POP'" th:text="'MOTTU-POP'"></option>
+                            <option th:value="'MOTTU SPORT'" th:text="'MOTTU-SPORT'"></option>
+                        </select>
+
+                        <p class="text-red-500 text-sm mt-1"
+                           th:if="${#fields.hasErrors('nmModelo')}" th:errors="*{nmModelo}"></p>
                     </div>
 
                     <div class="form-control">
@@ -44,20 +52,20 @@
                             <span th:text="#{moto.field.license_plate}">Placa</span>
                             <span class="text-red-500">*</span>
                         </label>
-                        <input type="text" th:field="*{placa}" required
+                        <input type="text" th:field="*{nrPlaca}" required
                                class="input w-full bg-[#2a2a2e] text-white border-gray-700"
                                th:placeholder="#{moto.placeholder.license_plate}"/>
-                        <p class="text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('placa')}" th:errors="*{placa}"></p>
+                        <p class="text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('nrPlaca')}" th:errors="*{nrPlaca}"></p>
                     </div>
 
                     <div class="form-control">
                         <label class="label text-white">
                             <span th:text="#{moto.field.chassis}">Chassi</span>
                         </label>
-                        <input type="text" th:field="*{chassi}"
+                        <input type="text" th:field="*{nrChassi}"
                                class="input w-full bg-[#2a2a2e] text-white border-gray-700"
                                th:placeholder="#{moto.placeholder.chassi}"/>
-                        <p class="text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('chassi')}" th:errors="*{chassi}"></p>
+                        <p class="text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('nrChassi')}" th:errors="*{nrChassi}"></p>
                     </div>
 
                     <div class="form-control">
@@ -65,15 +73,15 @@
                             <span th:text="#{moto.field.status}">Status</span>
                             <span class="text-red-500">*</span>
                         </label>
-                        <select th:field="*{status}" required
+                        <select th:field="*{flStatus}" required
                                 class="select w-full bg-[#2a2a2e] text-white border-gray-700">
                             <option value="">[[#{moto.select.status}]]</option>
-                            <option th:value="disponivel" th:text="#{moto.status.available}" th:selected="${motoDto.status == 'disponivel'}"></option>
-                            <option th:value="alugada" th:text="#{moto.status.rented}" th:selected="${motoDto.status == 'alugada'}"></option>
-                            <option th:value="manutencao" th:text="#{moto.status.maintenance}" th:selected="${motoDto.status == 'manutencao'}"></option>
-                            <option th:value="inativa" th:text="#{moto.status.inactive}" th:selected="${motoDto.status == 'inativa'}"></option>
+                            <option th:value="D" th:text="#{moto.status.available}"></option>
+                            <option th:value="A" th:text="#{moto.status.rented}"></option>
+                            <option th:value="M" th:text="#{moto.status.maintenance}"></option>
+                            <option th:value="I" th:text="#{moto.status.inactive}"></option>
                         </select>
-                        <p class="text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></p>
+                        <p class="text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('flStatus')}" th:errors="*{flStatus}"></p>
                     </div>
 
                     <div class="form-control">
@@ -85,7 +93,7 @@
                             <option value="">[[#{moto.select.operator}]]</option>
                             <option th:each="operador : ${operadores}"
                                     th:value="${operador.idOperador}"
-                                    th:text="${operador.nmNome}"
+                                    th:text="${operador.nome}"
                                     th:selected="${motoDto.idOperador != null and motoDto.idOperador.equals(operador.idOperador)}"></option>
                         </select>
                         <p class="text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('idOperador')}" th:errors="*{idOperador}"></p>
@@ -106,8 +114,6 @@
                         <p class="text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('idPatio')}" th:errors="*{idPatio}"></p>
                     </div>
 
-                </div>
-
                 <div class="flex justify-end gap-3 pt-4 border-t border-gray-700">
                     <a th:href="@{/motos}"
                        class="btn btn-outline text-white border-white hover:bg-white/10"
@@ -119,7 +125,7 @@
 
                     <button type="submit"
                             class="btn bg-[var(--color-primary)] text-white hover:bg-green-600"
-                            th:text="${motoDto.id} == null ? #{common.button.register} : #{common.button.update}">
+                            th:text="${motoDto.idMoto} == null ? #{common.button.register} : #{common.button.update}">
                         Salvar
                     </button>
                 </div>

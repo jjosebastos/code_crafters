@@ -18,6 +18,7 @@ public class MotoSensorDto {
     private String nmModelo;
     private String nrPlaca;
     private String nrChassi;
+    private String flStatus; // Mova este campo para a posição correta
     private UUID idSensor;
     private String nmModeloSensor;
     private String tpSensor;

@@ -47,5 +47,7 @@ public class Moto {
     @JoinColumn(name = "id_patio")
     public Patio patio;
 
+    @Column(name = "fl_status")
+    private String flStatus;
 
 }

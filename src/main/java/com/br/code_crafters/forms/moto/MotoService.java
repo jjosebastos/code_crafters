@@ -12,8 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -76,8 +74,8 @@ public class MotoService {
         return motoRepository.findById(uuid);
     }
 
-    public MotoSensorDto findMotoSensorByPlaca(String nrPlaca){
-        return motoRepository.findMotoSensorByPlaca(nrPlaca);
+    public List<MotoSensorDto> findMotoSensorByPlaca(String nrPlaca){
+        return motoRepository.findMotoSensorByPlacaOrModelo(nrPlaca);
     }
 
 
@@ -96,19 +94,20 @@ public class MotoService {
         }
 
         return Moto.builder()
-                .idMoto(input.getId())
-                .nmModelo(input.getModelo())
-                .nrChassi(input.getChassi())
-                .nrPlaca(input.getPlaca())
+                .idMoto(input.getIdMoto())
+                .nmModelo(input.getNmModelo())
+                .nrChassi(input.getNrChassi())
+                .nrPlaca(input.getNrPlaca())
                 .patio(patio)
+                .flStatus(input.getFlStatus())
                 .operador(operador)
                 .build();
     }
 
     private Moto updateMotoMapper(Moto existingMoto, MotoDto input) {
-        existingMoto.setNmModelo(input.getModelo());
-        existingMoto.setNrChassi(input.getChassi());
-        existingMoto.setNrPlaca(input.getPlaca());
+        existingMoto.setNmModelo(input.getNmModelo());
+        existingMoto.setNrChassi(input.getNrChassi());
+        existingMoto.setNrPlaca(input.getNrPlaca());
 
         if (input.getIdPatio() != null) {
             Patio patio = patioRepository.findById(input.getIdPatio())
