@@ -59,12 +59,10 @@ public class FilialController {
     @GetMapping("/form")
     public String showForm(@RequestParam(required = false) UUID uuid, Model model){
         if(uuid != null) {
-            Filial filial = filialService.findById(uuid).orElseThrow(() -> new IllegalArgumentException("Operador não encontrado com o ID: " + uuid));
+            Filial filial = filialService.findById(uuid).orElseThrow(() -> new IllegalArgumentException("Filial não encontrada com o ID: " + uuid));
             model.addAttribute("filialDto", filial);
-            model.addAttribute("pageTitleKey", "operador.form.title.edit");
         } else {
             model.addAttribute("filialDto", new FilialDto());
-            model.addAttribute("pageTitleKey", "filial.form.title.create" );
         }
         model.addAttribute("breadcrumb", createBreadcrumb());
         return "fragments/filiais/formFiliais";
@@ -77,11 +75,21 @@ public class FilialController {
                          BindingResult result,
                          RedirectAttributes redirect) {
         if (result.hasErrors()) {
-            // If validation fails, return to the form page to show errors.
             return "fragments/filiais/formFiliais";
         }
         filialService.update(uuid, filialDto);
         var message = messageSource.getMessage("filial.update.success", null, LocaleContextHolder.getLocale());
+        redirect.addFlashAttribute("message", message);
+        return "redirect:/filiais";
+    }
+
+
+    @PostMapping
+    public String create(@Valid FilialDto dto, BindingResult br, RedirectAttributes redirect){
+        if(br.hasErrors())
+            return "fragments/filiais/formFiliais";
+        filialService.save(dto);
+        var message = messageSource.getMessage("filial.create.success", null, LocaleContextHolder.getLocale());
         redirect.addFlashAttribute("message", message);
         return "redirect:/filiais";
     }

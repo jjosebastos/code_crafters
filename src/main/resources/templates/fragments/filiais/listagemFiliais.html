@@ -17,11 +17,13 @@
 
     <form th:action="@{/filiais}" method="get" class="my-4">
         <div class="flex items-center space-x-2">
-            <input type="text" name="search" th:value="${search}" placeholder="Buscar por nome ou CNPJ..."
+            <input type="text" name="search" th:value="${search}" th:placeholder="#{filial.campo.search}"
                    class="input w-full bg-[#2a2a2e] text-white border-gray-700"/>
-            <button type="submit" class="btn bg-green-500 text-white hover:bg-green-600">Buscar</button>
-            <a th:href="@{/filiais/form}" class="btn bg-[var(--color-primary)] text-white hover:bg-green-600">
-                <i class="fas fa-plus"></i> Nova Filial
+            <button type="submit" class="btn bg-green-500 text-white hover:bg-green-600" th:text="#{filial.botao.search}">Buscar</button>
+            <a th:href="@{/filiais/form}" class="btn bg-[var(--color-primary)] text-white hover:bg-green-600"
+            th:text="#{filial.botao.nova}"
+            >
+                Nova Filial
             </a>
         </div>
     </form>
