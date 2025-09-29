@@ -19,7 +19,9 @@
     <div class="bg-[#232428] rounded-xl shadow-lg border border-[var(--color-primary)]">
         <div class="border-b border-gray-700 px-6 py-4">
             <h3 class="text-lg font-semibold text-white">
-                <span th:text="#{patio.form.title.edit}">Gerenciar Pátios</span>
+                <span th:text="${patioDto.idPatio} ? |#{patio.title.edit}| : |#{patio.title.create}|">
+                    Texto de Substituição
+                </span>
             </h3>
         </div>
 
@@ -78,9 +80,11 @@
                 </div>
 
                 <div class="flex justify-end gap-2 mt-6">
-                    <a th:href="@{/patios}" class="btn btn-ghost text-white">Cancelar</a>
+                    <a th:href="@{/patios}" class="btn btn-ghost hover:bg-gray-700 hover:text-white" th:text="#{patio.botao.cancelar}">
+                    Meu Link Ghost
+                </a>
                     <button type="submit" class="btn btn-primary">
-                        <span th:text="${patioDto.idPatio} ? 'Salvar Alterações' : 'Criar Pátio'"></span>
+                        <span th:text="${patioDto.idPatio} ? |#{patio.botao.editar}| : |#{patio.botao.salvar}|"></span>
                     </button>
                 </div>
             </form>

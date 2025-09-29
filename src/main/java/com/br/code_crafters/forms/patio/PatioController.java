@@ -56,8 +56,6 @@ public class PatioController {
     @GetMapping("/form")
     public String showForm(@RequestParam(required = false) UUID uuid, Model model) {
         PatioDto patioDto;
-
-        // Carrega a lista de filiais para o <select>, independentemente se é edição ou criação
         model.addAttribute("filiais", patioService.finAllFiliais());
 
         if (uuid != null) {
@@ -98,6 +96,15 @@ public class PatioController {
     public String delete(@PathVariable UUID uuid, RedirectAttributes redirect){
         patioService.deletePatio(uuid);
         var message = messageSource.getMessage("patio.delete.success", null, LocaleContextHolder.getLocale());
+        redirect.addFlashAttribute("message", message);
+        return "redirect:/patios";
+    }
+
+    @PostMapping
+    public String save(@Valid PatioDto dto, BindingResult br, RedirectAttributes redirect){
+        if(br.hasErrors()) return "fragments/patios/patioForm";
+        patioService.savePatio(dto);
+        var message = messageSource.getMessage("patio.save.success", null, LocaleContextHolder.getLocale());
         redirect.addFlashAttribute("message", message);
         return "redirect:/patios";
     }

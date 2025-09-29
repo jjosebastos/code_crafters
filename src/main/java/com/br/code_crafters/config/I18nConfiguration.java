@@ -17,7 +17,8 @@ public class I18nConfiguration implements WebMvcConfigurer {
     @Bean
     MessageSource messageSource(){
         var messageSource = new ResourceBundleMessageSource();
-        messageSource.setBasename("messages");
+        messageSource.setBasenames("messages", "i18n/aside", "i18n/header", "i18n/dashboard", "i18n/motos",
+                "i18n/operadores", "i18n/filiais", "i18n/patios", "i18n/ajustes", "i18n/monitoramento", "i18n/layout");
         return messageSource;
     }
 

@@ -17,9 +17,11 @@
 
     <form th:action="@{/patios}" method="get" class="my-4">
         <div class="flex items-center space-x-2">
-            <input type="text" name="search" th:value="${search}" placeholder="Buscar por nome ou descrição..."
+            <input type="text" name="search" th:value="${search}" th:placeholder="#{patio.campo.search.placeholder}"
                    class="input w-full bg-[#2a2a2e] text-white border-gray-700"/>
-            <button type="submit" class="btn bg-green-500 text-white hover:bg-green-600">Buscar</button>
+            <button type="submit" class="btn bg-green-500 text-white hover:bg-green-600"
+            th:text="#{patio.botao.buscar}"
+            >Buscar</button>
             <a th:href="@{/patios/form}" class="btn bg-[var(--color-primary)] text-white hover:bg-green-600">
                 <i class="fas fa-plus"></i> <span th:text="#{patio.botao.nova}">Novo Pátio</span>
             </a>
