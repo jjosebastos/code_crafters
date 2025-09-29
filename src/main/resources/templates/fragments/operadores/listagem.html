@@ -2,10 +2,10 @@
 <html lang="pt-BR" data-theme="light" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout/base :: layout(~{::title}, ~{::main}, ~{::pageScripts})}">
 <head>
-    <title th:text="${pageTitleKey}">Mottu - Operadores</title>
+    <title th:text="#{operador.listagem.titulo}">Lista de Operadores</title>
 </head>
 <body>
-<main class="flex-grow p-6 bg-[#1b1c1f] overflow-y-auto">
+<main class="flex-grow p-6 bg-[#1b1c1f] overflow-y-auto overflow-x-hidden">
     <div th:if="${message}" class="alert alert-success shadow-lg rounded-xl absolute top-5 left-1/2 -translate-x-1/2 z-50 w-3/4 md:max-w-xl" role="alert" id="success-alert">
         <div class="flex items-center space-x-3">
             <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
@@ -17,47 +17,54 @@
 
     <form th:action="@{/operadores}" method="get" class="my-4">
         <div class="flex items-center space-x-2">
-            <input type="text" name="search" th:value="${search}" placeholder="Buscar por nome ou CPF..."
+            <input type="text" name="search" th:value="${search}" th:placeholder="#{operador.placeholder.search}"
                    class="input w-full bg-[#2a2a2e] text-white border-gray-700"/>
-            <button type="submit" class="btn bg-green-500 text-white hover:bg-green-600">Buscar</button>
-            <a th:href="@{/operadores/form}" class="btn bg-[var(--color-primary)] text-white hover:bg-green-600">
-                <i class="fas fa-plus"></i> Novo Operador
+
+            <button type="submit" class="btn bg-green-500 text-white hover:bg-green-600" th:text="#{operador.botao.buscar}">Buscar</button>
+
+            <a th:href="@{/operadores/form}" class="btn bg-[var(--color-primary)] text-white hover:bg-green-600" th:text="#{operador.botao.novo}">
+                Novo Operador
             </a>
         </div>
     </form>
 
     <div class="bg-[#232428] mt-5 rounded-xl shadow-lg border border-gray-700">
         <div class="border-b border-gray-700 px-6 py-4">
-            <h3 class="text-lg font-semibold text-white">Lista de Operadores</h3>
+            <h3 class="text-lg font-semibold text-white" th:text="#{operador.listagem.titulo}">Lista de Operadores</h3>
         </div>
         <div class="p-6 overflow-x-auto">
             <table class="w-full text-left text-white table-auto">
                 <thead class="text-gray-400">
                 <tr>
-                    <th class="p-3">Nome</th>
-                    <th class="p-3">CPF</th>
-                    <th class="p-3">RG</th>
-                    <th class="p-3 text-center">Ações</th>
+                    <th class="p-3" th:text="#{operador.campo.nome}">Nome</th>
+                    <th class="p-3" th:text="#{operador.campo.cpf}">CPF</th>
+                    <th class="p-3" th:text="#{operador.campo.rg}">RG</th>
+                    <th class="p-3 text-center" th:text="#{operador.campo.acoes}">Ações</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:if="${operadoresPage.empty}">
-                    <td colspan="4" class="p-3 text-center text-gray-400">Nenhum operador encontrado.</td>
+                    <td colspan="4" class="p-3 text-center text-gray-400" th:text="#{operador.lista.vazia}">Nenhum operador encontrado.</td>
                 </tr>
-                <tr th:each="operador : ${operadoresPage.content}" class="border-t border-gray-700">
+                <tr th:each="operador : ${operadoresPage.content}" class="border-t border-gray-700 hover:bg-[#2a2a2e]">
+
                     <td class="p-3" th:text="${operador.nome}">Nome do Operador</td>
                     <td class="p-3" th:text="${operador.cpf}">123.456.789-00</td>
                     <td class="p-3" th:text="${operador.rg}">12.345.678-9</td>
+
                     <td class="p-3 text-center flex justify-center space-x-2">
                         <a th:href="@{/operadores/form(uuid=${operador.idOperador})}"
-                           class="btn btn-sm btn-outline text-blue-500 hover:bg-blue-500 hover:text-white">
-                            <i class="fas fa-edit"></i> Editar
+                           class="btn btn-sm btn-outline text-blue-500 hover:bg-blue-500 hover:text-white"
+                           th:text="#{operador.acao.editar}">
+                            Editar
                         </a>
                         <form th:action="@{/operadores/{uuid}(uuid=${operador.idOperador})}"
-                              method="post" onsubmit="return confirm('Tem certeza?');">
+                              method="post" onsubmit="return confirm(#{operador.confirm.delete});">
                             <input type="hidden" name="_method" value="delete"/>
-                            <button type="submit" class="btn btn-sm btn-outline text-red-500 hover:bg-red-500 hover:text-white">
-                                <i class="fas fa-trash"></i> Excluir
+                            <button type="submit" class="btn btn-sm btn-outline text-red-500 hover:bg-red-500 hover:text-white"
+                                    th:text="#{operador.acao.excluir}"
+                            >
+                                Excluir
                             </button>
                         </form>
                     </td>
@@ -68,15 +75,20 @@
             <div th:if="${operadoresPage.totalPages > 1}" class="flex justify-center items-center space-x-2 mt-4">
                 <a th:if="${operadoresPage.hasPrevious()}"
                    th:href="@{/operadores(page=${operadoresPage.number - 1}, size=${operadoresPage.size}, search=${search})}"
-                   class="btn btn-sm">Anterior</a>
-                <span th:each="i : ${#numbers.sequence(0, operadoresPage.totalPages - 1)}">
-                    <a th:href="@{/operadores(page=${i}, size=${operadoresPage.size}, search=${search})}"
-                       th:text="${i + 1}"
-                       th:classappend="${operadoresPage.number == i ? 'bg-green-500 text-white' : 'bg-gray-700 text-gray-400'}"></a>
-                </span>
+                   class="btn btn-sm" th:text="#{operador.paginacao.anterior}">Anterior</a>
+
+                <div class="join">
+                    <span th:each="i : ${#numbers.sequence(0, operadoresPage.totalPages - 1)}">
+                        <a th:href="@{/operadores(page=${i}, size=${operadoresPage.size}, search=${search})}"
+                           th:text="${i + 1}"
+                           th:classappend="${operadoresPage.number == i ? 'btn-active' : ''}"
+                           class="join-item btn bg-gray-600 text-white border-none hover:bg-gray-700"></a>
+                    </span>
+                </div>
+
                 <a th:if="${operadoresPage.hasNext()}"
                    th:href="@{/operadores(page=${operadoresPage.number + 1}, size=${operadoresPage.size}, search=${search})}"
-                   class="btn btn-sm">Próxima</a>
+                   class="btn btn-sm" th:text="#{operador.paginacao.proxima}">Próxima</a>
             </div>
         </div>
     </div>

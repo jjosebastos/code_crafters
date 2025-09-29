@@ -52,7 +52,6 @@ public class OperadorController {
             model.addAttribute("search", search);
         }
 
-        // Return the dedicated listing page view.
         return "fragments/operadores/listagem";
     }
 
@@ -68,7 +67,7 @@ public class OperadorController {
             model.addAttribute("pageTitleKey", "operador.form.title.create");
         }
         model.addAttribute("breadcrumb", createBreadcrumb());
-        return "fragments/patios/formOperadores";
+        return "fragments/operadores/formOperadores";
     }
 
     @PostMapping
@@ -88,7 +87,6 @@ public class OperadorController {
             FieldError cpfError = new FieldError("operadorDto", "cpf", dto.getCpf(), false, null, null, errorMessage);
             br.addError(cpfError);
 
-            // Retorna para o formulário para exibir o erro
             return "fragments/operadores/formOperadores";
         }
     }
