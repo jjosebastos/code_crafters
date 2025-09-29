@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +35,10 @@ public class PatioService {
 
     public Page<Patio> findAll(Pageable pageable) {
         return patioRepository.findAll(pageable);
+    }
+
+    public List<Patio> findAllList() {
+        return patioRepository.findAll(Sort.by("nmPatio"));
     }
 
     public List<Filial> finAllFiliais(){

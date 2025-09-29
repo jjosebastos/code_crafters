@@ -20,4 +20,20 @@ public class SensorDto {
     @NotBlank(message = "{sensor.validation.firmware.notblank}")
     private String firmware;
     private OffsetDateTime dataCalibracao; // Agora é LocalDate
+
+
+    public SensorDto(Sensor entity) {
+        this.modelo = entity.getNmModelo();
+        this.tipo = entity.getTpSensor();
+        this.firmware = entity.getVsFirmware();
+
+        // Mapeamento de data:
+        // Se a entidade Sensor usa OffsetDateTime e você quer apenas a data:
+        if (entity.getDtCalibracao() != null) {
+            this.dataCalibracao = entity.getDtCalibracao();
+        } else {
+            this.dataCalibracao = null;
+        }
+
+    }
 }
