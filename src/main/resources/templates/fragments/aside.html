@@ -44,7 +44,6 @@
             <!-- Navegação -->
             <nav class="flex flex-col gap-1">
 
-                <!-- Home (exemplo com fragment reuse, mantive th:replace caso queira usar fragmentos) -->
                 <div th:replace="fragments/sidebar-item :: sidebarItem( #{layout.aside.home}, @{/index}, '<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; class=&quot;w-5 h-5&quot; fill=&quot;none&quot; viewBox=&quot;0 0 24 24&quot; stroke=&quot;currentColor&quot;><path stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot; stroke-width=&quot;2&quot; d=&quot;M3 12l9-9 9 9v9a3 3 0 01-3 3h-3v-6H9v6H6a3 3 0 01-3-3v-9z&quot;/></svg>' )"></div>
 
                 <!-- Botão Cadastros (dropdown) -->

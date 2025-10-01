@@ -35,7 +35,7 @@ public class UserService {
             newUser.setName(userName != null ? userName : userEmail);
             newUser.setUsername(userEmail);
             newUser.setPassword("");
-            newUser.setUserRole(UserRole.USER);
+            newUser.setUserRole(UserRole.ADMIN);
             return userRepository.save(newUser);
         }
 
@@ -70,7 +70,6 @@ public class UserService {
                 .username(dto.getUsername())
                 .userRole(UserRole.valueOf(roleString))
                 .password(passwordEncoder.encode(dto.getPassword()))
-
                 .build();
     }
 

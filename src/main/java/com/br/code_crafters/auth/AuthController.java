@@ -12,7 +12,7 @@ public class AuthController {
 
     @GetMapping("/logout")
     public String logoutPage(){
-        return "index";
+        return "login";
     }
 
 

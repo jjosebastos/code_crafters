@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt-BR" data-theme="light" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout/base :: layout(~{::title}, ~{::main}, ~{::scripts})}">
+      th:replace="~{layout/base :: layout(
+          pageTitle=#{contact.titulo.pagina},  content=~{::main},
+          scripts=~{::pageScripts}             )}">
 <head>
-    <title th:text="${pageTitleKey}">Mottu - Contato</title>
+    <title th:fragment="title" th:text="#{contact.titulo.pagina}">Mottu - Contato</title>
 </head>
 <body>
-<main class="flex-grow p-6 bg-[#242529] overflow-y-auto">
+<main th:fragment="main" class="flex-grow p-6 bg-[#242529] overflow-y-auto">
 
-    <!-- Cabeçalho do formulário -->
     <div class="flex items-center justify-between mb-6">
         <h2 class="text-2xl font-bold" th:text="#{contact.titulo}">Fale Conosco</h2>
         <div class="flex items-center space-x-4">
@@ -19,12 +20,10 @@
         </div>
     </div>
 
-    <!-- Formulário de Contato -->
     <div class="bg-[var(--color-black)] rounded-lg p-6 shadow-xl border border-[var(--color-primary)]">
         <form id="contact-form" class="space-y-6">
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Nome -->
                 <div class="form-control w-full">
                     <label class="label">
                         <span class="label-text text-white" th:text="#{contact.campo.nome}">Nome <span class="text-red-500">*</span></span>
@@ -34,7 +33,6 @@
                            required>
                 </div>
 
-                <!-- E-mail -->
                 <div class="form-control w-full">
                     <label class="label">
                         <span class="label-text text-white" th:text="#{contact.campo.email}">E-mail <span class="text-red-500">*</span></span>
@@ -44,7 +42,6 @@
                            required>
                 </div>
 
-                <!-- Assunto -->
                 <div class="form-control w-full md:col-span-2">
                     <label class="label">
                         <span class="label-text text-white" th:text="#{contact.campo.assunto}">Assunto <span class="text-red-500">*</span></span>
@@ -54,7 +51,6 @@
                            required>
                 </div>
 
-                <!-- Mensagem -->
                 <div class="form-control w-full md:col-span-2">
                     <label class="label">
                         <span class="label-text text-white" th:text="#{contact.campo.mensagem}">Mensagem <span class="text-red-500">*</span></span>
@@ -65,10 +61,8 @@
                 </div>
             </div>
 
-            <!-- Aviso de campos obrigatórios -->
             <p class="text-xs text-gray-400 mt-6" th:text="#{contact.aviso.requerido}">* Campos obrigatórios</p>
 
-            <!-- Botões -->
             <div class="mt-8 flex justify-end space-x-4">
                 <button type="reset" class="btn btn-outline text-white border-white hover:bg-white/10" th:text="#{contact.botao.limpar}">Limpar</button>
                 <button type="submit" class="btn bg-[var(--color-primary)] text-white hover:bg-green-600" th:text="#{contact.botao.enviar}">Enviar</button>
@@ -78,13 +72,20 @@
 
 </main>
 
-<!-- Script do formulário -->
-<script th:inline="javascript" th:fragment="scripts">
-    document.getElementById('contact-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        alert('Formulário de contato enviado!');
-        // Aqui você pode adicionar a lógica para enviar os dados para o seu endpoint Spring
-    });
-</script>
+<th:block th:fragment="pageScripts">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('contact-form');
+
+            if (form) {
+                form.addEventListener('submit', function(event) {
+                    // Previne o comportamento padrão de submit do formulário (enviar os dados)
+                    event.preventDefault();
+                    window.location.reload();
+                });
+            }
+        });
+    </script>
+</th:block>
 </body>
 </html>
