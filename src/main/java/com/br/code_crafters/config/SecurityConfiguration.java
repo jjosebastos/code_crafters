@@ -56,9 +56,10 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                // ... outras configurações ...
                 .authorizeHttpRequests(auth -> auth
                         // 1. Permissões Públicas
-                        .requestMatchers("/css/**", "/js/**", "/svg/**", "/images/**", "/webjars/**", "/h2-console/**").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/h2-console/**").permitAll()
                         .requestMatchers("/login", "/register", "/form").permitAll()
 
                         // 2. Rotas para PUT e DELETE (as mais restritivas, para ADMIN, vêm PRIMEIRO)
