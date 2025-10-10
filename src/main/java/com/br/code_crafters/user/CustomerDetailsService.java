@@ -26,13 +26,12 @@ public class CustomerDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(username) // Assumindo que o 'username' aqui é o email do usuário
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
 
         List<GrantedAuthority> authorities = Collections.singletonList(
                 new SimpleGrantedAuthority("ROLE_" + user.getUserRole().name())
         );
-        // Para usuários de login de formulário, a senha deve ser a senha codificada.
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),       // Principal name (identificador)
                 user.getPassword(),    // Senha (vazia para OAuth2, codificada para Form Login)

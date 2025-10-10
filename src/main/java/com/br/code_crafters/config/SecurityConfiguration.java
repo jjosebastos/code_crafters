@@ -6,6 +6,13 @@ import com.br.code_crafters.user.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -25,6 +32,9 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -32,7 +42,6 @@ import java.util.Set;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
 public class SecurityConfiguration {
 
     private final CustomerDetailsService customerDetailsService;
@@ -42,6 +51,8 @@ public class SecurityConfiguration {
         this.customerDetailsService = customerDetailsService;
         this.userRepository = userRepository;
     }
+
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -53,63 +64,48 @@ public class SecurityConfiguration {
         return customerDetailsService;
     }
 
+    @Bean public AuthenticationManager authenticationManager(DaoAuthenticationProvider daoAuthenticationProvider) { return new ProviderManager(java.util.List.of(daoAuthenticationProvider)); }
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(passwordEncoder());
+        provider.setUserDetailsService(customerDetailsService);
+        return provider;
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
         http
-                // ... outras configurações ...
+                .cors(Customizer.withDefaults())
+                .authenticationManager(authenticationManager)
                 .authorizeHttpRequests(auth -> auth
-                        // 1. Permissões Públicas
-                        .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/h2-console/**").permitAll()
-                        .requestMatchers("/login", "/register", "/form").permitAll()
-
-                        // 2. Rotas para PUT e DELETE (as mais restritivas, para ADMIN, vêm PRIMEIRO)
-                        // IMPORTANTE: Adicione HttpMethod.POST para URLs com {uuid} aqui também!
-                        // FILIAIS
-                        .requestMatchers(HttpMethod.DELETE, "/filiais/{uuid}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/filiais/{uuid}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/filiais/{uuid}").hasRole("ADMIN") // <<< Adicionado!
-
-                        // MOTOS
-                        .requestMatchers(HttpMethod.DELETE, "/motos/{id}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/motos/{uuid}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/motos/{uuid}").hasRole("ADMIN") // <<< Adicionado!
-
-                        // OPERADORES
-                        .requestMatchers(HttpMethod.DELETE, "/operadores/{uuid}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/operadores/{uuid}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/operadores/{uuid}").hasRole("ADMIN") // <<< Adicionado!
-
-                        // PÁTIOS
-                        .requestMatchers(HttpMethod.DELETE, "/patios/{uuid}").hasRole("ADMIN") // Sua regra DELETE
-                        .requestMatchers(HttpMethod.PUT, "/patios/{uuid}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/patios/{uuid}").hasRole("ADMIN") // <<< ESSA É A CHAVE para o seu POST!
-
-                        // 3. Rotas para GET e POST (para USER e ADMIN) - APENAS para POST de CRIAÇÃO!
-                        // Note que POST para criar (sem {uuid}) ainda é permitido para USER.
-                        .requestMatchers(HttpMethod.GET, "/filiais", "/filiais/form", "/filiais/{uuid}").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/filiais").hasAnyRole("USER", "ADMIN") // POST de criação (sem UUID na URL)
-
-                        .requestMatchers(HttpMethod.GET, "/motos", "/motos/form", "/motos/{uuid}").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/motos").hasAnyRole("USER", "ADMIN")
-
-                        .requestMatchers(HttpMethod.GET, "/operadores", "/operadores/form", "/operadores/{uuid}").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/operadores").hasAnyRole("USER", "ADMIN")
-
-                        .requestMatchers(HttpMethod.GET, "/patios", "/patios/form", "/patios/{uuid}").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/patios").hasAnyRole("USER", "ADMIN")
-
-                        // MONITORAMENTO
-                        .requestMatchers(HttpMethod.GET, "/monitoramento").hasAnyRole("USER", "ADMIN")
-
-                        // 4. Rotas Autenticadas Gerais
-                        .requestMatchers("/dashboard", "/").authenticated()
-
-                        // 5. Catch-all
-                        .anyRequest().authenticated()
+                .requestMatchers(HttpMethod.DELETE,
+                        "/filiais/{uuid}", "/motos/{uuid}", "/operadores/{uuid}", "/patios/{uuid}")
+                .hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT,
+                        "/filiais/{uuid}", "/motos/{uuid}", "/operadores/{uuid}", "/patios/{uuid}")
+                .hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST,
+                        "/filiais/{uuid}", "/motos/{uuid}", "/operadores/{uuid}", "/patios/{uuid}")
+                .hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET,
+                        "/filiais", "/filiais/form", "/filiais/{uuid}",
+                        "/motos", "/motos/form", "/motos/{uuid}",
+                        "/operadores", "/operadores/form", "/operadores/{uuid}",
+                        "/patios", "/patios/form", "/patios/{uuid}")
+                .hasAnyRole("USER", "ADMIN")
+                .requestMatchers(HttpMethod.POST,
+                        "/filiais", "/motos", "/operadores", "/patios")
+                .hasAnyRole("USER", "ADMIN")
+                .requestMatchers(HttpMethod.GET, "/monitoramento").hasAnyRole("USER", "ADMIN")
+                .requestMatchers("/dashboard", "/").authenticated()
+                .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
+                        .usernameParameter("username")
+                        .passwordParameter("password")
                         .defaultSuccessUrl("/dashboard", true)
                         .failureUrl("/login?error=true")
                         .permitAll()
@@ -182,4 +178,5 @@ public class SecurityConfiguration {
             return new DefaultOAuth2User(authorities, oauth2User.getAttributes(), "name");
         };
     }
+
 }
