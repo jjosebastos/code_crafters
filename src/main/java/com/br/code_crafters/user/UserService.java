@@ -35,7 +35,7 @@ public class UserService {
             newUser.setName(userName != null ? userName : userEmail);
             newUser.setUsername(userEmail);
             newUser.setPassword("");
-            newUser.setUserRole(UserRole.ADMIN);
+            newUser.setUserRole(UserRole.USER);
             return userRepository.save(newUser);
         }
 

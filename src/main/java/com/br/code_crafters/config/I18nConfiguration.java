@@ -14,12 +14,15 @@ import java.util.Locale;
 
 @Configuration
 public class I18nConfiguration implements WebMvcConfigurer {
-    @Bean
-    MessageSource messageSource(){
-        var messageSource = new ResourceBundleMessageSource();
-        messageSource.setBasenames("messages", "i18n/aside", "i18n/header", "i18n/dashboard", "i18n/motos",
-                "i18n/operadores", "i18n/filiais", "i18n/patios", "i18n/ajustes", "i18n/monitoramento", "i18n/layout");
-        return messageSource;
+        @Bean
+        MessageSource messageSource(){
+            var messageSource = new ResourceBundleMessageSource();
+            messageSource.setBasenames("messages", "i18n/aside", "i18n/header",
+                    "i18n/dashboard", "i18n/motos", "i18n/operadores",
+                    "i18n/filiais", "i18n/patios", "i18n/ajustes",
+                    "i18n/monitoramento", "i18n/layout", "i18n/contact"
+                    );
+            return messageSource;
     }
 
     @Bean
