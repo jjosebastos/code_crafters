@@ -120,7 +120,7 @@ public class MotoController {
 
     @PostMapping
     public String save(@Valid MotoDto dto, BindingResult br,
-                       RedirectAttributes redirect){
+                       RedirectAttributes redirect) {
         if(br.hasErrors()) return "fragments/motos/motosForm";
         motoService.saveMoto(dto);
         var message = messageSource.getMessage("moto.save.success",

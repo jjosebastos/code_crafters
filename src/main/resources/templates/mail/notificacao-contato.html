@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Nova Mensagem</title></head>
+<body style="font-family: Arial, sans-serif;">
+<h2 style="color: #333;">Nova Mensagem de Contato Recebida</h2>
+<p><strong>Nome:</strong> <span th:text="${nomeRemetente}"></span></p>
+<p><strong>Email para resposta:</strong> <span th:text="${emailRemetente}"></span></p>
+<hr>
+<h3>Mensagem:</h3>
+<p th:text="${mensagemCorpo}"></p>
+<hr>
+<p><small>Enviado de <a th:href="${baseUrl}" th:text="${baseUrl}">seu site</a>.</small></p>
+</body>
+</html>

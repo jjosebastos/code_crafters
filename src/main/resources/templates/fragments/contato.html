@@ -9,6 +9,25 @@
 <body>
 <main th:fragment="main" class="flex-grow p-6 bg-[#242529] overflow-y-auto">
 
+
+    <div th:if="${error}" class="alert alert-error shadow-lg max-w-xl mx-auto rounded-xl" role="alert" id="error-alert">
+        <div class="flex items-center space-x-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+
+            <span th:text="${error}">Ocorreu um erro durante a operação. Por favor, tente novamente.</span>
+        </div>
+    </div>
+    <div th:if="${message}" class="alert alert-success shadow-lg max-w-xl mx-auto rounded-xl" role="alert" id="success-alert">
+        <div class="flex items-center space-x-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span th:text="${message}">Ação realizada com sucesso!</span>
+        </div>
+    </div>
+
     <div class="flex items-center justify-between mb-6">
         <h2 class="text-2xl font-bold" th:text="#{contact.titulo}">Fale Conosco</h2>
         <div class="flex items-center space-x-4">
@@ -21,14 +40,16 @@
     </div>
 
     <div class="bg-[var(--color-black)] rounded-lg p-6 shadow-xl border border-[var(--color-primary)]">
-        <form id="contact-form" class="space-y-6">
+        <form   th:object="${contactDto}"
+                th:action="@{/contato}"
+                id="contact-form" method="post" class="space-y-6">
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="form-control w-full">
                     <label class="label">
                         <span class="label-text text-white" th:text="#{contact.campo.nome}">Nome <span class="text-red-500">*</span></span>
                     </label>
-                    <input type="text" name="nome" th:placeholder="#{contact.placeholder.nome}"
+                    <input type="text" th:field="*{nome}" name="nome" th:placeholder="#{contact.placeholder.nome}"
                            class="input input-bordered w-full bg-[#2a2a2e] text-white border-gray-700 focus:border-[var(--color-primary)]"
                            required>
                 </div>
@@ -37,7 +58,7 @@
                     <label class="label">
                         <span class="label-text text-white" th:text="#{contact.campo.email}">E-mail <span class="text-red-500">*</span></span>
                     </label>
-                    <input type="email" name="email" th:placeholder="#{contact.placeholder.email}"
+                    <input type="email" th:field="*{email}" name="email" th:placeholder="#{contact.placeholder.email}"
                            class="input input-bordered w-full bg-[#2a2a2e] text-white border-gray-700 focus:border-[var(--color-primary)]"
                            required>
                 </div>
@@ -46,7 +67,7 @@
                     <label class="label">
                         <span class="label-text text-white" th:text="#{contact.campo.assunto}">Assunto <span class="text-red-500">*</span></span>
                     </label>
-                    <input type="text" name="assunto" th:placeholder="#{contact.placeholder.assunto}"
+                    <input type="text" th:field="*{assunto}" name="assunto" th:placeholder="#{contact.placeholder.assunto}"
                            class="input input-bordered w-full bg-[#2a2a2e] text-white border-gray-700 focus:border-[var(--color-primary)]"
                            required>
                 </div>
@@ -55,7 +76,7 @@
                     <label class="label">
                         <span class="label-text text-white" th:text="#{contact.campo.mensagem}">Mensagem <span class="text-red-500">*</span></span>
                     </label>
-                    <textarea name="mensagem" rows="6" th:placeholder="#{contact.placeholder.mensagem}"
+                    <textarea name="mensagem" th:field="*{message}" rows="6" th:placeholder="#{contact.placeholder.mensagem}"
                               class="textarea textarea-bordered w-full bg-[#2a2a2e] text-white border-gray-700 focus:border-[var(--color-primary)]"
                               required></textarea>
                 </div>
@@ -74,17 +95,7 @@
 
 <th:block th:fragment="pageScripts">
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('contact-form');
 
-            if (form) {
-                form.addEventListener('submit', function(event) {
-                    // Previne o comportamento padrão de submit do formulário (enviar os dados)
-                    event.preventDefault();
-                    window.location.reload();
-                });
-            }
-        });
     </script>
 </th:block>
 </body>
