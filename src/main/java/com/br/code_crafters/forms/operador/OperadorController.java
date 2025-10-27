@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 @Controller
@@ -44,7 +45,6 @@ public class OperadorController {
             operadoresPage = operadorService.findAll(pageable);
         }
 
-        // We removed `operadorDto` from this method since it's only for the form page.
         model.addAttribute("operadoresPage", operadoresPage);
         model.addAttribute("breadcrumb", createBreadcrumb());
 
@@ -111,10 +111,16 @@ public class OperadorController {
         redirect.addFlashAttribute("message", message);
         return "redirect:/operadores";
     }
+
     private List<BreadcrumbsController.BreadcrumbItem> createBreadcrumb() {
+        Locale currentLocale = LocaleContextHolder.getLocale();
+        String localizedCadastroBreadcrumb = messageSource.getMessage("cadastro.breadcrumb", null, currentLocale);
+        String localizedOperadorBreadcrumb = messageSource.getMessage("operador.breadcrumb", null, currentLocale);
         return List.of(
-                new BreadcrumbsController.BreadcrumbItem("Cadastros", null),
-                new BreadcrumbsController.BreadcrumbItem("Operadores", null)
+
+                new BreadcrumbsController.BreadcrumbItem(localizedCadastroBreadcrumb, null),
+                new BreadcrumbsController.BreadcrumbItem(localizedOperadorBreadcrumb, "/operador")
         );
     }
 }
+

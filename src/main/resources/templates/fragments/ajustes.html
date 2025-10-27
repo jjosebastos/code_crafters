@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR" data-theme="light" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout/base :: layout(~{::title}, ~{::main}, ~{::pageScripts})}">
-<head>
-    <title th:text="#{ajustes.title}">Ajustes</title>
-</head>
+      th:replace="~{layout/base :: layout(
+          pageTitle=~{pageTitle},
+          content=~{::main},
+          scripts=~{::pageScripts}
+          )}">
 <body>
 <main class="flex-grow p-6 bg-[#1b1c1f] overflow-y-auto">
     <div th:if="${message}" class="alert alert-success shadow-lg rounded-xl absolute top-5 left-1/2 -translate-x-1/2 z-50 w-3/4 md:max-w-xl" role="alert" id="success-alert">

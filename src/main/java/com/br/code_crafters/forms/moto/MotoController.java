@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 @Controller
@@ -111,12 +112,6 @@ public class MotoController {
         return "redirect:/motos";
     }
 
-    private List<BreadcrumbsController.BreadcrumbItem> createBreadcrumb() {
-        return List.of(
-                new BreadcrumbsController.BreadcrumbItem("Cadastros", null),
-                new BreadcrumbsController.BreadcrumbItem("Motos", null)
-        );
-    }
 
     @PostMapping
     public String save(@Valid MotoDto dto, BindingResult br,
@@ -127,6 +122,19 @@ public class MotoController {
                 null, LocaleContextHolder.getLocale());
         redirect.addFlashAttribute("message", message);
         return "redirect:/motos";
+    }
+
+
+    private List<BreadcrumbsController.BreadcrumbItem> createBreadcrumb() {
+        Locale currentLocale = LocaleContextHolder.getLocale();
+        String localizedCadastroBreadcrumb = messageSource.getMessage("cadastro.breadcrumb", null, currentLocale);
+        String localizedMotoBreadCrumb = messageSource.getMessage("moto.breadcrumb", null, currentLocale);
+
+        return List.of(
+
+                new BreadcrumbsController.BreadcrumbItem(localizedCadastroBreadcrumb, "/cadastros"),
+                new BreadcrumbsController.BreadcrumbItem(localizedMotoBreadCrumb, "/moto")
+        );
     }
 
 }

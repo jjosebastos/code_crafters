@@ -30,13 +30,8 @@ public class ContactController {
 
     @GetMapping
     public String showContact(Model model) {
-
         model.addAttribute("contactDto", new ContactDto());
-        List<BreadcrumbsController.BreadcrumbItem> breadcrumbPath = List.of(
-                new BreadcrumbsController.BreadcrumbItem("Contato", "/contato")
-        );
         model.addAttribute("breadcrumb", createBreadcrumb());
-        model.addAttribute("pageTitleKey", "pageTitle.contact");
         return "fragments/contato";
     }
 

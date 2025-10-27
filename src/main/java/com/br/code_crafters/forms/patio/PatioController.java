@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 @Controller
@@ -68,10 +69,8 @@ public class PatioController {
             if (patio.getFilial() != null) {
                 patioDto.setIdFilial(patio.getFilial().getIdFilial());
             }
-            model.addAttribute("pageTitleKey", "patio.form.title.edit");
         } else {
             patioDto = new PatioDto();
-            model.addAttribute("pageTitleKey", "patio.form.title.create");
         }
         model.addAttribute("patioDto", patioDto);
         model.addAttribute("breadcrumb",  createBreadcrumb());
@@ -110,11 +109,14 @@ public class PatioController {
     }
 
     private List<BreadcrumbsController.BreadcrumbItem> createBreadcrumb() {
+        Locale currentLocale = LocaleContextHolder.getLocale();
+        String localizedCadastroBreadcrumb = messageSource.getMessage("cadastro.breadcrumb", null, currentLocale);
+        String localizedPatioBreadcrumb = messageSource.getMessage("patio.breadcrumb", null, currentLocale);
         return List.of(
-                new BreadcrumbsController.BreadcrumbItem("Cadastros", null),
-                new BreadcrumbsController.BreadcrumbItem("Patios", null)
+
+                new BreadcrumbsController.BreadcrumbItem(localizedCadastroBreadcrumb, null),
+                new BreadcrumbsController.BreadcrumbItem(localizedPatioBreadcrumb, "/patios")
         );
     }
-
 
 }

@@ -40,7 +40,7 @@ public class EmailService {
 
         helper.setTo(DESTINATARIO);
         helper.setReplyTo(dto.getEmail());
-        helper.setSubject("[CONTATO] " + dto.getAssunto());
+        helper.setSubject("[CONTATO CODECRAFTERS] " + dto.getAssunto());
         helper.setText(htmlContent, true);
 
         mailSender.send(mimeMessage);

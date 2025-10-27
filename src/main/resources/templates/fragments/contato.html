@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR" data-theme="light" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout/base :: layout(
-          pageTitle=#{contact.titulo.pagina},  content=~{::main},
-          scripts=~{::pageScripts}             )}">
-<head>
-    <title th:fragment="title" th:text="#{contact.titulo.pagina}">Mottu - Contato</title>
-</head>
+          pageTitle=~{pageTitle},
+          content=~{::main},
+          scripts=~{::pageScripts}
+          )}">
 <body>
 <main th:fragment="main" class="flex-grow p-6 bg-[#242529] overflow-y-auto">
 

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout/base :: layout(~{::title}, ~{::main}, ~{::scripts})}">
+<html lang="pt-BR" data-theme="light" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(
+          pageTitle=~{pageTitle},  content=~{::main},
+          scripts=~{::pageScripts})}">
 <head>
     <title th:text="#{app.title}">Monitoramento de Pátio</title>
 </head>
@@ -98,20 +100,23 @@
 
 </main>
 
-<script th:inline="javascript" th:fragment="scripts">
-    function openMotoModal(el) {
-        const placa = el.getAttribute('data-placa');
-        const modelo = el.getAttribute('data-modelo');
-        document.getElementById('modalPlaca').textContent = /*[[#{modal.placa}]]*/ "Placa: " + (placa || '-');
-        document.getElementById('modalModelo').textContent = /*[[#{modal.modelo}]]*/ "Modelo: " + (modelo || '-');
-        const m = document.getElementById('motoModal');
-        m.classList.remove('hidden'); m.classList.add('flex');
-    }
 
-    function closeMotoModal() {
-        const m = document.getElementById('motoModal');
-        m.classList.add('hidden'); m.classList.remove('flex');
-    }
-</script>
+<th:block th:fragment="pageScripts">
+    <script th:inline="javascript" th:fragment="scripts">
+        function openMotoModal(el) {
+            const placa = el.getAttribute('data-placa');
+            const modelo = el.getAttribute('data-modelo');
+            document.getElementById('modalPlaca').textContent = /*[[#{modal.placa}]]*/ "Placa: " + (placa || '-');
+            document.getElementById('modalModelo').textContent = /*[[#{modal.modelo}]]*/ "Modelo: " + (modelo || '-');
+            const m = document.getElementById('motoModal');
+            m.classList.remove('hidden'); m.classList.add('flex');
+        }
+
+        function closeMotoModal() {
+            const m = document.getElementById('motoModal');
+            m.classList.add('hidden'); m.classList.remove('flex');
+        }
+    </script>
+</th:block>
 </body>
 </html>

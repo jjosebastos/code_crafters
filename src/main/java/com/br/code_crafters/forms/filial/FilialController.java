@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 @Controller
@@ -103,9 +104,13 @@ public class FilialController {
     }
 
     private List<BreadcrumbsController.BreadcrumbItem> createBreadcrumb() {
+        Locale currentLocale = LocaleContextHolder.getLocale();
+        String localizedCadastroBreadcrumb = messageSource.getMessage("cadastro.breadcrumb", null, currentLocale);
+        String localizedFilialBreadcrumb = messageSource.getMessage("filial.breadcrumb", null, currentLocale);
         return List.of(
-                new BreadcrumbsController.BreadcrumbItem("Cadastros", null),
-                new BreadcrumbsController.BreadcrumbItem("Filiais", null)
+
+                new BreadcrumbsController.BreadcrumbItem(localizedCadastroBreadcrumb, null),
+                new BreadcrumbsController.BreadcrumbItem(localizedFilialBreadcrumb, "/filial")
         );
     }
 }

@@ -4,6 +4,7 @@
     import com.br.code_crafters.forms.patio.PatioService;
     import com.br.code_crafters.navigation.BreadcrumbsController;
     import org.springframework.context.MessageSource;
+    import org.springframework.context.i18n.LocaleContextHolder;
     import org.springframework.data.domain.Pageable;
     import org.springframework.data.web.PageableDefault;
     import org.springframework.stereotype.Controller;
@@ -13,6 +14,7 @@
     import org.springframework.web.bind.annotation.RequestParam;
 
     import java.util.List;
+    import java.util.Locale;
     import java.util.UUID;
 
     @Controller
@@ -35,14 +37,10 @@
                                     @RequestParam(required = false) UUID patioId,
                                     @RequestParam(required = false, defaultValue = "8") int cols,
                                     @RequestParam(required = false, defaultValue = "0") int totalSlots) {
-
-            model.addAttribute("breadcrumb", List.of(new BreadcrumbsController.BreadcrumbItem("Monitoramento", null)));
-
-            // 1) Lista paginada (se usar em tabelas/consulta)
+            model.addAttribute("pageTitleKey",  "pageTitle.monitoring");
+            model.addAttribute("breadcrumb", createBreadcrumb());
             model.addAttribute("patiosPage", patioService.findAll(pageable));
-
-            // 2) Lista completa para o SELECT (garante que o selecionado esteja presente)
-            List<Patio> allPatios = patioService.findAllList(); // implementar no service (ou usar repo.findAll(Sort.by("nmPatio")))
+            List<Patio> allPatios = patioService.findAllList();
             model.addAttribute("patios", allPatios);
 
             model.addAttribute("selectedPatioId", patioId);
@@ -61,4 +59,14 @@
 
             return "fragments/monitoramento";
         }
+
+
+        private List<BreadcrumbsController.BreadcrumbItem> createBreadcrumb() {
+            Locale currentLocale = LocaleContextHolder.getLocale();
+            String localizedContactBreadcrumb = messageSource.getMessage("monitoring.breadcrumb", null, currentLocale);
+            return List.of(
+                    new BreadcrumbsController.BreadcrumbItem(localizedContactBreadcrumb, "/monitoramento")
+            );
+        }
+
     }
