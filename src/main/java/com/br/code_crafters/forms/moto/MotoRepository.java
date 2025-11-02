@@ -33,10 +33,12 @@ public interface MotoRepository extends JpaRepository<Moto, UUID>, JpaSpecificat
             t.nm_modelo AS label,
             COUNT(t.id_moto) AS value
         FROM t_mtu_moto t
-        WHERE t.fl_status = 'S'
+        WHERE t.fl_status = 'A'
         GROUP BY t.nm_modelo
         """
     )
     List<KpiChartDto> findActivesPerModel();
+
+
 
 }

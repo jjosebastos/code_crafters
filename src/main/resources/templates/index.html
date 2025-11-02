@@ -51,12 +51,6 @@
                         role="img" th:attr="aria-label=#{dashboard.users.chart.label}">
                 </canvas>
             </div>
-
-            <section
-               class="btn mt-4 bg-[var(--color-primary)] text-white hover:bg-green-600 w-full rounded-lg text-center p-2 block"
-               th:text="#{dashboard.users.button}">
-                Ver Relatório de Usuários
-            </section>
         </section>
 
         <article class="bg-gray-800 border border-gray-700 shadow-lg rounded-xl p-6 cursor-pointer hover:shadow-[0_0_15px_rgba(0,177,49,0.5)] transition"
@@ -111,6 +105,23 @@
             <p class="text-gray-400 mb-4" th:text="#{dashboard.bikes.yard.subtitle}">
                 Proporção de motos disponíveis vs. em serviço.
             </p>
+
+            <div class="flex justify-around items-center my-6 text-white">
+                <div class="text-center">
+            <span class="text-3xl font-bold text-[var(--color-primary)]" aria-hidden="true">
+                <i class="fa-solid fa-square-check"></i>
+            </span>
+                    <div class="text-3xl font-bold" th:text="${motosNoPatio}">0</div>
+                    <div class="text-gray-400 text-sm">Disponíveis</div>
+                </div>
+                <div class="text-center">
+            <span class="text-3xl font-bold text-red-500" aria-hidden="true">
+                <i class="fa-solid fa-motorcycle"></i>
+            </span>
+                    <div class="text-3xl font-bold" th:text="${motosForaDoPatio}">0</div>
+                    <div class="text-gray-400 text-sm">Em Uso</div>
+                </div>
+            </div>
             <div class="w-full flex justify-center">
                 <canvas id="motosPatioChart" class="w-full h-56 max-w-xs"
                         role="img" th:attr="aria-label=#{dashboard.bikes.yard.chart.label}">
@@ -124,7 +135,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script th:inline="javascript">
         /*<![CDATA[*/
-        // Dados esperados do servidor (model attributes):
+        // Dados esperados (sem alteração)
         const usuariosLabels = /*[[${usuariosLabels}]]*/ [];
         const usuariosData = /*[[${usuariosData}]]*/ [];
         const filiaisLabels = /*[[${filiaisLabels}]]*/ [];
@@ -134,28 +145,38 @@
         const patiosLabels = /*[[${patiosLabels}]]*/ [];
         const patiosData = /*[[${patiosData}]]*/ [];
 
+        // Função createChart
         function createChart(ctxId, labels, data, label, type = 'line', options = {}){
           const ctx = document.getElementById(ctxId);
           if(!ctx) return null;
 
+          // CORRIGIDO: Adicionando 'precision' e 'stepSize' para números inteiros
           const defaultOptions = {
               responsive: true,
               maintainAspectRatio: false,
               plugins: {
-                legend: { display: false } // Default: sem legenda
+                legend: { display: false }
               },
               scales: {
                 x: { grid: { display: false }, ticks: { color: '#cbd5e1' } },
-                y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#cbd5e1', beginAtZero: true } }
+                y: {
+                    grid: { color: 'rgba(255,255,250,0.04)' },
+                    ticks: {
+                        color: '#cbd5e1',
+                        beginAtZero: true,
+                        precision: 0,  // Garante números inteiros
+                        stepSize: 1    // Força o passo a ser 1
+                    }
+                }
               }
           };
 
-          // Merge com as opções personalizadas
+          // Merge (sem alteração)
           const mergedOptions = { ...defaultOptions, ...options };
-          if (options.plugins && options.plugins.legend) { // Mescla a legenda se fornecida
+          if (options.plugins && options.plugins.legend) {
               mergedOptions.plugins.legend = { ...defaultOptions.plugins.legend, ...options.plugins.legend };
           }
-          if (options.scales) { // Mescla as escalas se fornecidas
+          if (options.scales) {
               mergedOptions.scales = { ...defaultOptions.scales, ...options.scales };
               if (options.scales.x) mergedOptions.scales.x = { ...defaultOptions.scales.x, ...options.scales.x };
               if (options.scales.y) mergedOptions.scales.y = { ...defaultOptions.scales.y, ...options.scales.y };
@@ -163,8 +184,9 @@
 
 
           const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim() || '#00b131';
-          const dangerColor = '#ff6666'; // Cor para "Fora do Pátio"
+          const dangerColor = '#ff6666';
 
+          // Dataset config (sem alteração)
           const datasetConfig = {
             label: label,
             data: data,
@@ -175,80 +197,70 @@
           };
 
           if (type === 'pie') {
-              datasetConfig.backgroundColor = [
-                  primaryColor, // Para "No Pátio"
-                  dangerColor   // Para "Fora do Pátio"
-              ];
-              datasetConfig.borderColor = 'transparent'; // Sem borda para pizza, ou white
+              datasetConfig.backgroundColor = [ primaryColor, dangerColor ];
+              datasetConfig.borderColor = 'transparent';
           } else if (type === 'bar') {
-              datasetConfig.backgroundColor = 'rgba(0,177,49,0.7)'; // Cor sólida para barras
+              datasetConfig.backgroundColor = 'rgba(0,177,49,0.7)';
               datasetConfig.borderColor = primaryColor;
-          } else { // line chart
+          } else {
               datasetConfig.borderColor = primaryColor;
               datasetConfig.backgroundColor = 'rgba(0,177,49,0.12)';
           }
 
-
           return new Chart(ctx, {
             type: type,
-            data: {
-              labels: labels,
-              datasets: [datasetConfig]
-            },
+            data: { labels: labels, datasets: [datasetConfig] },
             options: mergedOptions
           });
         }
 
+        // Gráfico de Usuários (sem alteração, usará 'defaultOptions' corrigido)
         if(usuariosLabels.length && usuariosData.length){
           createChart('usuariosChart', usuariosLabels, usuariosData, 'Cadastros');
         } else {
-          createChart('usuariosChart', ['Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set'], [12, 25, 18, 30, 28, 35], 'Cadastros');
+          createChart('usuariosChart', ['Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set'], [0, 0, 0, 0, 0, 0], 'Cadastros');
         }
 
-        // --- GRÁFICO DE FILIAIS (BARRA) ---
+        // Gráfico de Filiais (sem alteração, usará 'defaultOptions' corrigido)
         if(filiaisLabels.length && filiaisData.length){
           createChart('filiaisChart', filiaisLabels, filiaisData, 'Filiais', 'bar');
         } else {
-          createChart('filiaisChart', ['SP', 'RJ', 'MG', 'BA', 'PR'], [20, 12, 8, 6, 10], 'Filiais', 'bar');
+          createChart('filiaisChart', ['SP', 'RJ', 'MG', 'BA', 'PR'], [0, 0, 0, 0, 0], 'Filiais', 'bar');
         }
 
-        // --- NOVO GRÁFICO: MOTOS ATIVAS POR MODELO (BARRA) ---
+        // Gráfico Motos Ativas (CORRIGIDO: 'scales' com 'precision')
         const motosAtivasChartOptions = {
             plugins: {
                 legend: { display: true, position: 'top', labels: { color: '#cbd5e1' } }
             },
-            scales: { // Redefine escalas para barras se necessário
+            scales: {
                 x: { grid: { display: false }, ticks: { color: '#cbd5e1' } },
-                y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#cbd5e1', beginAtZero: true } }
+                y: {
+                    grid: { color: 'rgba(255,255,250,0.04)' },
+                    ticks: {
+                        color: '#cbd5e1',
+                        beginAtZero: true,
+                        precision: 0, // Garante números inteiros
+                        stepSize: 1   // Força o passo a ser 1
+                    }
+                }
             }
         };
         if(motosAtivasLabels.length && motosAtivasData.length){
             createChart('motosAtivasChart', motosAtivasLabels, motosAtivasData, 'Motos Ativas', 'bar', motosAtivasChartOptions);
         } else {
-            createChart('motosAtivasChart', ['MottuPop', 'MottuE', 'MottuSport'], [450, 280, 120], 'Motos Ativas', 'bar', motosAtivasChartOptions);
+            createChart('motosAtivasChart', ['MottuPop', 'MottuE', 'MottuSport'], [0, 0, 0], 'Motos Ativas', 'bar', motosAtivasChartOptions);
         }
 
-        // --- NOVO GRÁFICO: MOTOS NO PÁTIO VS. FORA DO PÁTIO (PIZZA) ---
         const motosPatioChartOptions = {
             plugins: {
-                legend: {
-                    display: true,
-                    position: 'right',
-                    labels: {
-                        color: '#cbd5e1',
-                        usePointStyle: true
-                    }
-                },
+                legend: { display: true, position: 'right', labels: { color: '#cbd5e1', usePointStyle: true } },
                 tooltip: {
                     callbacks: {
                         label: function(context) {
                             let label = context.label || '';
-                            if (label) {
-                                label += ': ';
-                            }
-                            if (context.parsed !== null) {
-                                label += context.parsed + ' motos';
-                            }
+                            if (label) { label += ': '; }
+                            if (context.parsed !== null) { label += context.parsed + ' motos'; }
                             return label;
                         }
                     }
@@ -256,28 +268,29 @@
             },
             scales: { x: { display: false }, y: { display: false } }
         };
-        if(patiosLabels.length && patiosData.length){
+
+        // A lógica de atualizar os contadores foi REMOVIDA
+        // O Thymeleaf já fez isso no servidor
+
+        if(patiosLabels.length && patiosData.length > 0 && (patiosData[0] > 0 || patiosData[1] > 0)){
             createChart('motosPatioChart', patiosLabels, patiosData, 'Status Pátio', 'pie', motosPatioChartOptions);
         } else {
-            createChart('motosPatioChart', ['No Pátio', 'Fora do Pátio'], [300, 550], 'Status Pátio', 'pie', motosPatioChartOptions);
+            createChart('motosPatioChart', ['No Pátio', 'Fora do Pátio'], [0, 0], 'Status Pátio', 'pie', motosPatioChartOptions);
         }
 
         /*]]>*/
     </script>
     <script>
+        // Script do Alerta (sem alteração)
         document.addEventListener("DOMContentLoaded", function() {
             const alertElement = document.getElementById('success-alert');
             if (alertElement) {
-                // Adiciona a classe de opacidade para a transição
                 alertElement.style.transition = 'opacity 0.5s ease-out';
-
-                // Define um timer para 5 segundos (5000 milissegundos)
                 setTimeout(() => {
                     alertElement.style.opacity = '0';
-                    // Remove o elemento do DOM após a transição
                     setTimeout(() => {
                         alertElement.remove();
-                    }, 500); // 500ms é o tempo da transição
+                    }, 500);
                 }, 5000);
             }
         });

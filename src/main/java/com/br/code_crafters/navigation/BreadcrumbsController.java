@@ -44,19 +44,25 @@ public class BreadcrumbsController {
     @GetMapping({"/", "/index", "/dashboard"})
     public String showHomePage(Model model) {
         var registrationData = dashboardService.getRegistrationChartData();
-        var modelData = dashboardService.getActivesByModel();
         model.addAttribute("totalUsers", userService.countUsers());
         model.addAttribute("usuariosLabels", registrationData.labels());
         model.addAttribute("usuariosData", registrationData.data());
-        model.addAttribute("totalFiliais", 56);
-        model.addAttribute("filiaisLabels", null);
-        model.addAttribute("filiaisData", Arrays.asList(20, 12, 8, 6, 10));
+        var filiaisChartData = dashboardService.getFiliaisChartData();
+        var totalFiliais = dashboardService.countFiliais();
+
+        model.addAttribute("totalFiliais", totalFiliais);
+        model.addAttribute("filiaisLabels", filiaisChartData.labels());
+        model.addAttribute("filiaisData", filiaisChartData.data());
+
+        var modelData = dashboardService.getActivesByModel();
         model.addAttribute("motosAtivasLabels", modelData.labels());
         model.addAttribute("motosAtivasData", modelData.data());
-        model.addAttribute("patiosLabels", Arrays.asList("No Pátio", "Fora do Pátio"));
-        model.addAttribute("patiosData", Arrays.asList(0, 100));
 
-        model.addAttribute("breadcrumb", List.of());
+        var patiosData = dashboardService.getPatiosChartData();
+        model.addAttribute("patiosLabels", patiosData.labels());
+        model.addAttribute("patiosData", patiosData.data());
+        model.addAttribute("motosNoPatio", patiosData.motosNoPatio());
+        model.addAttribute("motosForaDoPatio", patiosData.motosForaDoPatio());
         return "index";
     }
 

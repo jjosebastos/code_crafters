@@ -2,6 +2,7 @@ package com.br.code_crafters.forms.monitoring;
 
 import com.br.code_crafters.forms.filial.FilialRepository;
 import com.br.code_crafters.forms.moto.MotoRepository;
+import com.br.code_crafters.forms.patio.PatioRepository;
 import com.br.code_crafters.user.UserRepository;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.util.StringUtils;
@@ -21,11 +22,13 @@ public class DashboardService {
     private final UserRepository userRepository;
     private final FilialRepository filialRepository;
     private final MotoRepository motoRepository;
+    private final PatioRepository patioRepository;
 
-    public DashboardService(UserRepository userRepository, FilialRepository filialRepository, MotoRepository motoRepository) {
+    public DashboardService(UserRepository userRepository, FilialRepository filialRepository, MotoRepository motoRepository, PatioRepository patioRepository) {
         this.userRepository = userRepository;
         this.filialRepository = filialRepository;
         this.motoRepository = motoRepository;
+        this.patioRepository = patioRepository;
     }
 
     public List<KpiChartDto> getRegistrationsLast6Months() {
@@ -69,21 +72,57 @@ public class DashboardService {
 
     public ChartData getActivesByModel(){
         Map<String, Integer> modelData = new LinkedHashMap<>();
-
-        modelData.put("Mottu-E", 0);
-        modelData.put("Mottu Pop", 0);
-        modelData.put("Mottu Sport", 0);
-
+        modelData.put("MOTTU-E", 0);
+        modelData.put("MOTTU POP", 0);
+        modelData.put("MOTTU SPORT", 0);
         var dbResults = motoRepository.findActivesPerModel();
 
         for (KpiChartDto dto: dbResults){
             String modelName = dto.getLabel();
-            if(modelData.containsKey(modelName)){
-                modelData.put(modelName, dto.getValue().intValue());
+            Long value = dto.getValue();
+            if (modelName != null && modelData.containsKey(modelName)) {
+                modelData.put(modelName, (value != null) ? value.intValue() : 0);
             }
+        }
+
+        List<String> labels = new ArrayList<>(modelData.keySet());
+        List<Integer> data = new ArrayList<>(modelData.values());
+
+        return new ChartData(labels, data);
+    }
+
+    public ChartData getFiliaisChartData(){
+        Map<String, Integer> modelData = new LinkedHashMap<>();
+        var dbResults = filialRepository.getFilialCountByUf();
+        for(KpiChartDto chart : dbResults){
+            String ufName = chart.getLabel();
+            modelData.put(ufName, chart.getValue().intValue());
         }
         List<String> labels = new ArrayList<>(modelData.keySet());
         List<Integer> data = new ArrayList<>(modelData.values());
         return new ChartData(labels, data);
+    }
+
+    public PatioChartData getPatiosChartData() {
+
+        Map<String, Integer> patiosDataMap = new LinkedHashMap<>();
+
+        var dbResults = patioRepository.getPatiosChartData();
+
+        for (KpiChartDto dto : dbResults) {
+            String patioLabel = dto.getLabel();
+            Integer count = (dto.getValue() != null) ? dto.getValue().intValue() : 0;
+            patiosDataMap.put(patioLabel, count);
+        }
+        List<String> labels = new ArrayList<>(patiosDataMap.keySet());
+        List<Integer> data = new ArrayList<>(patiosDataMap.values());
+
+        Integer motosNoPatio = patiosDataMap.getOrDefault("No Pátio", 0);
+        Integer motosForaDoPatio = patiosDataMap.getOrDefault("Fora do Pátio", 0);
+
+        return new PatioChartData(labels, data, motosNoPatio, motosForaDoPatio);
+    }
+    public long countFiliais(){
+        return filialRepository.count();
     }
 }
