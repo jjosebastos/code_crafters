@@ -9,12 +9,6 @@
 <main class="flex-grow p-6 bg-[#1b1c1f] overflow-y-auto">
 
     <div th:if="${message}" class="alert alert-success shadow-lg rounded-xl absolute top-5 left-1/2 -translate-x-1/2 z-50 w-3/4 md:max-w-xl" role="alert" id="success-alert">
-        <div class="flex items-center space-x-3">
-            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span th:text="${message}">Ação realizada com sucesso!</span>
-        </div>
     </div>
 
     <div class="bg-[#232428] rounded-xl shadow-lg border border-[var(--color-primary)]">
@@ -38,9 +32,8 @@
                         </label>
                         <input type="text" th:field="*{nmFilial}" required
                                class="input w-full bg-[#2a2a2e] text-white border-gray-700"/>
-                        <p class="text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('nmFilial')}" th:errors="*{nmFilial}">Erro no nome</p>
+                        <p class="text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('nmFilial')}" th:errors="*{nmFilial}"></p>
                     </div>
-
                     <div class="form-control">
                         <label class="label text-white">
                             <span th:text="#{filial.campo.cnpj}">CNPJ</span>
@@ -48,9 +41,8 @@
                         </label>
                         <input type="text" th:field="*{nrCnpj}" required
                                class="input w-full bg-[#2a2a2e] text-white border-gray-700"/>
-                        <p class="text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('nrCnpj')}" th:errors="*{nrCnpj}">Erro no CNPJ</p>
+                        <p class="text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('nrCnpj')}" th:errors="*{nrCnpj}"></p>
                     </div>
-
                     <div class="form-control">
                         <label class="label text-white">
                             <span th:text="#{filial.campo.cdpais}">Código do País</span>
@@ -58,8 +50,83 @@
                         </label>
                         <input type="text" th:field="*{cdPais}" required
                                class="input w-full bg-[#2a2a2e] text-white border-gray-700"/>
-                        <p class="text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('cdPais')}" th:errors="*{cdPais}">Erro no código do país</p>
+                        <p class="text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('cdPais')}" th:errors="*{cdPais}"></p>
                     </div>
+                </div>
+
+                <div class="divider text-white/60 before:bg-white/20 after:bg-white/20 pt-4"
+                     th:text="#{filial.endereco.title}">Endereço</div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                    <div class="form-control">
+                        <label class="label text-white">
+                            <span th:text="#{filial.endereco.cep}">CEP</span>
+                            <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" th:field="*{nrCep}" required maxlength="9" class="input w-full bg-[#2a2a2e] text-white border-gray-700"/>
+                        <p class="text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('nrCep')}" th:errors="*{nrCep}"></p>
+                    </div>
+
+                    <div class="form-control md:col-span-2">
+                        <label class="label text-white">
+                            <span th:text="#{filial.endereco.logradouro}">Logradouro</span>
+                            <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" th:field="*{nmLogradouro}" required
+                               class="input w-full bg-[#2a2a2e] text-white border-gray-700"/>
+                        <p class="text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('nmLogradouro')}" th:errors="*{nmLogradouro}"></p>
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label text-white">
+                            <span th:text="#{filial.endereco.numero}">Número</span>
+                            <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" th:field="*{nrLogradouro}" required
+                               class="input w-full bg-[#2a2a2e] text-white border-gray-700"/>
+                        <p class="text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('nrLogradouro')}" th:errors="*{nrLogradouro}"></p>
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label text-white">
+                            <span th:text="#{filial.endereco.complemento}">Complemento</span>
+                        </label>
+                        <input type="text" th:field="*{dsComplemento}"
+                               class="input w-full bg-[#2a2a2e] text-white border-gray-700"/>
+                        <p class="text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('dsComplemento')}" th:errors="*{dsComplemento}"></p>
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label text-white">
+                            <span th:text="#{filial.endereco.bairro}">Bairro</span>
+                            <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" th:field="*{nmBairro}" required
+                               class="input w-full bg-[#2a2a2e] text-white border-gray-700"/>
+                        <p class="text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('nmBairro')}" th:errors="*{nmBairro}"></p>
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label text-white">
+                            <span th:text="#{filial.endereco.cidade}">Cidade</span>
+                            <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" th:field="*{nmCidade}" required
+                               class="input w-full bg-[#2a2a2e] text-white border-gray-700"/>
+                        <p class="text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('nmCidade')}" th:errors="*{nmCidade}"></p>
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label text-white">
+                            <span th:text="#{filial.endereco.uf}">UF</span>
+                            <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" th:field="*{nmUf}" required maxlength="2"
+                               class="input w-full bg-[#2a2a2e] text-white border-gray-700"/>
+                        <p class="text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('nmUf')}" th:errors="*{nmUf}"></p>
+                    </div>
+
                 </div>
 
                 <div class="flex justify-end gap-3 pt-4 border-t border-gray-700">
@@ -84,13 +151,13 @@
 
 <th:block th:fragment="pageScripts">
     <script th:if="${message}">
-            const successAlert = document.getElementById('success-alert');
-            setTimeout(() => {
-                if (successAlert) {
-                    successAlert.classList.add('opacity-0', 'transition-opacity', 'duration-500');
-                    successAlert.addEventListener('transitionend', () => successAlert.remove());
-                }
-            }, 5000);
+        const successAlert = document.getElementById('success-alert');
+        setTimeout(() => {
+            if (successAlert) {
+                successAlert.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+                successAlert.addEventListener('transitionend', () => successAlert.remove());
+            }
+        }, 5000);
     </script>
 </th:block>
 </body>

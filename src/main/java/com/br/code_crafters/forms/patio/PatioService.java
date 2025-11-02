@@ -49,6 +49,10 @@ public class PatioService {
         return patioRepository.findById(id);
     }
 
+    public long countPatios(){
+        return patioRepository.count();
+    }
+
     @Transactional
     public PatioDto updatePatio(UUID idPatio, PatioDto dto) {
         Optional<Patio> existingPatioOpt = patioRepository.findById(idPatio);

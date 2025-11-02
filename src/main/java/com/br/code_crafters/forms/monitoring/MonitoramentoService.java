@@ -28,7 +28,7 @@ public class MonitoramentoService {
 
         int motosCount = motos.size();
         int totalSlots = totalSlotsProvided > 0 ? totalSlotsProvided : Math.max(motosCount + 5, 20);
-        if (totalSlots < motosCount) totalSlots = motosCount; // garantia
+        if (totalSlots < motosCount) totalSlots = motosCount;
 
         int rows = (int) Math.ceil((double) totalSlots / cols);
 

@@ -3,6 +3,8 @@ package com.br.code_crafters.forms.filial;
 
 import com.br.code_crafters.config.MessageHelper;
 import com.br.code_crafters.exception.CnpjAlreadyExistsException;
+import com.br.code_crafters.forms.endereco.Endereco;
+import com.br.code_crafters.forms.endereco.EnderecoRepository;
 import com.br.code_crafters.forms.operador.Operador;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -21,16 +23,21 @@ import java.util.*;
 public class FilialService {
 
     private final FilialRepository filialRepository;
+    private final EnderecoRepository enderecoRepository;
 
-
-    public FilialService(FilialRepository filialRepository) {
+    public FilialService(FilialRepository filialRepository, EnderecoRepository enderecoRepository) {
         this.filialRepository = filialRepository;
+        this.enderecoRepository = enderecoRepository;
     }
 
     public void save(FilialDto dto){
         try{
             var filial = mapperFilial(dto);
-            filialRepository.save(filial);
+            var savedFilial = filialRepository.save(filial);
+            var endereco = mapperEndereco(dto);
+            endereco.setFilial(savedFilial);
+            enderecoRepository.save(endereco);
+
         } catch (DataIntegrityViolationException ex){
             if(ex.getMostSpecificCause().getMessage().contains("cnpj_unique")){
                 throw new CnpjAlreadyExistsException("CNPJ já cadastrado");
@@ -77,6 +84,18 @@ public class FilialService {
                 .nmFilial(dto.getNmFilial())
                 .nrCnpj(dto.getNrCnpj())
                 .cdPais(dto.getCdPais())
+                .build();
+    }
+
+    private Endereco mapperEndereco(FilialDto dto){
+        return Endereco.builder()
+                .nmLogradouro(dto.getNmLogradouro())
+                .nrLogradouro(dto.getNrLogradouro())
+                .nmBairro(dto.getNmBairro())
+                .nmCidade(dto.getNmCidade())
+                .nmUf(dto.getNmUf())
+                .nrCep(dto.getNrCep())
+                .dsComplemento(dto.getDsComplemento())
                 .build();
     }
 }

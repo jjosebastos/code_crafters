@@ -18,4 +18,20 @@ public class FilialDto {
     private String nrCnpj;
     @NotBlank(message = "{filial.cdpais.invalid}")
     private String cdPais;
+    @NotBlank(message = "{endereco.rua.notblank}")
+    private String nmLogradouro;
+    @NotBlank(message = "{endereco.numero.notblank}")
+    private String nrLogradouro;
+    @NotBlank(message = "{endereco.bairro.notblank}")
+    private String nmBairro;
+    @NotBlank(message = "{endereco.cidade.notblank")
+    private String nmCidade;
+    @Pattern(regexp = "^\\d{5}-\\d{3}$", message = "{filial.cep.invalid.format}")
+    @NotBlank(message = "{endereco.cep.notblank}")
+    private String nrCep;
+    @Size(max = 2, min = 2)
+    @NotBlank(message = "{endereco.uf.notblank}")
+    private String nmUf;
+    private String dsComplemento;
+
 }

@@ -1,5 +1,6 @@
 package com.br.code_crafters.forms.moto;
 
+import com.br.code_crafters.forms.monitoring.KpiChartDto;
 import com.br.code_crafters.forms.patio.Patio;
 import jakarta.websocket.server.PathParam;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,5 +26,17 @@ public interface MotoRepository extends JpaRepository<Moto, UUID>, JpaSpecificat
     List<Moto> findByPatio_IdPatioOrderByNrPlacaAsc(UUID idPatio);
 
     List<Moto> findByPatioOrderByNrPlacaAsc(Patio patio);
+
+    @Query(nativeQuery = true,
+            value = """
+        SELECT 
+            t.nm_modelo AS label,
+            COUNT(t.id_moto) AS value
+        FROM t_mtu_moto t
+        WHERE t.fl_status = 'S'
+        GROUP BY t.nm_modelo
+        """
+    )
+    List<KpiChartDto> findActivesPerModel();
 
 }

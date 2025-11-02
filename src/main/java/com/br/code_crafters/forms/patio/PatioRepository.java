@@ -14,8 +14,8 @@ import java.util.UUID;
 @Repository
 public interface PatioRepository extends JpaRepository<Patio, UUID>, JpaSpecificationExecutor<Patio> {
 
-
-
-
     Page<Patio> findByNmPatioContainingIgnoreCaseOrDsPatioContainingIgnoreCase(String nmPatio, String dsPatio, Pageable pageable);
+
+
+
 }

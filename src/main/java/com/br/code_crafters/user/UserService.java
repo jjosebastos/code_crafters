@@ -58,6 +58,10 @@ public class UserService {
         }
     }
 
+    public long countUsers(){
+        return userRepository.count();
+    }
+
     public User userMapper(RegisterDto dto){
         String roleString = (dto.getUserRole() != null)
                 ? String.valueOf(dto.getUserRole())
@@ -72,6 +76,7 @@ public class UserService {
                 .password(passwordEncoder.encode(dto.getPassword()))
                 .build();
     }
+
 
 }
 

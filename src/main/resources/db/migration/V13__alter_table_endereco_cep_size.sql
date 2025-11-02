@@ -1,0 +1,2 @@
+ALTER TABLE t_mtu_endereco
+ALTER COLUMN nr_cep TYPE VARCHAR(9);

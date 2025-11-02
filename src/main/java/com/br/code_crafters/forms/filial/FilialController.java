@@ -1,15 +1,13 @@
 package com.br.code_crafters.forms.filial;
 
-import com.br.code_crafters.forms.operador.Operador;
-import com.br.code_crafters.forms.operador.OperadorDto;
+import com.br.code_crafters.forms.endereco.Endereco;
+import com.br.code_crafters.forms.endereco.EnderecoRepository;
 import com.br.code_crafters.navigation.BreadcrumbsController;
 import jakarta.validation.Valid;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +15,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -28,10 +25,12 @@ public class FilialController {
 
     private final FilialService filialService;
     private final MessageSource messageSource;
+    private final EnderecoRepository enderecoRepository;
 
-    public FilialController(FilialService filialService, MessageSource messageSource) {
+    public FilialController(FilialService filialService, MessageSource messageSource, EnderecoRepository enderecoRepository) {
         this.filialService = filialService;
         this.messageSource = messageSource;
+        this.enderecoRepository = enderecoRepository;
     }
 
     @GetMapping
@@ -59,12 +58,18 @@ public class FilialController {
 
     @GetMapping("/form")
     public String showForm(@RequestParam(required = false) UUID uuid, Model model){
+
         if(uuid != null) {
-            Filial filial = filialService.findById(uuid).orElseThrow(() -> new IllegalArgumentException("Filial não encontrada com o ID: " + uuid));
-            model.addAttribute("filialDto", filial);
+            Filial filialEntity = filialService.findById(uuid)
+                    .orElseThrow(() -> new IllegalArgumentException("Filial não encontrada: " + uuid));
+            Endereco enderecoEntity = enderecoRepository.findByFilialIdFilial(uuid).orElse(new Endereco());
+            FilialDto dto = getFilialDto(filialEntity, enderecoEntity);
+            model.addAttribute("filialDto", dto);
+
         } else {
             model.addAttribute("filialDto", new FilialDto());
         }
+
         model.addAttribute("breadcrumb", createBreadcrumb());
         return "fragments/filiais/formFiliais";
     }
@@ -112,5 +117,21 @@ public class FilialController {
                 new BreadcrumbsController.BreadcrumbItem(localizedCadastroBreadcrumb, null),
                 new BreadcrumbsController.BreadcrumbItem(localizedFilialBreadcrumb, "/filial")
         );
+    }
+
+    private static FilialDto getFilialDto(Filial filialEntity, Endereco enderecoEntity) {
+        FilialDto dto = new FilialDto();
+        dto.setIdFilial(filialEntity.getIdFilial());
+        dto.setNmFilial(filialEntity.getNmFilial());
+        dto.setNrCnpj(filialEntity.getNrCnpj());
+        dto.setCdPais(filialEntity.getCdPais());
+        dto.setNrCep(enderecoEntity.getNrCep());
+        dto.setNmLogradouro(enderecoEntity.getNmLogradouro());
+        dto.setNrLogradouro(enderecoEntity.getNrLogradouro());
+        dto.setNmBairro(enderecoEntity.getNmBairro());
+        dto.setNmCidade(enderecoEntity.getNmCidade());
+        dto.setNmUf(enderecoEntity.getNmUf());
+        dto.setDsComplemento(enderecoEntity.getDsComplemento());
+        return dto;
     }
 }
