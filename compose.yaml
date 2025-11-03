@@ -1,10 +1,10 @@
 services:
   postgres:
     image: 'postgres:latest'
-    container_name: mottu_database
+    container_name: db_mottu
     environment:
-      - 'POSTGRES_DB=mottu_teste'
-      - 'POSTGRES_PASSWORD=mottu_adm'
-      - 'POSTGRES_USER=mottu_adm'
+      - 'POSTGRES_DB=mottu_web'
+      - 'POSTGRES_PASSWORD=admin'
+      - 'POSTGRES_USER=admin'
     ports:
       - '5432:5432'

@@ -1,2 +1,0 @@
-ALTER TABLE t_mtu_moto
-ALTER COLUMN fl_status SET DEFAULT 'S';
