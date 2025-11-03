@@ -48,11 +48,3 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
-
-
-flyway {
-    url = 'jdbc:postgresql://localhost:5432/mottu_teste' // <-- Pegue do seu application.properties
-    user = 'mottu_adm'
-    password = 'mottu_adm'                            // <-- Pegue do seu application.properties
-}
-
