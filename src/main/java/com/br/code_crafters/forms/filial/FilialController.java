@@ -9,6 +9,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -101,6 +102,7 @@ public class FilialController {
     }
 
     @DeleteMapping("/{uuid}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String delete(@PathVariable UUID uuid, RedirectAttributes redirect) {
         filialService.deleteById(uuid);
         var message = messageSource.getMessage("filial.delete.success", null, LocaleContextHolder.getLocale());

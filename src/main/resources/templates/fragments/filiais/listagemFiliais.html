@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="light" xmlns:th="http://www.thymeleaf.org"
+<html lang="pt-BR" data-theme="light"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout/base :: layout(
           pageTitle=~{pageTitle},
           content=~{::main},
@@ -66,8 +68,11 @@
                             <span th:text="#{filial.botao.editar}">Editar</span>
                         </a>
                         <form th:action="@{/filiais/{uuid}(uuid=${filial.idFilial})}"
-                              method="post" onsubmit="return confirm('Tem certeza?');">
+                              method="post" onsubmit="return confirm('Tem certeza?');"
+                              sec:authorize="hasRole('ADMIN')">
+
                             <input type="hidden" name="_method" value="delete"/>
+
                             <button type="submit" class="btn btn-sm btn-outline text-red-500 hover:bg-red-500 hover:text-white">
                                 <i class="fas fa-trash"></i>
                                 <span th:text="#{filial.botao.excluir}">Excluir</span>
