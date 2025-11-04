@@ -28,12 +28,13 @@
             <button @click="open = !open"
                     class="flex items-center justify-center
                w-11 h-11 rounded-full overflow-hidden
-               border-2 border-[var(--color-primary)]
+               cursor-pointer border-2
+               border-[var(--color-primary)]
                text-gray-400 hover:text-green-500
                transition-colors duration-200">
-                <img th:src="${userPicture ?: '/images/default-avatar.png'}"
+                <img th:src="*{fotoPerfilUrl} ?: @{/svg/user-icon-svgrepo-com.svg}"
                      alt="avatar"
-                     class="w-full h-full object-cover"/>
+                     class="w-full h-full c"/>
             </button>
             <div x-show="open" x-cloak
                  class="absolute right-0 mt-2 w-48 bg-[var(--color-black)] border border-[var(--color-primary)] shadow-lg z-50">

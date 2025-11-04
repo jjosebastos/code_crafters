@@ -76,15 +76,4 @@ public class BreadcrumbsController {
     }
 
 
-
-    @GetMapping("/ajustes")
-    public String ajustes(Model model) {
-        List<BreadcrumbItem> breadcrumbPath = List.of(
-                new BreadcrumbItem("Ajustes", null)
-        );
-        model.addAttribute("breadcrumb", breadcrumbPath);
-        return "fragments/ajustes";
-    }
-
-
 }

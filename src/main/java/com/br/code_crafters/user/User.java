@@ -41,6 +41,26 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String email;
 
+    @OneToOne(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            orphanRemoval = true
+    )
+    private UserProfile userProfile;
+    public void addUserProfile(UserProfile profile) {
+        this.userProfile = profile;
+        if (profile != null) {
+            profile.setUser(this);
+        }
+    }
+    public void removeUserProfile() {
+        if (this.userProfile != null) {
+            this.userProfile.setUser(null);
+            this.userProfile = null;
+        }
+    }
+
     public User(OAuth2User principal){
         this.email = principal.getAttributes().get("email").toString();
         this.name = principal.getAttributes().get("name").toString();

@@ -33,9 +33,9 @@ public class CustomerDetailsService implements UserDetailsService {
                 new SimpleGrantedAuthority("ROLE_" + user.getUserRole().name())
         );
         return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),       // Principal name (identificador)
-                user.getPassword(),    // Senha (vazia para OAuth2, codificada para Form Login)
-                authorities            // Roles/Autoridades
+                user.getEmail(),
+                user.getPassword(),
+                authorities
         );
     }
 }
