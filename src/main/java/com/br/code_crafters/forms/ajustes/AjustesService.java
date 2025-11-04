@@ -22,6 +22,7 @@ public class AjustesService {
         this.userRepository = userRepository;
     }
 
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public AjustesDto getAjustes(Authentication authentication) throws UserPrincipalNotFoundException {
         String emailUsuario = ((OAuth2User) authentication.getPrincipal()).getAttribute("email");
         if (emailUsuario == null) throw new UserPrincipalNotFoundException("Email não encontrado no token OAuth2");
@@ -55,7 +56,6 @@ public class AjustesService {
         dto.setEmail(user.getEmail());
         dto.setSobrenome(user.getName());
         dto.setBio(profile.getBio());
-        dto.setFotoPerfilUrl(profile.getFotoUrl());
         dto.setTelefone(profile.getTelefone());
         dto.setTema(profile.getTema());
         dto.setIdioma(profile.getIdioma());
@@ -67,7 +67,6 @@ public class AjustesService {
     private void mapToEntity(AjustesDto dto, UserProfile profile) {
         profile.setSobrenome(dto.getSobrenome());
         profile.setBio(dto.getBio());
-        profile.setFotoUrl(dto.getFotoPerfilUrl());
         profile.setTelefone(dto.getTelefone());
         profile.setTema(dto.getTema());
         profile.setIdioma(dto.getIdioma());

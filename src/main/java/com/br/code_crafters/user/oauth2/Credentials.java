@@ -1,4 +1,4 @@
-package com.br.code_crafters.user;
+package com.br.code_crafters.user.oauth2;
 
 import lombok.Data;
 

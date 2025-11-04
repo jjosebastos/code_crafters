@@ -1,5 +1,7 @@
-package com.br.code_crafters.user;
+package com.br.code_crafters.user.oauth2;
 
+import com.br.code_crafters.user.User;
+import com.br.code_crafters.user.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
