@@ -1,15 +1,23 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="light" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout/base :: layout(
-          pageTitle=~{pageTitle},  content=~{::main},
-          scripts=~{::pageScripts})}">
-<head>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::main}, ~{::scripts})}"> <head>
+    <meta charset="UTF-8">
     <title th:text="#{app.title}">Monitoramento de Pátio</title>
+
+    <th:block th:fragment="styles"></th:block>
 </head>
 <body>
-<main class="flex-grow p-6 bg-[#1e1f24] min-h-screen">
+<main th:fragment="main" class="flex-grow p-6 bg-[#1e1f24] min-h-screen">
 
-    <!-- título -->
+    <style>
+        .ocupada { background-color: var(--color-primary); color: white; cursor: pointer; }
+        .disponivel { background-color: #4B5563; color: #D1D5DB; cursor: default; }
+        .indisponivel { background-color: #111827; color: #6B7280; cursor: default; }
+        .vaga-link:hover {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+        }
+    </style>
     <div class="mb-6 border-b border-gray-700 pb-3 flex items-center gap-2">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[var(--color-primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6"/>
@@ -17,18 +25,19 @@
         <h2 class="text-2xl font-bold text-white" th:text="#{app.title}">Monitoramento de Pátio</h2>
     </div>
 
-    <!-- seleção de pátio -->
-    <form id="patioForm" method="get" action="/monitoramento" class="mb-6">
+    <form id="patioForm" method="get" th:action="@{/monitoramento}" class="mb-6">
         <label for="patio-select" class="block text-white mb-2" th:text="#{patio.select}">Selecione um Pátio:</label>
         <select id="patio-select" name="patioId"
-                class="w-full md:w-1/3 p-3 rounded-lg bg-gray-800 border border-gray-600 text-white shadow-sm"
+                class="w-full md:w-1/3 p-3 rounded-lg bg-gray-800 border border-gray-600 text-white shadow-sm focus:outline-none"
                 onchange="document.getElementById('patioForm').submit()">
             <option value="" th:text="#{patio.option}">-- Escolha um Pátio --</option>
             <option th:each="patio : ${patios}"
                     th:value="${patio.idPatio}"
                     th:text="${patio.nmPatio}"
-                    th:selected="${patio.idPatio} == ${selectedPatioId}"></option>
+                    th:selected="${patio.idPatio != null && patio.idPatio.equals(selectedPatioId)}"></option>
         </select>
+        <input type="hidden" name="cols" th:value="${cols}"/>
+        <input type="hidden" name="totalSlots" th:value="${totalSlotsParam}"/>
     </form>
 
     <div th:if="${grid != null}">
@@ -47,76 +56,78 @@
             </div>
         </div>
 
-        <!-- legenda -->
-        <div class="mb-6 flex flex-wrap items-center gap-4 text-sm">
-            <span class="flex items-center gap-2">
-                <span class="w-4 h-4 bg-[var(--color-primary)] rounded-full"></span>
+        <div class="mb-6 flex flex-wrap items-center gap-4 text-sm text-gray-400">
+             <span class="flex items-center gap-2">
+                <span class="w-4 h-4 rounded-full ocupada"></span>
                 <span th:text="#{legend.occupied}">Ocupada</span>
             </span>
             <span class="flex items-center gap-2">
-                <span class="w-4 h-4 bg-gray-700 rounded-full"></span>
+                <span class="w-4 h-4 rounded-full disponivel"></span>
                 <span th:text="#{legend.free}">Livre</span>
             </span>
             <span class="flex items-center gap-2">
-                <span class="w-4 h-4 bg-gray-900 rounded-full"></span>
+                <span class="w-4 h-4 rounded-full indisponivel"></span>
                 <span th:text="#{legend.unavailable}">Indisponível</span>
             </span>
         </div>
 
-        <!-- grid -->
-        <div class="overflow-auto rounded-lg border border-gray-700 p-4">
+        <div class="overflow-auto rounded-lg border border-gray-700 p-4 bg-gray-900">
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+
                 <th:block th:each="row : ${grid}">
                     <div th:each="cell : ${row}"
-                         th:classappend="${cell.occupied} ? 'bg-[var(--color-primary)]' : 'bg-gray-700'"
-                         class="p-3 m-1 rounded-xl text-white text-xs font-semibold flex flex-col items-center justify-center cursor-pointer shadow-md hover:scale-105 transition-transform"
-                         th:attr="data-placa=${cell.occupied} ? ${cell.moto.placa} : '', data-modelo=${cell.occupied} ? ${cell.moto.modelo} : ''"
-                         th:onclick="${cell.occupied} ? 'openMotoModal(this)' : ''">
-
-                        <div th:text="${cell.slotLabel}" class="text-sm text-gray-200"></div>
-                        <div th:if="${cell.occupied}" th:text="${cell.moto.placa}" class="text-base mt-2"></div>
-                        <div th:if="${cell.occupied}" th:text="${cell.moto.modelo}" class="text-xs text-gray-100 mt-1"></div>
-                        <div th:if="${!cell.occupied}" class="text-sm text-gray-400">--</div>
+                         th:id="'vaga-' + ${cell.slotLabel}"
+                         th:classappend="${cell.occupied} ? 'ocupada vaga-link' : 'disponivel'"
+                         class="p-3 m-1 rounded-xl text-xs font-semibold flex flex-col items-center justify-center shadow-md transition-transform duration-200 ease-in-out"
+                         th:attr="data-placa=${cell.occupied && cell.moto != null} ? ${cell.moto.placa} : '', data-modelo=${cell.occupied && cell.moto != null} ? ${cell.moto.modelo} : ''"
+                         th:onclick="${cell.occupied} ? 'window.location.href=\'' + @{/rastreamento} + '\'' : null"> <div th:text="${cell.slotLabel}" class="text-sm font-bold text-gray-200"></div>
+                        <div class="mt-2 text-center">
+                            <div th:if="${cell.occupied and cell.moto != null}">
+                                <div th:text="${cell.moto.placa}" class="text-base text-white"></div>
+                                <div th:text="${cell.moto.modelo}" class="text-xs opacity-80 mt-1 text-gray-100"></div>
+                            </div>
+                            <div th:unless="${cell.occupied and cell.moto != null}" class="text-sm opacity-60 mt-2 text-gray-400">--</div>
+                        </div>
                     </div>
                 </th:block>
             </div>
         </div>
-
-        <div class="flex justify-center mt-6 gap-2">
-            <button class="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700" th:text="#{button.prev}">Anterior</button>
-            <button class="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700" th:text="#{button.next}">Próxima</button>
-        </div>
     </div>
 
-    <!-- Modal -->
+    <div th:unless="${grid != null}" class="text-center text-gray-500 mt-10">
+        Selecione um pátio para visualizar as vagas.
+    </div>
+
     <div id="motoModal" class="fixed inset-0 z-50 hidden items-center justify-center">
-        <div class="absolute inset-0 bg-black bg-opacity-70 backdrop-blur-sm"></div>
-        <div class="relative bg-white rounded-xl p-6 max-w-sm w-full z-10 shadow-lg transform transition-all">
-            <button onclick="closeMotoModal()" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700">✕</button>
-            <h4 id="modalPlaca" class="font-bold mb-2 text-gray-900"></h4>
-            <div id="modalModelo" class="text-sm text-gray-700"></div>
-        </div>
     </div>
 
 </main>
 
-
-<th:block th:fragment="pageScripts">
-    <script th:inline="javascript" th:fragment="scripts">
+<th:block th:fragment="scripts">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
         function openMotoModal(el) {
             const placa = el.getAttribute('data-placa');
             const modelo = el.getAttribute('data-modelo');
-            document.getElementById('modalPlaca').textContent = /*[[#{modal.placa}]]*/ "Placa: " + (placa || '-');
-            document.getElementById('modalModelo').textContent = /*[[#{modal.modelo}]]*/ "Modelo: " + (modelo || '-');
             const m = document.getElementById('motoModal');
-            m.classList.remove('hidden'); m.classList.add('flex');
+            if (m) {
+                document.getElementById('modalPlaca').textContent = /*[[#{modal.placa}]]*/ "Placa: " + (placa || '-');
+                document.getElementById('modalModelo').textContent = /*[[#{modal.modelo}]]*/ "Modelo: " + (modelo || '-');
+                m.classList.remove('hidden');
+                m.classList.add('flex');
+            }
         }
 
         function closeMotoModal() {
             const m = document.getElementById('motoModal');
-            m.classList.add('hidden'); m.classList.remove('flex');
+             if (m) {
+                m.classList.add('hidden');
+                m.classList.remove('flex');
+            }
         }
+        /*]]>*/
     </script>
 </th:block>
+
 </body>
 </html>

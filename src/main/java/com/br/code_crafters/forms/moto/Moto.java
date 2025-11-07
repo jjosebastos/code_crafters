@@ -50,4 +50,12 @@ public class Moto {
     @Column(name = "fl_status")
     private String flStatus;
 
+    @Column(name = "nr_latitude")
+    private Double latitude;
+
+    @Column(name = "nr_longitude")
+    private Double longitude;
+
+    @Column(name = "ds_status")
+    private String dsStatus;
 }
