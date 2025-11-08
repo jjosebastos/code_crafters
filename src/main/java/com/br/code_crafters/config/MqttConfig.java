@@ -1,7 +1,7 @@
 package com.br.code_crafters.config;
 
-import com.br.code_crafters.monitoring.IotMonitoringService;
-import com.br.code_crafters.monitoring.IotVagaService;
+import com.br.code_crafters.monitoringiot.IotMonitoringService;
+import com.br.code_crafters.monitoringiot.IotVagaService;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

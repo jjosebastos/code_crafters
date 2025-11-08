@@ -42,16 +42,16 @@ public class SecurityConfiguration {
     private final CustomerDetailsService customerDetailsService;
     private final UserRepository userRepository;
     private final UserProfileRepository userProfileRepository;
-    private final OAuth2LoginService oAuth2LoginService; // <-- 1. Injetar o novo Service
+    private final OAuth2LoginService oAuth2LoginService;
 
     public SecurityConfiguration(CustomerDetailsService customerDetailsService,
                                  UserRepository userRepository,
                                  UserProfileRepository userProfileRepository,
-                                 OAuth2LoginService oAuth2LoginService) { // <-- 2. Atualizar construtor
+                                 OAuth2LoginService oAuth2LoginService) {
         this.customerDetailsService = customerDetailsService;
         this.userRepository = userRepository;
         this.userProfileRepository = userProfileRepository;
-        this.oAuth2LoginService = oAuth2LoginService; // <-- 2. Atualizar construtor
+        this.oAuth2LoginService = oAuth2LoginService;
     }
 
     @Bean
@@ -76,12 +76,12 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
 
-                .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin())) // Recommended for H2 Console
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**")) // Recommended for H2 Console
+                .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()))
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
                 .authorizeHttpRequests(auth -> auth
-                        // Permitted public endpoints
                         .requestMatchers(
                                 "/css/**", "/js/**", "/images/**", "/webjars/**", "/h2-console/**",
+                                "/svg/**",
                                 "/login", "/register", "/form", "/login?error=true", "/error"
                         ).permitAll()
 

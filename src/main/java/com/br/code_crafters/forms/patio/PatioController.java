@@ -7,6 +7,7 @@ import com.br.code_crafters.navigation.BreadcrumbsController;
 import jakarta.validation.Valid;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -32,22 +33,20 @@ public class PatioController {
         this.messageSource = messageSource;
     }
 
+
     @GetMapping
     public String showAll(@RequestParam(required = false) String search,
                           @PageableDefault(size = 10, sort = "nmPatio") Pageable pageable,
                           Model model) {
-
         Page<Patio> patiosPage;
         if (search != null && !search.trim().isEmpty()) {
             patiosPage = patioService.findAllByNomeDescricao(search, search, pageable);
         } else {
             patiosPage = patioService.findAll(pageable);
         }
-
         model.addAttribute("filiais", patioService.finAllFiliais());
         model.addAttribute("patiosPage", patiosPage);
         model.addAttribute("breadcrumb", createBreadcrumb());
-
         if (search != null) {
             model.addAttribute("search", search);
         }
@@ -93,11 +92,17 @@ public class PatioController {
 
     @DeleteMapping("/{uuid}")
     public String delete(@PathVariable UUID uuid, RedirectAttributes redirect){
-        patioService.deletePatio(uuid);
-        var message = messageSource.getMessage("patio.delete.success", null, LocaleContextHolder.getLocale());
-        redirect.addFlashAttribute("message", message);
+        try {
+            patioService.deletePatio(uuid);
+            var message = messageSource.getMessage("patio.delete.success", null, LocaleContextHolder.getLocale());
+            redirect.addFlashAttribute("message", message);
+        } catch (DataIntegrityViolationException e) {
+            var errorMessage = messageSource.getMessage("patio.delete.error.integrity", null, LocaleContextHolder.getLocale());
+            redirect.addFlashAttribute("error", errorMessage); // Envia um atributo "error"
+        }
         return "redirect:/patios";
     }
+
 
     @PostMapping
     public String save(@Valid PatioDto dto, BindingResult br, RedirectAttributes redirect){
@@ -113,7 +118,6 @@ public class PatioController {
         String localizedCadastroBreadcrumb = messageSource.getMessage("cadastro.breadcrumb", null, currentLocale);
         String localizedPatioBreadcrumb = messageSource.getMessage("patio.breadcrumb", null, currentLocale);
         return List.of(
-
                 new BreadcrumbsController.BreadcrumbItem(localizedCadastroBreadcrumb, null),
                 new BreadcrumbsController.BreadcrumbItem(localizedPatioBreadcrumb, "/patios")
         );

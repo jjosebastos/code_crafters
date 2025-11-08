@@ -30,6 +30,7 @@
             <form th:action="${operadorDto.idOperador} == null ? @{/operadores} : @{/operadores/{id}(id=${operadorDto.idOperador})}"
                   method="post" th:object="${operadorDto}" class="space-y-6">
 
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <input type="hidden" name="_method" value="put" th:if="${operadorDto.idOperador != null}"/>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

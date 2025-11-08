@@ -58,4 +58,7 @@ public class Moto {
 
     @Column(name = "ds_status")
     private String dsStatus;
+
+    @OneToMany(mappedBy = "moto", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Sensor> sensores;
 }

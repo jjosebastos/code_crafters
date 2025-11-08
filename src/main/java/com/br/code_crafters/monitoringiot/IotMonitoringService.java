@@ -1,5 +1,4 @@
-package com.br.code_crafters.monitoring;
-
+package com.br.code_crafters.monitoringiot;
 
 import com.br.code_crafters.forms.moto.Moto;
 import com.br.code_crafters.forms.moto.MotoRepository;
@@ -10,7 +9,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
-
 
 @Service
 @Slf4j
@@ -32,13 +30,25 @@ public class IotMonitoringService {
             String motoIdStr = topic.split("/")[2];
             UUID motoId = UUID.fromString(motoIdStr);
             LocationUpdateDto locationData = objectMapper.readValue(payload, LocationUpdateDto.class);
+
             Moto moto = motoRepository.findById(motoId)
                     .orElseThrow(() -> new RuntimeException("Moto não encontrada: " + motoId));
+
             moto.setLatitude(locationData.getLat());
             moto.setLongitude(locationData.getLon());
             moto.setDsStatus(locationData.getStatus());
             Moto motoAtualizada = motoRepository.save(moto);
-            String websocketPayload = objectMapper.writeValueAsString(motoAtualizada);
+
+            MotoMapUpdateDto motoDto = new MotoMapUpdateDto(
+                    motoAtualizada.getIdMoto(),
+                    motoAtualizada.getLatitude(),
+                    motoAtualizada.getLongitude(),
+                    motoAtualizada.getNrPlaca(),
+                    motoAtualizada.getNmModelo(),
+                    motoAtualizada.getDsStatus() // <-- Campo correto
+            );
+
+            String websocketPayload = objectMapper.writeValueAsString(motoDto);
             messagingTemplate.convertAndSend("/topic/map-updates", websocketPayload);
 
         } catch (IllegalArgumentException e) {

@@ -1,6 +1,5 @@
 package com.br.code_crafters.forms.filial;
 
-import com.br.code_crafters.forms.monitoring.ChartData;
 import com.br.code_crafters.forms.monitoring.KpiChartDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +14,16 @@ import java.util.UUID;
 
 @Repository
 public interface FilialRepository extends JpaRepository<Filial, UUID>, JpaSpecificationExecutor<Filial> {
-    Page<Filial> findByNmFilialContainingIgnoreCaseOrNrCnpjContainingIgnoreCase(String nmFilial, String nrCnpj, Pageable pageable);
+
+    @Query("SELECT f FROM Filial f WHERE " +
+            "lower(f.nmFilial) LIKE lower(concat('%', :nmFilial, '%')) OR " +
+            "lower(f.nrCnpj) LIKE lower(concat('%', :nrCnpj, '%'))")
+    Page<Filial> findByNmFilialContainingIgnoreCaseOrNrCnpjContainingIgnoreCase(
+            @Param("nmFilial") String nmFilial,
+            @Param("nrCnpj") String nrCnpj,
+            Pageable pageable
+    );
+
     @Query(nativeQuery = true,
             value = """
                SELECT 

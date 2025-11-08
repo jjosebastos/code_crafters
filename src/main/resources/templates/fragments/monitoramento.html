@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout/base :: layout(~{::title}, ~{::main}, ~{::scripts})}"> <head>
+      th:replace="~{layout/base :: layout(null, ~{::main}, ~{::scripts})}"> <head>
     <meta charset="UTF-8">
-    <title th:text="#{app.title}">Monitoramento de Pátio</title>
+    <title th:text="#{monitoring.page.title}">Monitoramento de Pátio</title>
 
     <th:block th:fragment="styles"></th:block>
 </head>
@@ -80,18 +80,19 @@
                          th:classappend="${cell.occupied} ? 'ocupada vaga-link' : 'disponivel'"
                          class="p-3 m-1 rounded-xl text-xs font-semibold flex flex-col items-center justify-center shadow-md transition-transform duration-200 ease-in-out"
                          th:attr="data-placa=${cell.occupied && cell.moto != null} ? ${cell.moto.placa} : '', data-modelo=${cell.occupied && cell.moto != null} ? ${cell.moto.modelo} : ''"
-                         th:onclick="${cell.occupied} ? 'window.location.href=\'' + @{/rastreamento} + '\'' : null"> <div th:text="${cell.slotLabel}" class="text-sm font-bold text-gray-200"></div>
-                        <div class="mt-2 text-center">
-                            <div th:if="${cell.occupied and cell.moto != null}">
-                                <div th:text="${cell.moto.placa}" class="text-base text-white"></div>
-                                <div th:text="${cell.moto.modelo}" class="text-xs opacity-80 mt-1 text-gray-100"></div>
-                            </div>
-                            <div th:unless="${cell.occupied and cell.moto != null}" class="text-sm opacity-60 mt-2 text-gray-400">--</div>
+                    th:onclick="${cell.occupied} ? |window.location.href='@{/rastreamento}'| : null">
+                    <div th:text="${cell.slotLabel}" class="text-sm font-bold text-gray-200"></div>
+                    <div class="mt-2 text-center">
+                        <div th:if="${cell.occupied and cell.moto != null}">
+                            <div th:text="${cell.moto.placa}" class="text-base text-white"></div>
+                            <div th:text="${cell.moto.modelo}" class="text-xs opacity-80 mt-1 text-gray-100"></div>
                         </div>
+                        <div th:unless="${cell.occupied and cell.moto != null}" class="text-sm opacity-60 mt-2 text-gray-400">--</div>
                     </div>
-                </th:block>
             </div>
+            </th:block>
         </div>
+    </div>
     </div>
 
     <div th:unless="${grid != null}" class="text-center text-gray-500 mt-10">

@@ -6,6 +6,7 @@ import com.br.code_crafters.navigation.BreadcrumbsController;
 import jakarta.validation.Valid;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -34,6 +35,8 @@ public class FilialController {
         this.enderecoRepository = enderecoRepository;
     }
 
+    // ... (Métodos showAll, showForm, update, create omitidos por brevidade) ...
+
     @GetMapping
     public String showAll(@RequestParam(required = false) String search,
                           @PageableDefault(size = 10, sort = "nmFilial") Pageable pageable,
@@ -44,44 +47,40 @@ public class FilialController {
         } else {
             filiaisPage = filialService.findAll(pageable);
         }
-
         model.addAttribute("filiaisPage", filiaisPage);
         model.addAttribute("breadcrumb", createBreadcrumb());
-
         if(search != null){
             model.addAttribute("search", search);
         }
-
         return "fragments/filiais/listagemFiliais";
-
     }
-
 
     @GetMapping("/form")
     public String showForm(@RequestParam(required = false) UUID uuid, Model model){
-
         if(uuid != null) {
             Filial filialEntity = filialService.findById(uuid)
                     .orElseThrow(() -> new IllegalArgumentException("Filial não encontrada: " + uuid));
             Endereco enderecoEntity = enderecoRepository.findByFilialIdFilial(uuid).orElse(new Endereco());
             FilialDto dto = getFilialDto(filialEntity, enderecoEntity);
             model.addAttribute("filialDto", dto);
-
+            model.addAttribute("pageTitleKey", "filial.form.title.edit");
         } else {
             model.addAttribute("filialDto", new FilialDto());
+            model.addAttribute("pageTitleKey", "filial.form.title.create");
         }
-
         model.addAttribute("breadcrumb", createBreadcrumb());
         return "fragments/filiais/formFiliais";
     }
-
 
     @PutMapping("/{uuid}")
     public String update(@PathVariable UUID uuid,
                          @Valid @ModelAttribute("filialDto") FilialDto filialDto,
                          BindingResult result,
-                         RedirectAttributes redirect) {
+                         RedirectAttributes redirect,
+                         Model model) {
         if (result.hasErrors()) {
+            model.addAttribute("breadcrumb", createBreadcrumb());
+            model.addAttribute("pageTitleKey", "filial.form.title.edit");
             return "fragments/filiais/formFiliais";
         }
         filialService.update(uuid, filialDto);
@@ -90,11 +89,15 @@ public class FilialController {
         return "redirect:/filiais";
     }
 
-
     @PostMapping
-    public String create(@Valid FilialDto dto, BindingResult br, RedirectAttributes redirect){
-        if(br.hasErrors())
+    public String create(@Valid @ModelAttribute("filialDto") FilialDto dto, BindingResult br,
+                         RedirectAttributes redirect,
+                         Model model){
+        if(br.hasErrors()) {
+            model.addAttribute("breadcrumb", createBreadcrumb());
+            model.addAttribute("pageTitleKey", "filial.form.title.create");
             return "fragments/filiais/formFiliais";
+        }
         filialService.save(dto);
         var message = messageSource.getMessage("filial.create.success", null, LocaleContextHolder.getLocale());
         redirect.addFlashAttribute("message", message);
@@ -104,18 +107,23 @@ public class FilialController {
     @DeleteMapping("/{uuid}")
     @PreAuthorize("hasRole('ADMIN')")
     public String delete(@PathVariable UUID uuid, RedirectAttributes redirect) {
-        filialService.deleteById(uuid);
-        var message = messageSource.getMessage("filial.delete.success", null, LocaleContextHolder.getLocale());
-        redirect.addFlashAttribute("message", message);
+        try {
+            filialService.deleteById(uuid);
+            var message = messageSource.getMessage("filial.delete.success", null, LocaleContextHolder.getLocale());
+            redirect.addFlashAttribute("message", message);
+        } catch (DataIntegrityViolationException e) {
+            var errorMessage = messageSource.getMessage("filial.delete.error.integrity", null, LocaleContextHolder.getLocale());
+            redirect.addFlashAttribute("error", errorMessage); // Envia um atributo "error"
+        }
         return "redirect:/filiais";
     }
+
 
     private List<BreadcrumbsController.BreadcrumbItem> createBreadcrumb() {
         Locale currentLocale = LocaleContextHolder.getLocale();
         String localizedCadastroBreadcrumb = messageSource.getMessage("cadastro.breadcrumb", null, currentLocale);
         String localizedFilialBreadcrumb = messageSource.getMessage("filial.breadcrumb", null, currentLocale);
         return List.of(
-
                 new BreadcrumbsController.BreadcrumbItem(localizedCadastroBreadcrumb, null),
                 new BreadcrumbsController.BreadcrumbItem(localizedFilialBreadcrumb, "/filial")
         );

@@ -1,25 +1,30 @@
 <!DOCTYPE html>
 <html lang="pt-BR" data-theme="light" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout/base :: layout(
-          pageTitle=~{pageTitle},
-          content=~{::main},
-          scripts=~{::pageScripts}
-          )}">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout/base :: layout(null, ~{::main}, ~{::pageScripts})}">
 <body>
 <main class="flex-grow p-6 bg-[#1b1c1f] overflow-y-auto overflow-x-hidden">
+
+    <!-- Alertas de Sucesso e Erro -->
     <div th:if="${message}" class="alert alert-success shadow-lg rounded-xl absolute top-5 left-1/2 -translate-x-1/2 z-50 w-3/4 md:max-w-xl" role="alert" id="success-alert">
         <div class="flex items-center space-x-3">
             <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <span th:text="${message}"></span>
+            <span th:text="${message}">Ação realizada com sucesso!</span>
+        </div>
+    </div>
+    <div th:if="${error}" class="alert alert-error shadow-lg rounded-xl absolute top-5 left-1/2 -translate-x-1/2 z-50 w-3/4 md:max-w-xl" role="alert" id="error-alert">
+        <div class="flex items-center space-x-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2.288A7.725 7.725 0 0112 21.75a7.725 7.725 0 01-7-7.712A7.725 7.725 0 0112 6.288a7.725 7.725 0 017 7.712z" /></svg>
+            <span th:text="${error}">Ocorreu um erro.</span>
         </div>
     </div>
 
     <div class="bg-[#232428] rounded-xl shadow-lg border border-[var(--color-primary)] p-6">
         <div class="flex flex-col md:flex-row justify-between items-center mb-6">
-            <h1 class="text-2xl font-bold text-white mb-4 md:mb-0" th:text="#{moto.list.title}"></h1>
-            <a th:href="@{/motos/form}" class="btn bg-[var(--color-primary)] text-white hover:bg-green-600 w-full md:w-auto" th:text="#{common.button.new}"></a>
+            <h1 class="text-2xl font-bold text-white mb-4 md:mb-0" th:text="#{moto.list.title}">Lista de Motocicletas</h1>
+            <a th:href="@{/motos/form}" class="btn bg-[var(--color-primary)] text-white hover:bg-green-600 w-full md:w-auto" th:text="#{common.button.new}">Novo</a>
         </div>
 
         <form th:action="@{/motos}" method="get" class="mb-6 flex flex-col sm:flex-row gap-4">
@@ -32,12 +37,13 @@
                 <table class="table w-full text-white">
                     <thead>
                     <tr>
-                        <th class="text-white" th:text="#{moto.field.model}"></th>
-                        <th class="text-white" th:text="#{moto.field.license_plate}"></th>
-                        <th class="text-white" th:text="#{moto.field.chassis}"></th>
-                        <th class="text-white" th:text="#{moto.field.operator}"></th>
-                        <th class="text-white" th:text="#{moto.field.yard}"></th>
-                        <th class="text-white" th:text="#{moto.field.actions}"></th>
+                        <!-- ================== CORREÇÕES AQUI ================== -->
+                        <th class="text-white" th:text="#{moto.field.model}">Modelo</th>
+                        <th class="text-white" th:text="#{moto.field.license_plate}">Placa</th>
+                        <th class="text-white" th:text="#{moto.field.chassis}">Chassi</th>
+                        <th class="text-white" th:text="#{moto.field.operator}">Operador</th>
+                        <th class="text-white" th:text="#{moto.field.yard}">Pátio</th>
+                        <th class="text-white" th:text="#{moto.field.actions}">Ações</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -48,26 +54,33 @@
                         <td th:text="${moto.operador != null ? moto.operador.nome : '-'}"></td>
                         <td th:text="${moto.patio != null ? moto.patio.nmPatio : '-'}"></td>
                         <td class="flex gap-2">
-                            <a th:href="@{/motos/form(uuid=${moto.idMoto})}" class="btn btn-sm btn-info text-white" th:text="#{common.button.edit}"></a>
+                            <a th:href="@{/motos/form(uuid=${moto.idMoto})}" class="btn btn-sm btn-info text-white" th:text="#{common.button.edit}">Editar</a>
                             <form th:action="@{/motos/{id}(id=${moto.idMoto})}" method="post" onsubmit="return confirm([[#{moto.confirm.delete}]]);">
                                 <input type="hidden" name="_method" value="delete" />
-                                <button type="submit" class="btn btn-sm btn-error text-white" th:text="#{common.button.delete}"></button>
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                <button type="submit" class="btn btn-sm btn-error text-white" th:text="#{common.button.delete}">Excluir</button>
                             </form>
                         </td>
                     </tr>
                     <tr th:if="${motosPage.content.empty}">
-                        <td colspan="6" class="text-center py-4" th:text="#{moto.list.empty}"></td>
+                        <td colspan="6" class="text-center py-4" th:text="#{moto.list.empty}">Nenhuma motocicleta encontrada.</td>
                     </tr>
                     </tbody>
                 </table>
             </div>
 
+            <!-- ================== CORREÇÃO DA PAGINAÇÃO ================== -->
             <div th:if="${motosPage.totalPages > 0}" class="flex justify-center mt-6">
                 <div class="join">
                     <a th:href="@{/motos(page=${motosPage.number - 1}, size=${motosPage.size})}"
                        th:classappend="${motosPage.hasPrevious()} ? '' : 'btn-disabled'"
                        class="join-item btn bg-gray-600 hover:bg-gray-700 text-white border-none">«</a>
-                    <span class="join-item btn bg-gray-600 text-white border-none" th:text="#{moto.pages}"> <span th:text="${motosPage.number + 1}"></span> de <span th:text="${motosPage.totalPages}"></span></span>
+
+                    <span class="join-item btn bg-gray-600 text-white border-none">
+                        <span th:text="#{moto.pages}">Página</span>
+                        <span th:text="${motosPage.number + 1}">1</span> / <span th:text="${motosPage.totalPages}">1</span>
+                    </span>
+
                     <a th:href="@{/motos(page=${motosPage.number + 1}, size=${motosPage.size})}"
                        th:classappend="${motosPage.hasNext()} ? '' : 'btn-disabled'"
                        class="join-item btn bg-gray-600 hover:bg-gray-700 text-white border-none">»</a>
@@ -75,61 +88,31 @@
             </div>
         </div>
 
-        <div th:if="${motoSensorDto != null}">
-            <h2 class="text-xl font-semibold text-white mb-4" th:text="#{moto.search.result.title}">Resultado da Busca por Placa</h2>
+        <!-- ... (Restante do seu código de busca, se houver) ... -->
 
-            <div th:if="${not #lists.isEmpty(motoSensorDto)}">
-                <div th:each="moto : ${motoSensorDto}" class="p-4 bg-[#2a2a2e] rounded-lg border border-gray-700 mb-4">
-                    <p class="text-white"><strong th:text="#{moto.field.model}"></strong>: <span th:text="${moto.nmModelo}"></span></p>
-                    <p class="text-white"><strong th:text="#{moto.field.license_plate}"></strong>: <span th:text="${moto.nrPlaca}"></span></p>
-                    <p class="text-white"><strong th:text="#{moto.field.chassis}"></strong>: <span th:text="${moto.nrChassi}"></span></p>
-                    <p class="text-white"><strong th:text="#{moto.field.status}"></strong>: <span th:text="${moto.flStatus}"></span></p>
-
-                    <div th:if="${moto.idSensor != null}" class="mt-4 p-4 bg-gray-800 rounded-lg">
-                        <h3 class="text-lg font-semibold text-white mb-2" th:text="#{sensor.details.title}">Dados do Sensor</h3>
-                        <p class="text-white"><strong th:text="#{sensor.field.model}"></strong>: <span th:text="${moto.nmModeloSensor}"></span></p>
-                        <p class="text-white"><strong th:text="#{sensor.field.type}"></strong>: <span th:text="#{${'sensor.type.' + moto.tpSensor.toLowerCase()}}"></span></p>
-                        <p class="text-white"><strong th:text="#{sensor.field.manufacturer}"></strong>: <span th:text="${moto.nmFabricante}"></span></p>
-                        <p class="text-white"><strong th:text="#{sensor.field.firmware}"></strong>: <span th:text="${moto.vsFirmware}"></span></p>
-                        <p class="text-white"><strong th:text="#{sensor.field.calibration}"></strong>: <span th:text="${#temporals.format(moto.dtCalibracao, 'dd-MM-yyyy')}"></span></p>
-                    </div>
-
-                    <div class="botoes-acao mt-4 flex justify-end gap-2">
-                        <a th:href="@{/motos/form(uuid=${moto.idMoto})}"
-                           class="btn btn-sm btn-outline text-blue-500 hover:bg-blue-500 hover:text-white">
-                            <i class="fas fa-edit"></i>
-                            <span th:text="#{moto.botao.editar}">Editar</span>
-                        </a>
-
-                        <form th:action="@{/motos/{id}(id=${moto.idMoto})}"
-                              method="post" onsubmit="return confirm('Tem certeza que deseja remover esta moto?');">
-                            <input type="hidden" name="_method" value="delete"/>
-
-                            <button type="submit" class="btn btn-sm btn-outline text-red-500 hover:bg-red-500 hover:text-white">
-                                <i class="fas fa-trash"></i>
-                                <span th:text="#{moto.botao.excluir}">Excluir</span>
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <div th:if="${#lists.isEmpty(motoSensorDto)}" class="mt-4 p-4 bg-red-800 rounded-lg text-white" th:text="#{moto.search.not_found}">
-                Nenhuma moto encontrada com a placa especificada.
-            </div>
-        </div>
     </div>
 </main>
 
 <th:block th:fragment="pageScripts">
-    <script th:if="${message}">
+    <!-- Script para fechar os alertas de sucesso e erro -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
         const successAlert = document.getElementById('success-alert');
-        setTimeout(() => {
-            if (successAlert) {
+        if (successAlert) {
+            setTimeout(() => {
                 successAlert.classList.add('opacity-0', 'transition-opacity', 'duration-500');
                 successAlert.addEventListener('transitionend', () => successAlert.remove());
-            }
-        }, 5000);
+            }, 5000);
+        }
+
+        const errorAlert = document.getElementById('error-alert');
+        if (errorAlert) {
+            setTimeout(() => {
+                errorAlert.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+                errorAlert.addEventListener('transitionend', () => errorAlert.remove());
+            }, 5000);
+        }
+        /*]]>*/
     </script>
 </th:block>
 </body>

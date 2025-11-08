@@ -48,8 +48,12 @@
                             <span th:text="#{filial.campo.cdpais}">Código do País</span>
                             <span class="text-red-500">*</span>
                         </label>
-                        <input type="text" th:field="*{cdPais}" required
-                               class="input w-full bg-[#2a2a2e] text-white border-gray-700"/>
+                        <select th:field="*{cdPais}" required
+                                class="select w-full bg-[#2a2a2e] text-white border-gray-700">
+                            <option value="" th:text="#{filial.cdpais.select}">Selecione...</option>
+                            <option value="BRA">BRA (Brasil)</option>
+                            <option value="MEX">MEX (México)</option>
+                        </select>
                         <p class="text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('cdPais')}" th:errors="*{cdPais}"></p>
                     </div>
                 </div>

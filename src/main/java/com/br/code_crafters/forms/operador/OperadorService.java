@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -23,12 +24,15 @@ public class OperadorService {
         try{
             var operador = mapperOperador(operadorDto);
             operadorRepository.save(operador);
+
         } catch (DataIntegrityViolationException e) {
-            // Verifique a mensagem da exceção para confirmar que é uma violação de chave única
-            if (e.getMostSpecificCause().getMessage().contains("unique_cpf")) {
-                throw new CpfAlreadyExistsException("CPF já cadastrado.");
+            Throwable rootCause = e.getMostSpecificCause();
+            if (rootCause instanceof SQLException sqlEx && "23505".equals(sqlEx.getSQLState())) {
+                if (sqlEx.getMessage().toLowerCase().contains("nr_cpf")) {
+                    throw new CpfAlreadyExistsException("CPF já cadastrado.");
+                }
             }
-            throw e; // Re-lança a exceção original se não for o caso do CPF duplicado
+            throw e;
         }
 
     }
@@ -39,11 +43,15 @@ public class OperadorService {
             var found = this.operadorRepository.findById(id).orElseThrow();
             found.setCpf(dto.getCpf());
             found.setNome(dto.getNome());
-            found.setNome(dto.getNome());
+            found.setRg(dto.getRg());
             operadorRepository.save(found);
+
         } catch (DataIntegrityViolationException ex){
-            if(ex.getMostSpecificCause().getMessage().contains("unique_cof")){
-                throw new CpfAlreadyExistsException("CPF já cadastrado.");
+            Throwable rootCause = ex.getMostSpecificCause();
+            if (rootCause instanceof SQLException sqlEx && "23505".equals(sqlEx.getSQLState())) {
+                if (sqlEx.getMessage().toLowerCase().contains("nr_cpf")) {
+                    throw new CpfAlreadyExistsException("CPF já cadastrado.");
+                }
             }
             throw ex;
         }
@@ -62,7 +70,7 @@ public class OperadorService {
         return operadorRepository.findByNomeContainingIgnoreCaseOrCpfContainingIgnoreCase(nome, cpf , pageable);
     }
 
-    
+
     public Optional<Operador> findById(UUID id){
         return operadorRepository.findById(id);
     }

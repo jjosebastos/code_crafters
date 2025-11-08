@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout/base :: layout(~{::title}, ~{::main}, ~{::scripts})}"> <head>
+      th:replace="~{layout/base :: layout(null, ~{::main}, ~{::scripts})}"> <head>
     <meta charset="UTF-8">
     <title>Rastreamento em Tempo Real</title>
 
@@ -21,7 +21,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
         </svg>
-        <h2 class="text-2xl font-bold text-white">Rastreamento em Tempo Real</h2>
+        <h2 class="text-2xl font-bold text-white" th:text="#{tracking.title}">Rastreamento em Tempo Real</h2>
     </div>
 
     <div id="map" class="shadow-lg bg-gray-800"></div>
@@ -38,6 +38,28 @@
 
     <script th:inline="javascript">
         /*<![CDATA[*/
+
+        var translations = {
+            placa: [[#{tracking.popup.placa}]],
+            modelo: [[#{tracking.popup.modelo}]],
+            status: [[#{tracking.popup.status}]],
+            lat: [[#{tracking.popup.lat}]],
+            lon: [[#{tracking.popup.lon}]],
+
+            // Lista de todos os status possíveis vindos do Node-RED
+            'moto.alerta.zona_segura_nao_estacionada': [[#{moto.alerta.zona_segura_nao_estacionada}]],
+            'moto.status.ok': [[#{moto.status.ok}]],
+            'moto.status.em_movimento': [[#{moto.status.em_movimento}]]
+        };
+
+        // 2. Função para traduzir a chave de status que vem do WebSocket
+        function getTranslatedStatus(statusKey) {
+            // Se a chave (ex: "moto.status.ok") existir, retorna a tradução.
+            // Senão, retorna a própria chave (que pode ser um texto antigo).
+            return translations[statusKey] || statusKey;
+        }
+
+
 
         console.log("Iniciando página de rastreamento...");
 
@@ -71,16 +93,12 @@
             var latLng = L.latLng(lat, lon);
 
             var popupContent = `
-                <div style="color: #333;">
-                    <b>Placa:</b> ${moto.nrPlaca || '-'}
-
-                    <b>Modelo:</b> ${moto.nmModelo || '-'}
-
-                    <b>Status:</b> ${moto.flStatus || '-'}
-
-                    <b>Lat:</b> ${lat.toFixed(6)}
-
-                    <b>Lon:</b> ${lon.toFixed(6)}
+                <div style="color: #333; line-height: 1.5;">
+                    <b>${translations.placa}:</b> ${moto.nrPlaca || '-'}<br>
+                    <b>${translations.modelo}:</b> ${moto.nmModelo || '-'}<br>
+                    <b>${translations.status}:</b> ${getTranslatedStatus(moto.dsStatus)}<br>
+                    <b>${translations.lat}:</b> ${lat.toFixed(6)}<br>
+                    <b>${translations.lon}:</b> ${lon.toFixed(6)}
                 </div>
             `;
 
