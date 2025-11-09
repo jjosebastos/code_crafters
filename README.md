@@ -21,13 +21,25 @@ Identificamos essa lacuna e desenvolvemos uma **solução inovadora** para revol
 ---
 
 ## 🛠️ Tecnologias Utilizadas
-- **Java 17** – linguagem principal  
-- **Spring Boot** – estrutura para desenvolvimento da aplicação  
-- **Spring Security + OAuth2** – autenticação via **Google Console**  
-- **PostgreSQL** – banco de dados relacional  
-- **Docker** – criação e gerenciamento de containers  
-- **Thymeleaf** – motor de templates para renderização no front-end  
-- **Gradle** – ferramenta de automação e build  
+
+### Backend & DevOps
+- **Java 17** – Linguagem principal
+- **Spring Boot** – Estrutura da aplicação
+- **Spring Security + OAuth2** – Autenticação via Google
+- **PostgreSQL** – Banco de dados relacional
+- **Docker** – Gerenciamento de containers
+- **Gradle** – Ferramenta de build
+
+### IoT & Real-Time (Arquitetura Disruptiva)
+- **Arduino** – Hardware para captura de dados (Simulação de GPS e Proximidade)
+- **Node-RED** – Middleware para fluxo de dados IoT (leitura serial e publicação MQTT)
+- **MQTT** – Protocolo de mensageria leve para comunicação IoT (Broker: `broker.hivemq.com`)
+- **WebSockets (STOMP)** – Para envio de dados em tempo real do backend (Java) para o dashboard (Thymeleaf)
+
+### Frontend
+- **Thymeleaf** – Motor de templates para renderização dos dashboards
+- **HTML/CSS/JavaScript** – Estrutura das páginas de monitoramento e rastreamento
+
 
 ---
 
