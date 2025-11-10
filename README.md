@@ -90,8 +90,28 @@ Com o ambiente pronto, execute o comando abaixo para iniciar a aplicação local
 ./gradlew bootRun
 ```
 
-A aplicação ficará disponível em:  
-👉 [http://localhost:8081](http://localhost:8081)
+### Parte 5: Simulação IoT (Arduino + Node-RED)
+
+Esta parte irá *capturar e enviar* os dados dos sensores para o backend.
+
+1.  **Carregar o Código no Arduino:**
+    Abra a IDE do Arduino, cole o código-fonte (`.ino`) do projeto e faça o upload para a sua placa (Ex: Arduino Uno).
+
+2.  **Configurar o Node-RED:**
+    - Inicie o Node-RED.
+    - Importe o arquivo `flows.json` para o seu editor.
+    - **Importante:** Configure o nó `serial in` (entrada serial). Você deve selecionar a porta COM correta em que o seu Arduino foi detectado (ex: `COM3`, `/dev/ttyACM0`, etc.).
+    - Verifique se o nó `mqtt out` (saída MQTT) está configurado para o broker correto (`broker.hivemq.com`, porta 1883), o mesmo que a aplicação Java está ouvindo.
+
+3.  **Iniciar o Fluxo:**
+    - Faça o "Deploy" do fluxo no Node-RED.
+    - Com o Arduino conectado, você deverá ver os dados JSON fluindo da porta serial, passando pelo Node-RED e sendo publicados no MQTT.
+
+### Parte 3: Visualização (Resultado Final)
+
+- Acesse a aplicação em [http://localhost:8081](http://localhost:8081) e faça login.
+- Navegue até as páginas de **Monitoramento** e **Rastreamento**.
+- Ao mexer no potenciômetro (GPS) e no sensor ultrassônico (Distância) do Arduino, você verá os dashboards (vagas e localização) atualizando em **tempo real** via WebSockets.
 
 ---
 
