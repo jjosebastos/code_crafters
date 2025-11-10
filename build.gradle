@@ -52,7 +52,7 @@ dependencies {
 }
 
 springBoot {
-    mainClass = 'com.seuprojeto.CodeCraftersApplication'
+    mainClass = 'com.br.code_crafters.CodeCraftersApplication'
 }
 
 tasks.named('test') {
