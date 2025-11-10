@@ -40,7 +40,7 @@
                 <div class="flex items-center space-x-4 mb-6 pb-6 border-b border-gray-700">
                     <div class="avatar">
                         <div class="w-20 rounded-full ring ring-[var(--color-primary)] ring-offset-base-100 ring-offset-2">
-                            <img th:src="*{fotoPerfilUrl} ?: @{/static/svg/user-icon-svgrepo-com.svg}" alt="Foto do Perfil" />
+                            <img th:src="*{fotoPerfilUrl} ?: @{/svg/user-icon-svgrepo-com.svg}" alt="Foto do Perfil" />
                         </div>
                     </div>
                     <div>
@@ -85,22 +85,12 @@
                         <label class="label text-white">
                             <span th:text="#{ajustes.campo.idioma}">Idioma</span>
                         </label>
-                        <select th:field="*{idioma}" class="select w-full bg-[#2a2a2e] text-white border-gray-700">
-                            <option value="pt" th:text="#{idioma.pt}">Português</option>
-                            <option value="en" th:text="#{idioma.en}">English</option>
-                            <option value="es" th:text="#{idioma.es}">Español</option>
+                        <select id="idiomaSelector" th:field="*{idioma}" class="select w-full bg-[#2a2a2e] text-white border-gray-700">
+                            <option value="pt_BR" th:text="#{idioma.pt}"></option>
+                            <option value="en_US" th:text="#{idioma.en}"></option>
                         </select>
                     </div>
 
-                    <div class="form-control">
-                        <label class="label text-white">
-                            <span th:text="#{ajustes.campo.tema}">Tema</span>
-                        </label>
-                        <select th:field="*{tema}" class="select w-full bg-[#2a2a2e] text-white border-gray-700">
-                            <option value="light" th:text="#{tema.claro}">Claro</option>
-                            <option value="dark" th:text="#{tema.escuro}">Escuro</option>
-                        </select>
-                    </div>
 
                     <div class="form-control">
                         <label class="label text-white">

@@ -6,6 +6,7 @@ import com.br.code_crafters.user.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
@@ -23,34 +24,58 @@ public class AjustesService {
         this.userRepository = userRepository;
     }
 
-    @org.springframework.transaction.annotation.Transactional(readOnly = true)
-    public AjustesDto getAjustes(Authentication authentication) throws UserPrincipalNotFoundException {
+    private String getPrincipalEmail(Authentication authentication) throws UserPrincipalNotFoundException {
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new UserPrincipalNotFoundException("Usuário não autenticado.");
+        }
 
         String emailUsuario;
         Object principal = authentication.getPrincipal();
-
-        if (principal instanceof OAuth2User) {
+        if (principal instanceof OidcUser) { // OidcUser é mais específico e deve vir primeiro
+            emailUsuario = ((OidcUser) principal).getAttribute("email");
+        } else if (principal instanceof OAuth2User) {
             emailUsuario = ((OAuth2User) principal).getAttribute("email");
-            if (emailUsuario == null) {
-                throw new UserPrincipalNotFoundException("Email não encontrado no token OAuth2");
-            }
-        } else if (principal instanceof UserDetails) {
+        }
+        else if (principal instanceof UserDetails) {
             emailUsuario = ((UserDetails) principal).getUsername();
-        } else {
-            // Cenário 3: Tipo de principal desconhecido
+        }
+        else {
             throw new UserPrincipalNotFoundException("Tipo de principal de usuário desconhecido: " + principal.getClass().getName());
         }
 
-        // O resto da sua lógica de negócios permanece o mesmo
+        if (emailUsuario == null || emailUsuario.isEmpty()) {
+            throw new UserPrincipalNotFoundException("Email não encontrado no objeto Principal após a extração.");
+        }
+
+        return emailUsuario;
+    }
+
+    // =========================================================================
+    // GET AJUSTES (Mantido, mas usando o método auxiliar)
+    // =========================================================================
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public AjustesDto getAjustes(Authentication authentication) throws UserPrincipalNotFoundException {
+
+        // ✅ Uso seguro
+        String emailUsuario = getPrincipalEmail(authentication);
+
         User user = userRepository.findByEmail(emailUsuario)
                 .orElseThrow(() -> new UserPrincipalNotFoundException("Usuário não encontrado no banco com email: " + emailUsuario));
+
         UserProfile profile = user.getUserProfile();
         return mapToDto(user, Objects.requireNonNullElseGet(profile, UserProfile::new));
     }
+
+    // =========================================================================
+    // SAVE (CORRIGIDO)
+    // =========================================================================
     @Transactional
     public void save(AjustesDto dto, Authentication authentication) throws UserPrincipalNotFoundException {
-        String emailUsuario = ((OAuth2User) authentication.getPrincipal()).getAttribute("email");
-        if (emailUsuario == null) throw new UserPrincipalNotFoundException("Email não encontrado no token OAuth2");
+
+        // ✅ CORREÇÃO APLICADA: Substituído o cast inseguro pela extração segura
+        String emailUsuario = getPrincipalEmail(authentication);
+
         User user = userRepository.findByEmail(emailUsuario)
                 .orElseThrow(() -> new UserPrincipalNotFoundException("Usuário não encontrado no banco com email: " + emailUsuario));
 
@@ -59,17 +84,21 @@ public class AjustesService {
             profile = new UserProfile();
             profile.setUser(user);
         }
+
         user.setName(dto.getNome());
         mapToEntity(dto, profile);
+
         userRepository.save(user);
         userProfileRepository.save(profile);
     }
 
+
     private AjustesDto mapToDto(User user, UserProfile profile) {
+        // Implementação do mapToDto... (Mantida)
         AjustesDto dto = new AjustesDto();
         dto.setNome(user.getName());
         dto.setEmail(user.getEmail());
-        dto.setSobrenome(user.getName());
+        dto.setSobrenome(profile.getSobrenome()); // Assumindo que Sobrenome está no Profile agora
         dto.setBio(profile.getBio());
         dto.setTelefone(profile.getTelefone());
         dto.setTema(profile.getTema());
@@ -80,6 +109,7 @@ public class AjustesService {
     }
 
     private void mapToEntity(AjustesDto dto, UserProfile profile) {
+        // Implementação do mapToEntity... (Mantida)
         profile.setSobrenome(dto.getSobrenome());
         profile.setBio(dto.getBio());
         profile.setTelefone(dto.getTelefone());
